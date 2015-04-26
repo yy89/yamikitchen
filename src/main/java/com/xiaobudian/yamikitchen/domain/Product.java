@@ -21,6 +21,7 @@ public class Product  implements Serializable {
     private String summary;
     private String pictures;
     private String availableTime;
+    private boolean isExist;
 
     public Long getId() {
         return id;
@@ -76,5 +77,13 @@ public class Product  implements Serializable {
 
     public void setAvailableTime(String availableTime) {
         this.availableTime = availableTime;
+    }
+
+    public boolean isExist() {
+        return isExist;
+    }
+
+    public void setIsExist(boolean isExist) {
+        this.isExist = isExist;
     }
 }
