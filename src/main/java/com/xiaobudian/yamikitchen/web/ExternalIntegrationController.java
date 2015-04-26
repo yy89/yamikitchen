@@ -20,4 +20,11 @@ public class ExternalIntegrationController {
         smsService.sendSms(mobilePhone);
         return Result.successResultWithoutData();
     }
+
+    @RequestMapping(value = "/voice/{mobilePhone}", method = RequestMethod.GET)
+    @ResponseBody
+    public Result sendVoiceVerificationCode(@PathVariable String mobilePhone) {
+        return Result.successResult(smsService.sendVoiceVerifyCode(mobilePhone));
+    }
+
 }

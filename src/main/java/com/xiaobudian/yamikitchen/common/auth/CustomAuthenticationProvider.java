@@ -1,7 +1,10 @@
 package com.xiaobudian.yamikitchen.common.auth;
 
+import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.repository.RedisRepository;
 import com.xiaobudian.yamikitchen.repository.UserRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,13 +23,19 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private PasswordEncoder passwordEncoder;
     @Inject
     private UserRepository userRepository;
+    @Inject
+    private RedisRepository redisRepository;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
         User user = userRepository.findByUsername(name);
-        if (user != null && passwordEncoder.matches(password, user.getPassword()))
+        if (user == null) return null;
+        if (passwordEncoder.matches(password, user.getPassword()))
+            return new UsernamePasswordAuthenticationToken(user, password, null);
+        final String verificationCode = redisRepository.get(Keys.mobileSmsKey(name));
+        if (StringUtils.isNotEmpty(verificationCode) && verificationCode.equalsIgnoreCase(password))
             return new UsernamePasswordAuthenticationToken(user, password, null);
         return null;
     }

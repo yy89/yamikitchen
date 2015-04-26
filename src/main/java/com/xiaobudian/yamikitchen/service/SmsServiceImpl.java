@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.service;
 
+import com.cloopen.rest.sdk.CCPRestSDK;
 import com.jianzhou.sdk.BusinessService;
 import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.repository.RedisRepository;
@@ -9,12 +10,15 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.text.MessageFormat;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2014/12/1.
  */
 @Service(value = "smsService")
 public class SmsServiceImpl implements SmsService {
+    private static final String VOICE_SUCCESS_CODE = "000000";
+    private static final String STATUS_CODE_KEY = "statusCode";
     @Inject
     private RedisRepository redisRepository;
     @Value(value = "${sms.service}")
@@ -27,6 +31,19 @@ public class SmsServiceImpl implements SmsService {
     private String messageTemplate;
     @Value(value = "${sms.expire.minutes}")
     private Long expireMinutes;
+    @Value(value = "${sms.voice.host}")
+    private String voiceHost;
+    @Value(value = "${sms.voice.port}")
+    private String voicePort;
+    @Value(value = "${sms.voice.accountSid}")
+    private String voiceAccountSid;
+    @Value(value = "${sms.voice.token}")
+    private String voiceAccountAuthToken;
+    @Value(value = "${sms.voice.appid}")
+    private String voiceAppid;
+    @Value(value = "${sms.voice.displayPhone}")
+    private String displayPhone;
+
 
     @Override
     public void sendSms(String mobilePhone) {
@@ -39,8 +56,16 @@ public class SmsServiceImpl implements SmsService {
     }
 
     @Override
-    public String getVerificationCode(String mobilePhone) {
-        return redisRepository.get(Keys.mobileSmsKey(mobilePhone));
+    public boolean sendVoiceVerifyCode(String mobilePhone) {
+        CCPRestSDK restAPI = new CCPRestSDK();
+        restAPI.init(voiceHost, voicePort);
+        restAPI.setAccount(voiceAccountSid, voiceAccountAuthToken);
+        restAPI.setAppId(voiceAppid);
+        final String code = RandomStringUtils.randomNumeric(4);
+        Map<String, Object> response = restAPI.voiceVerify(code, mobilePhone, displayPhone, "2", "");
+        if (!VOICE_SUCCESS_CODE.equals(response.get(STATUS_CODE_KEY))) return false;
+        redisRepository.set(Keys.mobileSmsKey(mobilePhone), code, expireMinutes);
+        return true;
     }
 
     @Override

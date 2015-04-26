@@ -18,6 +18,9 @@ public class UserAddress implements Serializable {
     private String name;
     private String address;
     private String phone;
+    private Double longitude;
+    private Double latitude;
+
     private boolean isDefault = false;
 
     public Long getId() {
@@ -66,5 +69,21 @@ public class UserAddress implements Serializable {
 
     public void setDefault(boolean isDefault) {
         this.isDefault = isDefault;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 }
