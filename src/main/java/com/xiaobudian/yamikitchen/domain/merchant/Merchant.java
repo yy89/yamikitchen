@@ -1,4 +1,4 @@
-package com.xiaobudian.yamikitchen.domain;
+package com.xiaobudian.yamikitchen.domain.merchant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -21,8 +21,8 @@ public class Merchant implements Serializable {
     private String name;
     private Integer type;
     private String voiceIntroduction;
-    private Long longitude;
-    private Long latitude;
+    private Double longitude;
+    private Double latitude;
     private String address;
     private String headPic;
     private String phone;
@@ -40,6 +40,7 @@ public class Merchant implements Serializable {
     private String comment;
     private String description;
     private String tags;
+    private Long favoriteCount = 0l;
 
     public Long getId() {
         return id;
@@ -73,19 +74,19 @@ public class Merchant implements Serializable {
         this.voiceIntroduction = voiceIntroduction;
     }
 
-    public Long getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Long longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
-    public Long getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Long latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
@@ -223,5 +224,13 @@ public class Merchant implements Serializable {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public Long getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    public void setFavoriteCount(Long favoriteCount) {
+        this.favoriteCount = favoriteCount;
     }
 }

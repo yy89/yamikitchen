@@ -11,7 +11,7 @@ import java.util.Date;
  * Created by Johnson on 2015/4/22.
  */
 @Entity
-public class Order  implements Serializable {
+public class Order implements Serializable {
     private static final long serialVersionUID = -7595215227337455292L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,9 +40,12 @@ public class Order  implements Serializable {
     private boolean payable = true;
     private boolean hasPaid = false;
     private boolean complainable = false;
-    private boolean commentable =false;
+    private boolean commentable = false;
     private String checkFlag;
     private Long couponId;
+    private boolean firstDeal;
+    private Double longitude;
+    private Double latitude;
 
     public Long getId() {
         return id;
@@ -266,5 +269,29 @@ public class Order  implements Serializable {
 
     public void setCouponId(Long couponId) {
         this.couponId = couponId;
+    }
+
+    public boolean isFirstDeal() {
+        return firstDeal;
+    }
+
+    public void setFirstDeal(boolean firstDeal) {
+        this.firstDeal = firstDeal;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 }

@@ -6,8 +6,9 @@ package com.xiaobudian.yamikitchen.service;
 public interface SmsService {
     public void sendSms(String mobilePhone);
 
-    public String getVerificationCode(String mobilePhone);
+    public  boolean  sendVoiceVerifyCode(String mobilePhone);
 
     public boolean isValidVerificationCode(String mobilePhone, String verificationCode);
+
 
 }

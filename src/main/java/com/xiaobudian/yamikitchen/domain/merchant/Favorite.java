@@ -1,4 +1,4 @@
-package com.xiaobudian.yamikitchen.domain;
+package com.xiaobudian.yamikitchen.domain.merchant;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +11,7 @@ import java.util.Date;
  * Created by Johnson on 2015/4/22.
  */
 @Entity
-public class Favorite  implements Serializable {
+public class Favorite implements Serializable {
     private static final long serialVersionUID = -5985759455379892058L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,15 @@ public class Favorite  implements Serializable {
     private String nickName;
     private String headPic;
     private Date createDate = new Date();
+
+    public Favorite() {
+    }
+
+    public Favorite(Long uid, Long merchantId) {
+        this();
+        this.uid = uid;
+        this.merchantId = merchantId;
+    }
 
     public Long getId() {
         return id;
