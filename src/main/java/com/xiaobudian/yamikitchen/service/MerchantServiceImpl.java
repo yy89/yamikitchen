@@ -11,12 +11,9 @@ import com.xiaobudian.yamikitchen.repository.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Johnson on 2015/4/24.
@@ -38,8 +35,50 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
+    public Merchant addMerchat(Merchant merchant) {
+        return merchantRepository.save(merchant);
+    }
+
+    @Override
+    public Merchant editMerchat(Merchant merchant) {
+        if(merchant!=null){
+            Merchant merchantdb = merchantRepository.findOne(merchant.getId());
+            if(merchantdb!=null){
+               return merchantRepository.save(merchant);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void removeMerchant(long id) {
+        merchantRepository.delete(id);
+    }
+
+    @Override
     public List<Product> getProductsBy(Long rid, Integer page, Integer size) {
         return productRepository.findByMerchantId(rid, new PageRequest(page, size));
+    }
+
+    @Override
+    public Product addProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Product editProduct(Product product) {
+        if(product!=null){
+            Product productdb = productRepository.findOne(product.getId());
+            if(productdb!=null){
+                return productRepository.save(product);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void removeProduct(long id) {
+        productRepository.delete(id);
     }
 
     @Override

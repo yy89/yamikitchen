@@ -86,4 +86,18 @@ public class Product  implements Serializable {
     public void setIsExist(boolean isExist) {
         this.isExist = isExist;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", merchantId=" + merchantId +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", summary='" + summary + '\'' +
+                ", pictures='" + pictures + '\'' +
+                ", availableTime='" + availableTime + '\'' +
+                ", isExist=" + isExist +
+                '}';
+    }
 }

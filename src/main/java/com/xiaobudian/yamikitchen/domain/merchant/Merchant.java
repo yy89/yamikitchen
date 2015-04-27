@@ -233,4 +233,34 @@ public class Merchant implements Serializable {
     public void setFavoriteCount(Long favoriteCount) {
         this.favoriteCount = favoriteCount;
     }
+
+    @Override
+    public String toString() {
+        return "Merchant{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", voiceIntroduction='" + voiceIntroduction + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", address='" + address + '\'' +
+                ", headPic='" + headPic + '\'' +
+                ", phone='" + phone + '\'' +
+                ", pictures='" + pictures + '\'' +
+                ", messHall=" + messHall +
+                ", countOfMessHall=" + countOfMessHall +
+                ", selfPickup=" + selfPickup +
+                ", supportDelivery=" + supportDelivery +
+                ", isRest=" + isRest +
+                ", restMark='" + restMark + '\'' +
+                ", mLevel=" + mLevel +
+                ", hasOrder=" + hasOrder +
+                ", soldCount=" + soldCount +
+                ", monthlySoldCount=" + monthlySoldCount +
+                ", comment='" + comment + '\'' +
+                ", description='" + description + '\'' +
+                ", tags='" + tags + '\'' +
+                ", favoriteCount=" + favoriteCount +
+                '}';
+    }
 }
