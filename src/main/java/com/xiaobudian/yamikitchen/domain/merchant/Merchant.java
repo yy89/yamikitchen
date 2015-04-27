@@ -2,10 +2,7 @@ package com.xiaobudian.yamikitchen.domain.merchant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -41,6 +38,9 @@ public class Merchant implements Serializable {
     private String description;
     private String tags;
     private Long favoriteCount = 0l;
+    private Long commentCount = 0l;
+    @Transient
+    private String distance;
 
     public Long getId() {
         return id;
@@ -232,5 +232,21 @@ public class Merchant implements Serializable {
 
     public void setFavoriteCount(Long favoriteCount) {
         this.favoriteCount = favoriteCount;
+    }
+
+    public Long getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Long commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 }

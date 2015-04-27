@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Created by Johnson on 2015/4/22.
  */
 @Entity
-public class OderItem  implements Serializable {
+public class OrderItem implements Serializable {
     private static final long serialVersionUID = -1970139687740352118L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +20,7 @@ public class OderItem  implements Serializable {
     private String name;
     private Double price;
     private Integer quality;
+    private Double amount;
 
     public Long getId() {
         return id;
@@ -55,6 +56,14 @@ public class OderItem  implements Serializable {
 
     public Double getPrice() {
         return price;
+    }
+
+    public Double getAmount() {
+        return price * quality;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     public void setPrice(Double price) {
