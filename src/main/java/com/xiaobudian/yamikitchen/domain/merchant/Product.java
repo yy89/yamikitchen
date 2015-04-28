@@ -10,7 +10,7 @@ import java.io.Serializable;
  * Created by Johnson on 2015/4/22.
  */
 @Entity
-public class Product  implements Serializable {
+public class Product implements Serializable {
     private static final long serialVersionUID = 5001979457200046819L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,14 @@ public class Product  implements Serializable {
     private String summary;
     private String pictures;
     private String availableTime;
-    private boolean isExist;
+    private Long restCount = 0l;
+    private String tags;
+    private Long soldCount = 0l;
+    private Long commentCount = 0l;
+    private Long favoriteCount = 0l;
+    private boolean available = true;
+    private boolean main = false;
+
 
     public Long getId() {
         return id;
@@ -79,25 +86,59 @@ public class Product  implements Serializable {
         this.availableTime = availableTime;
     }
 
-    public boolean isExist() {
-        return isExist;
+    public Long getRestCount() {
+        return restCount;
     }
 
-    public void setIsExist(boolean isExist) {
-        this.isExist = isExist;
+    public void setRestCount(Long restCount) {
+        this.restCount = restCount;
     }
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", merchantId=" + merchantId +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", summary='" + summary + '\'' +
-                ", pictures='" + pictures + '\'' +
-                ", availableTime='" + availableTime + '\'' +
-                ", isExist=" + isExist +
-                '}';
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public Long getSoldCount() {
+        return soldCount;
+    }
+
+    public void setSoldCount(Long soldCount) {
+        this.soldCount = soldCount;
+    }
+
+    public Long getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Long commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public Long getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    public void setFavoriteCount(Long favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public boolean isMain() {
+        return main;
+    }
+
+    public void setMain(boolean main) {
+        this.main = main;
     }
 }
