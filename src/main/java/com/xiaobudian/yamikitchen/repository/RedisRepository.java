@@ -22,4 +22,6 @@ public class RedisRepository {
     public String get(String key) {
         return stringRedisTemplate.opsForValue().get(key);
     }
+
+
 }

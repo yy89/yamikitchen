@@ -2,11 +2,15 @@ package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.service.MerchantService;
+import com.xiaobudian.yamikitchen.web.dto.MerchantResponse;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Johnson on 2015/4/24.
@@ -22,15 +26,27 @@ public class MerchantController {
                                @RequestParam("size") Integer size,
                                @RequestParam("lat") Double longitude,
                                @RequestParam("lng") Double latitude) {
-        return Result.successResult(merchantService.getMerchants(page, size, longitude, latitude));
-
+        List<Merchant> merchants = merchantService.getMerchants(page, size, longitude, latitude);
+        List<MerchantResponse> responses = new ArrayList<>();
+        for (Merchant merchant : merchants) {
+            merchant.setDistance(Math.pow(Math.abs(merchant.getLongitude() - longitude) % 360, 2) + Math.pow(Math.abs(merchant.getLatitude() - latitude) % 360, 2));
+            responses.add(new MerchantResponse.Builder()
+                    .merchant(merchant)
+                    .hasFavorite(false)
+                    .products(merchantService.gteMainProduct(merchant.getId())).build());
+        }
+        return Result.successResult(responses);
     }
 
     @RequestMapping(value = "/merchants/{rid}/products", method = RequestMethod.GET)
     @ResponseBody
     public Result getProductsOfMerchant(@PathVariable Long rid, @RequestParam("page") Integer page,
                                         @RequestParam("size") Integer size) {
-        return Result.successResult(merchantService.getProductsBy(rid, page, size));
+        MerchantResponse response = new MerchantResponse.Builder()
+                .merchant(merchantService.getMerchantBy(rid))
+                .hasFavorite(false)
+                .products(merchantService.getProductsBy(rid, page, size)).build();
+        return Result.successResult(response);
     }
 
     @RequestMapping(value = "/merchants/{rid}/favorites", method = RequestMethod.POST)

@@ -38,4 +38,31 @@ public class MerchantResponse {
     public void setHasFavorite(boolean hasFavorite) {
         this.hasFavorite = hasFavorite;
     }
+
+    public static class Builder {
+        private MerchantResponse response;
+
+        public Builder() {
+            this.response = new MerchantResponse();
+        }
+
+        public Builder merchant(Merchant merchant) {
+            this.response.setMerchant(merchant);
+            return this;
+        }
+
+        public Builder products(List<Product> products) {
+            this.response.setProducts(products);
+            return this;
+        }
+
+        public Builder hasFavorite(boolean hasFavorite) {
+            this.response.setHasFavorite(hasFavorite);
+            return this;
+        }
+
+        public MerchantResponse build() {
+            return this.response;
+        }
+    }
 }

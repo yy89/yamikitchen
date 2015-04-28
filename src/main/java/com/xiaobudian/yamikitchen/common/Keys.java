@@ -8,4 +8,11 @@ public final class Keys {
         return mobilePhone + ":code";
     }
 
+    public static String cartItemKey(Long rid, Long product, Integer quality) {
+        return String.format("r:%d:p:%d:q:%d", rid, product, quality);
+    }
+
+    public static String cartKey(Long uid) {
+        return String.format("uid:%d:carts", uid);
+    }
 }
