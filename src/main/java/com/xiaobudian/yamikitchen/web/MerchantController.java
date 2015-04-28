@@ -4,6 +4,7 @@ import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
+import com.xiaobudian.yamikitchen.service.MemberService;
 import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.web.dto.MerchantResponse;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Johnson on 2015/4/24.
@@ -21,6 +21,8 @@ import java.util.Map;
 public class MerchantController {
     @Inject
     private MerchantService merchantService;
+    @Inject
+    private MemberService memberService;
 
     @RequestMapping(value = "/merchants", method = RequestMethod.GET)
     @ResponseBody
@@ -31,44 +33,25 @@ public class MerchantController {
         List<Merchant> merchants = merchantService.getMerchants(page, size, longitude, latitude);
         List<MerchantResponse> responses = new ArrayList<>();
         for (Merchant merchant : merchants) {
-            merchant.setDistance(Math.pow(Math.abs(merchant.getLongitude() - longitude) % 360, 2) + Math.pow(Math.abs(merchant.getLatitude() - latitude) % 360, 2));
+            merchant.setDistance(String.valueOf(Math.pow(Math.abs(merchant.getLongitude() - longitude) % 360, 2) + Math.pow(Math.abs(merchant.getLatitude() - latitude) % 360, 2)));
             responses.add(new MerchantResponse.Builder()
                     .merchant(merchant)
                     .hasFavorite(false)
+                    .user(memberService.getUser(merchant.getCreator()))
                     .products(merchantService.gteMainProduct(merchant.getId())).build());
         }
         return Result.successResult(responses);
-    }
-
-    @RequestMapping(value = "/merchants", method = RequestMethod.POST)
-    @ResponseBody
-    public Result addMerchant(@RequestBody Merchant merchant, @AuthenticationPrincipal User user) {
-        merchant.setCreator(user.getId());
-        merchantService.saveMerchant(merchant);
-        return Result.successResult(merchant);
-    }
-
-    @RequestMapping(value = "/merchants", method = RequestMethod.PUT)
-    @ResponseBody
-    public Result editMerchant(@RequestBody Merchant merchant) {
-        merchantService.saveMerchant(merchant);
-        return Result.successResult(merchant);
-    }
-
-    @RequestMapping(value = "/merchants/{rid}", method = RequestMethod.DELETE)
-    @ResponseBody
-    public Result removeMerchant(@PathVariable long rid) {
-        merchantService.removeMerchant(rid);
-        return Result.successResultWithoutData();
     }
 
     @RequestMapping(value = "/merchants/{rid}/products", method = RequestMethod.GET)
     @ResponseBody
     public Result getProductsOfMerchant(@PathVariable Long rid, @RequestParam("page") Integer page,
                                         @RequestParam("size") Integer size) {
+        Merchant merchant = merchantService.getMerchantBy(rid);
         MerchantResponse response = new MerchantResponse.Builder()
-                .merchant(merchantService.getMerchantBy(rid))
+                .merchant(merchant)
                 .hasFavorite(false)
+                .user(memberService.getUser(merchant.getCreator()))
                 .products(merchantService.getProductsBy(rid, page, size)).build();
         return Result.successResult(response);
     }
@@ -92,6 +75,29 @@ public class MerchantController {
         return Result.successResult(merchantService.getFavorites(user.getId(), pageFrom, pageSize));
     }
 
+
+    @RequestMapping(value = "/merchants", method = RequestMethod.POST)
+    @ResponseBody
+    public Result addMerchant(@RequestBody Merchant merchant, @AuthenticationPrincipal User user) {
+        merchant.setCreator(user.getId());
+        merchantService.saveMerchant(merchant);
+        return Result.successResult(merchant);
+    }
+
+    @RequestMapping(value = "/merchants", method = RequestMethod.PUT)
+    @ResponseBody
+    public Result editMerchant(@RequestBody Merchant merchant) {
+        merchantService.saveMerchant(merchant);
+        return Result.successResult(merchant);
+    }
+
+    @RequestMapping(value = "/merchants/{rid}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Result removeMerchant(@PathVariable long rid) {
+        merchantService.removeMerchant(rid);
+        return Result.successResultWithoutData();
+    }
+
     @RequestMapping(value = "/products", method = RequestMethod.POST)
     @ResponseBody
     public Result addProduct(@RequestBody Product product) {
@@ -112,5 +118,7 @@ public class MerchantController {
         merchantService.removeProduct(id);
         return Result.successResultWithoutData();
     }
+
+
 
 }

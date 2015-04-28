@@ -57,4 +57,9 @@ public class MemberServiceImpl implements MemberService {
     public UserAddress addAddress(UserAddress userAddress) {
         return userAddressRepository.save(userAddress);
     }
+
+    @Override
+    public User getUser(Long creator) {
+        return userRepository.findOne(creator);
+    }
 }

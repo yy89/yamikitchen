@@ -19,4 +19,6 @@ public interface MemberService {
 
     public UserAddress addAddress(UserAddress userAddress);
 
+    public User getUser(Long creator);
+
 }
