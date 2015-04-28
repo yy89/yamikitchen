@@ -1,5 +1,8 @@
 package com.xiaobudian.yamikitchen.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.xiaobudian.yamikitchen.domain.merchant.Product;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,13 +17,26 @@ public class OrderItem implements Serializable {
     private static final long serialVersionUID = -1970139687740352118L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
+    @JsonIgnore
     private String orderNo;
     private Long productId;
     private String name;
-    private Double price;
+    private Long price;
     private Integer quality;
-    private Double amount;
+    private Long amount;
+
+    public OrderItem() {
+    }
+
+    public OrderItem(Product product, Integer quality) {
+        this();
+        this.productId = product.getId();
+        this.name = product.getName();
+        this.price = product.getPrice();
+        this.quality = quality;
+    }
 
     public Long getId() {
         return id;
@@ -54,19 +70,19 @@ public class OrderItem implements Serializable {
         this.name = name;
     }
 
-    public Double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public Double getAmount() {
+    public Long getAmount() {
         return price * quality;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(Long amount) {
         this.amount = amount;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 

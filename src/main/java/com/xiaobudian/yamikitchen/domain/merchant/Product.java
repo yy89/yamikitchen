@@ -17,7 +17,7 @@ public class Product implements Serializable {
     private Long id;
     private Long merchantId;
     private String name;
-    private Double price;
+    private Long price;
     private String summary;
     private String pictures;
     private String availableTime;
@@ -54,11 +54,11 @@ public class Product implements Serializable {
         this.name = name;
     }
 
-    public Double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 

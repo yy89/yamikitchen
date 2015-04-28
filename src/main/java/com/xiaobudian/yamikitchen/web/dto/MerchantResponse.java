@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.web.dto;
 
+import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
 
@@ -12,6 +13,7 @@ import java.util.List;
 public class MerchantResponse {
     private Merchant merchant;
     private List<Product> products = new ArrayList<>();
+    private User user;
     private boolean hasFavorite = false;
 
     public Merchant getMerchant() {
@@ -30,6 +32,13 @@ public class MerchantResponse {
         this.products = products;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public boolean isHasFavorite() {
         return hasFavorite;
@@ -58,6 +67,11 @@ public class MerchantResponse {
 
         public Builder hasFavorite(boolean hasFavorite) {
             this.response.setHasFavorite(hasFavorite);
+            return this;
+        }
+
+        public Builder user(User user) {
+            this.response.setUser(user);
             return this;
         }
 

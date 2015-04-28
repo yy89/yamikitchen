@@ -3,6 +3,7 @@ package com.xiaobudian.yamikitchen.web;
 import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
+import com.xiaobudian.yamikitchen.service.MemberService;
 import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.web.dto.MerchantResponse;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +20,8 @@ import java.util.List;
 public class MerchantController {
     @Inject
     private MerchantService merchantService;
+    @Inject
+    private MemberService memberService;
 
     @RequestMapping(value = "/merchants", method = RequestMethod.GET)
     @ResponseBody
@@ -33,6 +36,7 @@ public class MerchantController {
             responses.add(new MerchantResponse.Builder()
                     .merchant(merchant)
                     .hasFavorite(false)
+                    .user(memberService.getUser(merchant.getCreator()))
                     .products(merchantService.gteMainProduct(merchant.getId())).build());
         }
         return Result.successResult(responses);
@@ -42,9 +46,11 @@ public class MerchantController {
     @ResponseBody
     public Result getProductsOfMerchant(@PathVariable Long rid, @RequestParam("page") Integer page,
                                         @RequestParam("size") Integer size) {
+        Merchant merchant = merchantService.getMerchantBy(rid);
         MerchantResponse response = new MerchantResponse.Builder()
-                .merchant(merchantService.getMerchantBy(rid))
+                .merchant(merchant)
                 .hasFavorite(false)
+                .user(memberService.getUser(merchant.getCreator()))
                 .products(merchantService.getProductsBy(rid, page, size)).build();
         return Result.successResult(response);
     }
@@ -67,6 +73,5 @@ public class MerchantController {
                                @RequestParam("size") Integer pageSize, @AuthenticationPrincipal User user) {
         return Result.successResult(merchantService.getFavorites(user.getId(), pageFrom, pageSize));
     }
-
 
 }

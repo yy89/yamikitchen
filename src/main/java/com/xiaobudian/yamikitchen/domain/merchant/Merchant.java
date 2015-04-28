@@ -41,6 +41,7 @@ public class Merchant implements Serializable {
     private Long commentCount = 0l;
     @Transient
     private Double distance;
+    private Long creator;
 
     public Long getId() {
         return id;
@@ -248,5 +249,13 @@ public class Merchant implements Serializable {
 
     public void setDistance(Double distance) {
         this.distance = distance;
+    }
+
+    public Long getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Long creator) {
+        this.creator = creator;
     }
 }
