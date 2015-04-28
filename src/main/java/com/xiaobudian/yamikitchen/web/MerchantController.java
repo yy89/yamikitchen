@@ -32,7 +32,7 @@ public class MerchantController {
         List<Merchant> merchants = merchantService.getMerchants(page, size, longitude, latitude);
         List<MerchantResponse> responses = new ArrayList<>();
         for (Merchant merchant : merchants) {
-            merchant.setDistance(Math.pow(Math.abs(merchant.getLongitude() - longitude) % 360, 2) + Math.pow(Math.abs(merchant.getLatitude() - latitude) % 360, 2));
+            merchant.setDistance(String.valueOf(Math.pow(Math.abs(merchant.getLongitude() - longitude) % 360, 2) + Math.pow(Math.abs(merchant.getLatitude() - latitude) % 360, 2)));
             responses.add(new MerchantResponse.Builder()
                     .merchant(merchant)
                     .hasFavorite(false)
