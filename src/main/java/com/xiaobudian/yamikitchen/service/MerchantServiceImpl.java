@@ -35,19 +35,8 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public Merchant addMerchat(Merchant merchant) {
+    public Merchant saveMerchant(Merchant merchant) {
         return merchantRepository.save(merchant);
-    }
-
-    @Override
-    public Merchant editMerchat(Merchant merchant) {
-        if(merchant!=null){
-            Merchant merchantdb = merchantRepository.findOne(merchant.getId());
-            if(merchantdb!=null){
-               return merchantRepository.save(merchant);
-            }
-        }
-        return null;
     }
 
     @Override
@@ -61,19 +50,8 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public Product addProduct(Product product) {
+    public Product saveProduct(Product product) {
         return productRepository.save(product);
-    }
-
-    @Override
-    public Product editProduct(Product product) {
-        if(product!=null){
-            Product productdb = productRepository.findOne(product.getId());
-            if(productdb!=null){
-                return productRepository.save(product);
-            }
-        }
-        return null;
     }
 
     @Override

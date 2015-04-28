@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Johnson on 2015/4/24.
@@ -39,23 +40,24 @@ public class MerchantController {
         return Result.successResult(responses);
     }
 
-    @RequestMapping(value = "/merchants/add",method = RequestMethod.POST)
+    @RequestMapping(value = "/merchants", method = RequestMethod.POST)
     @ResponseBody
-    public Result addMerchant(Merchant merchant,@AuthenticationPrincipal  User user){
-        merchantService.addMerchat(merchant);
-        return Result.successResultWithoutData();
+    public Result addMerchant(@RequestBody Merchant merchant, @AuthenticationPrincipal User user) {
+        merchant.setCreator(user.getId());
+        merchantService.saveMerchant(merchant);
+        return Result.successResult(merchant);
     }
 
-    @RequestMapping(value = "/merchants/edit",method = RequestMethod.POST)
+    @RequestMapping(value = "/merchants", method = RequestMethod.PUT)
     @ResponseBody
-    public Result editMerchant(Merchant merchant,@AuthenticationPrincipal  User user){
-        merchantService.editMerchat(merchant);
-        return Result.successResultWithoutData();
+    public Result editMerchant(@RequestBody Merchant merchant) {
+        merchantService.saveMerchant(merchant);
+        return Result.successResult(merchant);
     }
 
-    @RequestMapping(value = "/merchants/{rid}/remove",method = RequestMethod.POST)
+    @RequestMapping(value = "/merchants/{rid}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Result removeMerchant(@PathVariable long rid ,@AuthenticationPrincipal  User user){
+    public Result removeMerchant(@PathVariable long rid) {
         merchantService.removeMerchant(rid);
         return Result.successResultWithoutData();
     }
@@ -90,23 +92,23 @@ public class MerchantController {
         return Result.successResult(merchantService.getFavorites(user.getId(), pageFrom, pageSize));
     }
 
-    @RequestMapping(value = "/products/add",method = RequestMethod.POST)
+    @RequestMapping(value = "/products", method = RequestMethod.POST)
     @ResponseBody
-    public Result addProduct(Product product,@AuthenticationPrincipal  User user){
-        merchantService.addProduct(product);
-        return Result.successResultWithoutData();
+    public Result addProduct(@RequestBody Product product) {
+        merchantService.saveProduct(product);
+        return Result.successResult(product);
     }
 
-    @RequestMapping(value = "/products/edit",method = RequestMethod.POST)
+    @RequestMapping(value = "/products", method = RequestMethod.PUT)
     @ResponseBody
-    public Result editProduct(Product product,@AuthenticationPrincipal  User user){
-        merchantService.editProduct(product);
-        return Result.successResultWithoutData();
+    public Result editProduct(@RequestBody Product product) {
+        merchantService.saveProduct(product);
+        return Result.successResult(product);
     }
 
-    @RequestMapping(value = "/products/{id}/remove",method = RequestMethod.POST)
+    @RequestMapping(value = "/products/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Result removeProduct(@PathVariable long id ,@AuthenticationPrincipal  User user){
+    public Result removeProduct(@PathVariable long id) {
         merchantService.removeProduct(id);
         return Result.successResultWithoutData();
     }
