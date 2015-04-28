@@ -13,14 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class OrderController {
+    @RequestMapping(value = "/carts/products/{productId}", method = RequestMethod.POST)
+    public Result addProductForCart(@PathVariable Long productId, @AuthenticationPrincipal User user) {
+        return null;
+
+    }
 
     @RequestMapping(value = "/carts/products/{productId}", method = RequestMethod.DELETE)
-    public Result addProductForCart(@PathVariable Long productId, @AuthenticationPrincipal User user) {
+    public Result removeProductForCart(@PathVariable Long productId, @AuthenticationPrincipal User user) {
         return null;
     }
 
-    @RequestMapping(value = "/carts", method = RequestMethod.DELETE)
-    public Result addProductForCart(@AuthenticationPrincipal User user) {
+    @RequestMapping(value = "/carts", method = RequestMethod.GET)
+    public Result getProductForCart(@AuthenticationPrincipal User user) {
         return null;
     }
 

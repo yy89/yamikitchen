@@ -3,6 +3,7 @@ package com.xiaobudian.yamikitchen.service;
 import com.xiaobudian.yamikitchen.domain.merchant.FavoriteResult;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
+import com.xiaobudian.yamikitchen.web.dto.MerchantResponse;
 
 import java.util.List;
 
@@ -32,5 +33,7 @@ public interface MerchantService {
 
     public List<Merchant> getFavorites(Long uid, Integer pageFrom, Integer pageSize);
 
+    public List<Product> gteMainProduct(Long rid);
 
+    public Merchant getMerchantBy(Long rid);
 }

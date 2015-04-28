@@ -111,4 +111,15 @@ public class MerchantServiceImpl implements MerchantService {
     public List<Merchant> getFavorites(Long uid, Integer page, Integer size) {
         return merchantRepository.findByUidFavorite(uid, new PageRequest(page, size));
     }
+
+
+    @Override
+    public List<Product> gteMainProduct(Long rid) {
+        return productRepository.findByMerchantIdAndMainIsTrue(rid);
+    }
+
+    @Override
+    public Merchant getMerchantBy(Long rid) {
+        return merchantRepository.findOne(rid);
+    }
 }
