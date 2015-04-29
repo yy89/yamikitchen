@@ -4,9 +4,11 @@ import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
+import com.xiaobudian.yamikitchen.repository.MerchantRepository;
 import com.xiaobudian.yamikitchen.service.MemberService;
 import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.web.dto.MerchantResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,7 +89,41 @@ public class MerchantController {
     @RequestMapping(value = "/merchants", method = RequestMethod.PUT)
     @ResponseBody
     public Result editMerchant(@RequestBody Merchant merchant) {
-        merchantService.saveMerchant(merchant);
+        Merchant merchantdb = merchantService.getMerchantBy(merchant.getId());
+        if(StringUtils.isNotEmpty(merchant.getPictures())){
+            merchantdb.setPictures(merchant.getPictures());
+        }
+        if(StringUtils.isNotEmpty(merchant.getName())){
+            merchantdb.setName(merchant.getName());
+        }
+        if(StringUtils.isNotEmpty(merchant.getHeadPic())){
+            merchantdb.setHeadPic(merchant.getHeadPic());
+        }
+        if(merchant.getType()!=0){
+            merchantdb.setType(merchant.getType());
+        }
+        if(StringUtils.isNotEmpty(merchant.getVoiceIntroduction())){
+            merchantdb.setVoiceIntroduction(merchant.getVoiceIntroduction());
+        }
+        if(StringUtils.isNotEmpty(merchant.getAddress())){
+            merchantdb.setAddress(merchant.getAddress());
+        }
+        if(StringUtils.isNotEmpty(merchant.getPhone())){
+            merchantdb.setPhone(merchant.getPhone());
+        }
+        if(merchant.isSupportDelivery()!=merchantdb.isSupportDelivery()){
+            merchantdb.setSupportDelivery(merchant.isSupportDelivery());
+        }
+        if(merchant.isMessHall()!=merchantdb.isMessHall()){
+            merchantdb.setMessHall(merchant.isMessHall());
+        }
+        if(merchant.getCountOfMessHall()!=0){
+            merchantdb.setCountOfMessHall(merchant.getCountOfMessHall());
+        }
+        if(merchant.isSelfPickup()!=merchantdb.isSelfPickup()){
+            merchantdb.setCountOfMessHall(merchant.getCountOfMessHall());
+        }
+        merchantService.saveMerchant(merchantdb);
         return Result.successResult(merchant);
     }
 
@@ -108,14 +144,34 @@ public class MerchantController {
     @RequestMapping(value = "/products", method = RequestMethod.PUT)
     @ResponseBody
     public Result editProduct(@RequestBody Product product) {
-        merchantService.saveProduct(product);
+        Product productdb = merchantService.getProductBy(product.getId());
+        if(StringUtils.isNotEmpty(product.getPictures())){
+            productdb.setPictures(product.getPictures());
+        }
+        if(product.getPrice()!=0L){
+            productdb.setPrice(product.getPrice());
+        }
+        if(StringUtils.isNotEmpty(product.getTags())){
+            productdb.setTags(product.getTags());
+        }
+        if(StringUtils.isNotEmpty(product.getAvailableTime())){
+            productdb.setAvailableTime(product.getAvailableTime());
+        }
+        if(StringUtils.isNotEmpty(product.getSummary())){
+            productdb.setSummary(product.getSummary());
+        }
+        if(){
+
+        }
+
+        merchantService.saveProduct(productdb);
         return Result.successResult(product);
     }
 
-    @RequestMapping(value = "/products/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/products/{pid}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Result removeProduct(@PathVariable long id) {
-        merchantService.removeProduct(id);
+    public Result removeProduct(@PathVariable long pid) {
+        merchantService.removeProduct(pid);
         return Result.successResultWithoutData();
     }
 

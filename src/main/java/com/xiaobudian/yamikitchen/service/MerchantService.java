@@ -32,4 +32,6 @@ public interface MerchantService {
     public List<Product> gteMainProduct(Long rid);
 
     public Merchant getMerchantBy(Long rid);
+
+    public Product getProductBy(long pid);
 }

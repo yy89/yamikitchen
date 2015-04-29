@@ -100,4 +100,9 @@ public class MerchantServiceImpl implements MerchantService {
     public Merchant getMerchantBy(Long rid) {
         return merchantRepository.findOne(rid);
     }
+
+    @Override
+    public Product getProductBy(long pid) {
+        return productRepository.findOne(pid);
+    }
 }

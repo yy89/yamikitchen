@@ -258,4 +258,8 @@ public class Merchant implements Serializable {
     public void setCreator(Long creator) {
         this.creator = creator;
     }
+
+    public void setIsRest(boolean isRest) {
+        this.isRest = isRest;
+    }
 }
