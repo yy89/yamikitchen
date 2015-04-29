@@ -60,6 +60,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     static final class ItemKey {
+        private static final String DELIMITER = ":";
         private Long rid;
         private Long product;
         private Integer quality;
@@ -83,9 +84,8 @@ public class OrderServiceImpl implements OrderService {
         }
 
         public static ItemKey valueOf(String s) {
-            String[] ps = s.split(":");
+            String[] ps = s.split(DELIMITER);
             return new ItemKey(Long.valueOf(ps[1]), Long.valueOf(ps[3]), Integer.valueOf(ps[5]));
         }
-
     }
 }
