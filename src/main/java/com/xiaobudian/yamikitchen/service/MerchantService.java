@@ -17,6 +17,8 @@ public interface MerchantService {
 
     public FavoriteResult addFavorite(Long rid, Long uid);
 
+    public boolean hasFavorite(Long rid, Long uid);
+
     public FavoriteResult removeFavorite(Long rid, Long uid);
 
     public List<Merchant> getFavorites(Long uid, Integer pageFrom, Integer pageSize);

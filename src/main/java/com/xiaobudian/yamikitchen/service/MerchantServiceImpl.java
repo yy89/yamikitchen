@@ -46,7 +46,7 @@ public class MerchantServiceImpl implements MerchantService {
     public FavoriteResult addFavorite(Long rid, Long uid) {
         Favorite favorite = favoriteRepository.findByMerchantIdAndUid(rid, uid);
         if (favorite != null) return null;
-        Favorite result = new Favorite(rid, uid);
+        Favorite result = new Favorite(uid, rid);
         User user = userRepository.findOne(uid);
         result.setNickName(user.getNickName());
         result.setHeadPic(user.getHeadPic());
@@ -55,6 +55,11 @@ public class MerchantServiceImpl implements MerchantService {
         merchant.setFavoriteCount(merchant.getFavoriteCount() + 1);
         merchantRepository.save(merchant);
         return new FavoriteResult(rid, true);
+    }
+
+    @Override
+    public boolean hasFavorite(Long rid, Long uid) {
+        return favoriteRepository.findByMerchantIdAndUid(rid, uid) != null;
     }
 
     @Override
