@@ -2240,3 +2240,274 @@ public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.M
 18:43:35.768 [localhost-startStop-1] DEBUG o.s.web.servlet.DispatcherServlet - Published WebApplicationContext of servlet 'DispatcherServlet' as ServletContext attribute with name [org.springframework.web.servlet.FrameworkServlet.CONTEXT.DispatcherServlet]
 18:43:35.768 [localhost-startStop-1] INFO  o.s.web.servlet.DispatcherServlet - FrameworkServlet 'DispatcherServlet': initialization completed in 28 ms
 18:43:35.768 [localhost-startStop-1] DEBUG o.s.web.servlet.DispatcherServlet - Servlet 'DispatcherServlet' configured successfully
+12:07:56.521 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:07:56.527 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:07:56.544 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:07:56.545 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:07:56.547 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:07:56.548 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:07:56.593 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:07:56.594 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:07:56.594 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:07:56.594 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:07:56.594 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:07:56.595 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:07:56.598 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:07:56.599 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:07:56.599 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:07:56.600 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:07:56.600 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:07:56.600 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:07:56.604 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:07:56.604 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:07:56.605 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:07:56.605 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:07:56.605 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:07:56.606 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:07:56.608 [localhost-startStop-1] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+12:07:56.615 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Replacing [servletContextInitParams] PropertySource with [servletContextInitParams]
+12:07:56.615 [localhost-startStop-1] INFO  o.s.w.c.s.AnnotationConfigWebApplicationContext - Refreshing Root WebApplicationContext: startup date [Thu Apr 30 12:07:56 CST 2015]; root of context hierarchy
+12:07:56.707 [localhost-startStop-1] DEBUG o.s.w.c.s.AnnotationConfigWebApplicationContext - Could not load class for config location [com.xiaobudian.yamikitchen.config] - trying package scan. java.lang.ClassNotFoundException: com.xiaobudian.yamikitchen.config
+12:07:56.836 [localhost-startStop-1] INFO  o.s.w.c.s.AnnotationConfigWebApplicationContext - Found 4 annotated classes in package [com.xiaobudian.yamikitchen.config]
+12:07:56.836 [localhost-startStop-1] DEBUG o.s.w.c.s.AnnotationConfigWebApplicationContext - Bean factory for Root WebApplicationContext: org.springframework.beans.factory.support.DefaultListableBeanFactory@3a8e29e3: defining beans [org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.annotation.internalPersistenceAnnotationProcessor,appConfig,httpSessionConfig,securityConfig,webConfig]; root of factory hierarchy
+12:07:58.136 [localhost-startStop-1] INFO  o.s.c.s.PropertySourcesPlaceholderConfigurer - Loading properties file from class path resource [config.properties]
+12:07:58.254 [localhost-startStop-1] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'org.springframework.scheduling.annotation.SchedulingConfiguration' of type [class org.springframework.scheduling.annotation.SchedulingConfiguration$$EnhancerBySpringCGLIB$$e9473221] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+12:07:58.320 [localhost-startStop-1] INFO  o.s.c.s.PostProcessorRegistrationDelegate$BeanPostProcessorChecker - Bean 'appConfig' of type [class com.xiaobudian.yamikitchen.config.AppConfig$$EnhancerBySpringCGLIB$$3edbd4cd] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+12:07:58.578 [localhost-startStop-1] DEBUG o.s.w.c.s.AnnotationConfigWebApplicationContext - Using MessageSource [org.springframework.context.support.ResourceBundleMessageSource: basenames=[locale/messages]]
+12:07:58.583 [localhost-startStop-1] DEBUG o.s.w.c.s.AnnotationConfigWebApplicationContext - Unable to locate ApplicationEventMulticaster with name 'applicationEventMulticaster': using default [org.springframework.context.event.SimpleApplicationEventMulticaster@3e738a74]
+12:07:58.959 [localhost-startStop-1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Building JPA container EntityManagerFactory for persistence unit 'YAMI_UNIT'
+12:09:09.135 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.135 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.135 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.135 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.135 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.136 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.159 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.160 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.160 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.160 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.160 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.161 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.162 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.162 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.162 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.163 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.163 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.163 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.183 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.183 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.183 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.183 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.184 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.184 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.214 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.214 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.214 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.214 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.214 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.215 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.230 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.231 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.231 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.231 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.231 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.231 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.244 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.244 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.244 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.244 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.244 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.244 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.250 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.250 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.250 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.250 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.250 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.251 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.256 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.257 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.257 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.257 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.257 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.257 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.263 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.263 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.263 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.264 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.264 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.264 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.276 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.277 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.277 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.277 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.277 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.277 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.319 [localhost-startStop-1] INFO  o.s.s.web.DefaultSecurityFilterChain - Creating filter chain: org.springframework.security.web.util.matcher.AnyRequestMatcher@1, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2fdcbfed, org.springframework.security.web.context.SecurityContextPersistenceFilter@1178a9a6, org.springframework.security.web.header.HeaderWriterFilter@4cc06a15, org.springframework.security.web.authentication.logout.LogoutFilter@414ea23, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@56b0b0b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1c210064, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@25097dec, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@45bc7927, org.springframework.security.web.session.SessionManagementFilter@113681dc, org.springframework.security.web.access.ExceptionTranslationFilter@239e1871, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5d32ca12]
+12:09:09.321 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:09.321 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:09.322 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:09.322 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:09.322 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:09.322 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:09.526 [localhost-startStop-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Looking for request mappings in application context: Root WebApplicationContext: startup date [Thu Apr 30 12:07:56 CST 2015]; root of context hierarchy
+12:09:09.546 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/sms/{mobilePhone}],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.ExternalIntegrationController.sendSmsVerificationCode(java.lang.String)
+12:09:09.546 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/voice/{mobilePhone}],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.ExternalIntegrationController.sendVoiceVerificationCode(java.lang.String)
+12:09:09.548 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/register],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MemberController.register(com.xiaobudian.yamikitchen.web.dto.UserRequest,javax.servlet.http.HttpServletRequest)
+12:09:09.548 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/addresses],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MemberController.getAddresses(com.xiaobudian.yamikitchen.domain.User)
+12:09:09.548 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/addresses],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MemberController.addAddress(com.xiaobudian.yamikitchen.domain.UserAddress,com.xiaobudian.yamikitchen.domain.User)
+12:09:09.548 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/changePwd],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MemberController.changePassword(com.xiaobudian.yamikitchen.web.dto.UserRequest,javax.servlet.http.HttpServletRequest)
+12:09:09.550 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/merchants],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.getMerchants(java.lang.Integer,java.lang.Integer,java.lang.Double,java.lang.Double)
+12:09:09.551 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/merchants/{rid}/favorites],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.addFavorite(java.lang.Long,com.xiaobudian.yamikitchen.domain.User)
+12:09:09.551 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/merchants/favorites],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.getFavorites(java.lang.Integer,java.lang.Integer,com.xiaobudian.yamikitchen.domain.User)
+12:09:09.551 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/merchants],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.addMerchant(com.xiaobudian.yamikitchen.domain.merchant.Merchant,com.xiaobudian.yamikitchen.domain.User)
+12:09:09.552 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/merchants],methods=[PUT],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.editMerchant(com.xiaobudian.yamikitchen.domain.merchant.Merchant)
+12:09:09.553 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/products],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.addProduct(com.xiaobudian.yamikitchen.domain.merchant.Product)
+12:09:09.553 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/products],methods=[PUT],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.editProduct(com.xiaobudian.yamikitchen.domain.merchant.Product)
+12:09:09.554 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/merchants/{rid}],methods=[DELETE],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.removeMerchant(long)
+12:09:09.554 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/products/{pid}],methods=[DELETE],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.removeProduct(long)
+12:09:09.554 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/merchants/{rid}/favorites/cancel],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.removeFavorite(java.lang.Long,com.xiaobudian.yamikitchen.domain.User)
+12:09:09.554 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/merchants/{rid}/products],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.MerchantController.getProductsOfMerchant(java.lang.Long,java.lang.Integer,java.lang.Integer)
+12:09:09.555 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/carts/merchants/{rid}/{productId}],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.OrderController.addProductForCart(java.lang.Long,java.lang.Long,com.xiaobudian.yamikitchen.domain.User)
+12:09:09.556 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/carts/merchants/{rid}/{productId}],methods=[DELETE],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.OrderController.removeProductForCart(java.lang.Long,java.lang.Long,com.xiaobudian.yamikitchen.domain.User)
+12:09:09.556 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/carts],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public com.xiaobudian.yamikitchen.common.Result com.xiaobudian.yamikitchen.web.OrderController.getProductForCart(com.xiaobudian.yamikitchen.domain.User)
+12:09:09.595 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Looking for URL mappings in application context: Root WebApplicationContext: startup date [Thu Apr 30 12:07:56 CST 2015]; root of context hierarchy
+12:09:09.595 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor': no URL paths identified
+12:09:09.596 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor': no URL paths identified
+12:09:09.596 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.context.annotation.internalRequiredAnnotationProcessor': no URL paths identified
+12:09:09.596 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.context.annotation.internalCommonAnnotationProcessor': no URL paths identified
+12:09:09.596 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.context.annotation.internalPersistenceAnnotationProcessor': no URL paths identified
+12:09:09.596 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'appConfig': no URL paths identified
+12:09:09.596 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'httpSessionConfig': no URL paths identified
+12:09:09.596 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'securityConfig': no URL paths identified
+12:09:09.597 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'webConfig': no URL paths identified
+12:09:09.597 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor': no URL paths identified
+12:09:09.597 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor': no URL paths identified
+12:09:09.597 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'customAuthenticationProvider': no URL paths identified
+12:09:09.597 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'restAuthFailureHandler': no URL paths identified
+12:09:09.597 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'restAuthSuccessHandler': no URL paths identified
+12:09:09.597 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'globalExceptionHandlerController': no URL paths identified
+12:09:09.597 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'localizedMessageSource': no URL paths identified
+12:09:09.598 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'redisRepository': no URL paths identified
+12:09:09.598 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'memberService': no URL paths identified
+12:09:09.598 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'merchantService': no URL paths identified
+12:09:09.598 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'orderService': no URL paths identified
+12:09:09.598 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'smsService': no URL paths identified
+12:09:09.598 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'merchantResponse.Builder': no URL paths identified
+12:09:09.598 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'merchantResponse': no URL paths identified
+12:09:09.598 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'userRequest': no URL paths identified
+12:09:09.599 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'userResponse': no URL paths identified
+12:09:09.599 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'externalIntegrationController': no URL paths identified
+12:09:09.599 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'memberController': no URL paths identified
+12:09:09.599 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'merchantController': no URL paths identified
+12:09:09.599 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'orderController': no URL paths identified
+12:09:09.599 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.scheduling.annotation.SchedulingConfiguration': no URL paths identified
+12:09:09.599 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.context.annotation.internalScheduledAnnotationProcessor': no URL paths identified
+12:09:09.600 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'entityManagerFactory': no URL paths identified
+12:09:09.600 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'jpaDataSource': no URL paths identified
+12:09:09.600 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'transactionManager': no URL paths identified
+12:09:09.600 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'exceptionTranslation': no URL paths identified
+12:09:09.600 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'redisConnectionFactory': no URL paths identified
+12:09:09.600 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'stringRedisTemplate': no URL paths identified
+12:09:09.600 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'passwordEncoder': no URL paths identified
+12:09:09.600 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.data.jpa.repository.config.JpaRepositoryConfigExtension#0': no URL paths identified
+12:09:09.600 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.data.repository.core.support.RepositoryInterfaceAwareBeanPostProcessor#0': no URL paths identified
+12:09:09.601 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.data.jpa.repository.support.EntityManagerBeanDefinitionRegistrarPostProcessor#0': no URL paths identified
+12:09:09.601 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'jpaMapppingContext': no URL paths identified
+12:09:09.601 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'userAddressRepository': no URL paths identified
+12:09:09.601 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'transactionFlowRepository': no URL paths identified
+12:09:09.601 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'commentRepository': no URL paths identified
+12:09:09.601 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'merchantRepository': no URL paths identified
+12:09:09.601 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'orderRepository': no URL paths identified
+12:09:09.601 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'productRepository': no URL paths identified
+12:09:09.602 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'userRepository': no URL paths identified
+12:09:09.602 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'favoriteRepository': no URL paths identified
+12:09:09.602 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.aop.config.internalAutoProxyCreator': no URL paths identified
+12:09:09.602 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration': no URL paths identified
+12:09:09.602 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'redisMessageListenerContainer': no URL paths identified
+12:09:09.602 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'redisSessionMessageListener': no URL paths identified
+12:09:09.602 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'sessionRedisTemplate': no URL paths identified
+12:09:09.602 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'sessionRepository': no URL paths identified
+12:09:09.602 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'springSessionRepositoryFilter': no URL paths identified
+12:09:09.603 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'enableRedisKeyspaceNotificationsInitializer': no URL paths identified
+12:09:09.603 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'connectionFactory': no URL paths identified
+12:09:09.603 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'httpSessionStrategy': no URL paths identified
+12:09:09.603 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration': no URL paths identified
+12:09:09.603 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'authenticationManagerBuilder': no URL paths identified
+12:09:09.603 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'enableGlobalAuthenticationAutowiredConfigurer': no URL paths identified
+12:09:09.603 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration': no URL paths identified
+12:09:09.603 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'delegatingApplicationListener': no URL paths identified
+12:09:09.604 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'webSecurityExpressionHandler': no URL paths identified
+12:09:09.604 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'springSecurityFilterChain': no URL paths identified
+12:09:09.604 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'privilegeEvaluator': no URL paths identified
+12:09:09.604 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'autowiredWebSecurityConfigurersIgnoreParents': no URL paths identified
+12:09:09.604 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.security.config.annotation.configuration.ObjectPostProcessorConfiguration': no URL paths identified
+12:09:09.604 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'objectPostProcessor': no URL paths identified
+12:09:09.604 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration': no URL paths identified
+12:09:09.604 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'requestDataValueProcessor': no URL paths identified
+12:09:09.604 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'authenticationManager': no URL paths identified
+12:09:09.605 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration': no URL paths identified
+12:09:09.605 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'requestMappingHandlerMapping': no URL paths identified
+12:09:09.606 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'mvcContentNegotiationManager': no URL paths identified
+12:09:09.606 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'viewControllerHandlerMapping': no URL paths identified
+12:09:09.606 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'beanNameHandlerMapping': no URL paths identified
+12:09:09.606 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'resourceHandlerMapping': no URL paths identified
+12:09:09.606 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'mvcResourceUrlProvider': no URL paths identified
+12:09:09.606 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'defaultServletHandlerMapping': no URL paths identified
+12:09:09.606 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'requestMappingHandlerAdapter': no URL paths identified
+12:09:09.606 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'mvcConversionService': no URL paths identified
+12:09:09.606 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'mvcValidator': no URL paths identified
+12:09:09.607 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'mvcPathMatcher': no URL paths identified
+12:09:09.607 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'mvcUrlPathHelper': no URL paths identified
+12:09:09.607 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'mvcUriComponentsContributor': no URL paths identified
+12:09:09.607 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'httpRequestHandlerAdapter': no URL paths identified
+12:09:09.607 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'simpleControllerHandlerAdapter': no URL paths identified
+12:09:09.607 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'handlerExceptionResolver': no URL paths identified
+12:09:09.608 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'mvcViewResolver': no URL paths identified
+12:09:09.608 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'loadProperties': no URL paths identified
+12:09:09.608 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'messageSource': no URL paths identified
+12:09:09.608 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'mapper': no URL paths identified
+12:09:09.609 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.orm.jpa.SharedEntityManagerCreator#0': no URL paths identified
+12:09:09.609 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'environment': no URL paths identified
+12:09:09.609 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'systemProperties': no URL paths identified
+12:09:09.609 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'systemEnvironment': no URL paths identified
+12:09:09.609 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'servletContext': no URL paths identified
+12:09:09.609 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'contextParameters': no URL paths identified
+12:09:09.609 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'contextAttributes': no URL paths identified
+12:09:09.610 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importRegistry': no URL paths identified
+12:09:09.610 [localhost-startStop-1] DEBUG o.s.w.s.h.BeanNameUrlHandlerMapping - Rejected bean name 'applicationEventMulticaster': no URL paths identified
+12:09:09.635 [localhost-startStop-1] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Mapped URL path [/resources/css/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+12:09:09.635 [localhost-startStop-1] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Mapped URL path [/resources/js/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+12:09:09.635 [localhost-startStop-1] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Mapped URL path [/resources/img/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+12:09:09.937 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Thu Apr 30 12:07:56 CST 2015]; root of context hierarchy
+12:09:10.065 [localhost-startStop-1] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Looking for exception mappings: Root WebApplicationContext: startup date [Thu Apr 30 12:07:56 CST 2015]; root of context hierarchy
+12:09:10.074 [localhost-startStop-1] INFO  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Detected @ExceptionHandler methods in globalExceptionHandlerController
+12:09:10.108 [localhost-startStop-1] DEBUG o.s.w.c.s.AnnotationConfigWebApplicationContext - Unable to locate LifecycleProcessor with name 'lifecycleProcessor': using default [org.springframework.context.support.DefaultLifecycleProcessor@2e120bdb]
+12:09:10.111 [localhost-startStop-1] INFO  o.s.c.s.DefaultLifecycleProcessor - Starting beans in phase 2147483647
+12:09:10.151 [localhost-startStop-1] DEBUG o.s.w.s.resource.ResourceUrlProvider - Looking for resource handler mappings
+12:09:10.153 [localhost-startStop-1] DEBUG o.s.w.s.resource.ResourceUrlProvider - Found resource handler mapping: URL pattern="/resources/css/**", locations=[ServletContext resource [/resources/css/]], resolvers=[org.springframework.web.servlet.resource.PathResourceResolver@2a0199a]
+12:09:10.153 [localhost-startStop-1] DEBUG o.s.w.s.resource.ResourceUrlProvider - Found resource handler mapping: URL pattern="/resources/js/**", locations=[ServletContext resource [/resources/js/]], resolvers=[org.springframework.web.servlet.resource.PathResourceResolver@5cf0cece]
+12:09:10.153 [localhost-startStop-1] DEBUG o.s.w.s.resource.ResourceUrlProvider - Found resource handler mapping: URL pattern="/resources/img/**", locations=[ServletContext resource [/resources/img/]], resolvers=[org.springframework.web.servlet.resource.PathResourceResolver@4599660d]
+12:09:10.176 [localhost-startStop-1] DEBUG o.s.web.context.ContextLoader - Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+12:09:10.176 [localhost-startStop-1] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 73567 ms
+12:09:10.179 [localhost-startStop-1] DEBUG o.s.w.filter.CharacterEncodingFilter - Initializing filter 'encodingFilter'
+12:09:10.183 [localhost-startStop-1] DEBUG o.s.w.filter.CharacterEncodingFilter - Filter 'encodingFilter' configured successfully
+12:09:10.183 [localhost-startStop-1] DEBUG o.s.web.filter.DelegatingFilterProxy - Initializing filter 'springSecurityFilterChain'
+12:09:10.183 [localhost-startStop-1] DEBUG o.s.web.filter.DelegatingFilterProxy - Filter 'springSecurityFilterChain' configured successfully
+12:09:10.183 [localhost-startStop-1] DEBUG o.s.web.filter.DelegatingFilterProxy - Initializing filter 'springSessionRepositoryFilter'
+12:09:10.183 [localhost-startStop-1] DEBUG o.s.web.filter.DelegatingFilterProxy - Filter 'springSessionRepositoryFilter' configured successfully
+12:09:10.188 [localhost-startStop-1] DEBUG o.s.web.servlet.DispatcherServlet - Initializing servlet 'DispatcherServlet'
+12:09:10.189 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletConfigInitParams] PropertySource with lowest search precedence
+12:09:10.190 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [servletContextInitParams] PropertySource with lowest search precedence
+12:09:10.190 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [jndiProperties] PropertySource with lowest search precedence
+12:09:10.190 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemProperties] PropertySource with lowest search precedence
+12:09:10.190 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Adding [systemEnvironment] PropertySource with lowest search precedence
+12:09:10.190 [localhost-startStop-1] DEBUG o.s.w.c.s.StandardServletEnvironment - Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+12:09:10.191 [localhost-startStop-1] INFO  o.s.web.servlet.DispatcherServlet - FrameworkServlet 'DispatcherServlet': initialization started
+12:09:10.192 [localhost-startStop-1] DEBUG o.s.web.servlet.DispatcherServlet - Unable to locate MultipartResolver with name 'multipartResolver': no multipart request handling provided
+12:09:10.195 [localhost-startStop-1] DEBUG o.s.web.servlet.DispatcherServlet - Unable to locate LocaleResolver with name 'localeResolver': using default [org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver@1a014a8a]
+12:09:10.201 [localhost-startStop-1] DEBUG o.s.web.servlet.DispatcherServlet - Unable to locate ThemeResolver with name 'themeResolver': using default [org.springframework.web.servlet.theme.FixedThemeResolver@754a4590]
+12:09:10.209 [localhost-startStop-1] DEBUG o.s.web.servlet.DispatcherServlet - Unable to locate RequestToViewNameTranslator with name 'viewNameTranslator': using default [org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@eab07ed]
+12:09:10.217 [localhost-startStop-1] DEBUG o.s.web.servlet.DispatcherServlet - Unable to locate FlashMapManager with name 'flashMapManager': using default [org.springframework.web.servlet.support.SessionFlashMapManager@64001bf5]
+12:09:10.217 [localhost-startStop-1] DEBUG o.s.web.servlet.DispatcherServlet - Published WebApplicationContext of servlet 'DispatcherServlet' as ServletContext attribute with name [org.springframework.web.servlet.FrameworkServlet.CONTEXT.DispatcherServlet]
+12:09:10.217 [localhost-startStop-1] INFO  o.s.web.servlet.DispatcherServlet - FrameworkServlet 'DispatcherServlet': initialization completed in 26 ms
+12:09:10.217 [localhost-startStop-1] DEBUG o.s.web.servlet.DispatcherServlet - Servlet 'DispatcherServlet' configured successfully

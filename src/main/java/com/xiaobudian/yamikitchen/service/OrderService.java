@@ -17,9 +17,14 @@ public interface OrderService {
 
     public List<OrderItem> getItemsInCart(Long id);
 
-    public List<Order> getOrdersByMerchantIdAndStatusAndCreateDateBetween(int page, int pageSize,long rid,long status,Date dateFrom,Date dateTo);
+    public List<Order> getOrdersByMerchantIdAndStatusAndCreateDateBetween(int page, int pageSize,long rid,int status,Date dateFrom,Date dateTo);
 
     public List<OrderItem>  getItemsInOrder(String orderNo);
 
     public boolean removeCart(Long id);
+
+    public List<Order> getTodayHandingOrdersBy(int page,int pageSize,long rid);
+
+    public List<Order> getTodaySolvedOrdersBy(int page,int pageSize,long rid);
+
 }

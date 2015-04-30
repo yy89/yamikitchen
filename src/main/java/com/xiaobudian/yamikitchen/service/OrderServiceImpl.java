@@ -8,8 +8,11 @@ import com.xiaobudian.yamikitchen.repository.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.OrderRepository;
 import com.xiaobudian.yamikitchen.repository.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.RedisRepository;
+import com.xiaobudian.yamikitchen.util.DateUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -30,7 +33,6 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
     @Inject
     private OrderItemRepository orderItemRepository;
-
 
     @Override
     public List<OrderItem> addProductInCart(Long uid, Long rid, Long productId) {
@@ -74,8 +76,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersByMerchantIdAndStatusAndCreateDateBetween(int page, int pageSize,long rid,long status,Date dateFrom,Date dateTo) {
-        return orderRepository.findByMerchantIdAndStatusAndCreateDateBetween(rid, status, dateFrom, dateTo, new PageRequest(page, pageSize));
+    public List<Order> getOrdersByMerchantIdAndStatusAndCreateDateBetween(int page, int pageSize,long rid,int status,Date dateFrom,Date dateTo) {
+        List<Integer> statuses = new ArrayList<>();
+        statuses.add(status);
+        return orderRepository.findByMerchantIdAndStatusInAndCreateDateBetween(rid, statuses, dateFrom, dateTo, new PageRequest(page, pageSize));
     }
 
     @Override
@@ -88,6 +92,28 @@ public class OrderServiceImpl implements OrderService {
         final String key = Keys.cartKey(uid);
         redisRepository.removeKey(key);
         return true;
+    }
+
+    @Override
+    public List<Order> getTodayHandingOrdersBy(int page, int pageSize, long rid) {
+        Date todayStart = DateUtils.getTodayStart();
+        Date todayEnd = DateUtils.getTodayEnd();
+        List<Integer> handingStatus = new ArrayList<Integer>(){
+            {add(1);}
+            {add(2);}
+            {add(3);}
+        };
+        PageRequest pageRequest = new PageRequest(page,pageSize,new Sort(new Sort.Order(Sort.Direction.DESC,"status"),new Sort.Order(Sort.Direction.ASC,"createDate")));
+        return orderRepository.findByMerchantIdAndStatusInAndCreateDateBetween(rid, handingStatus, todayStart, todayEnd, pageRequest);
+    }
+
+    @Override
+     public List<Order> getTodaySolvedOrdersBy(int page, int pageSize, long rid) {
+        Date todayStart = DateUtils.getTodayStart();
+        Date todayEnd = DateUtils.getTodayEnd();
+        int solvedStatus = 0;
+        PageRequest pageRequest = new PageRequest(page,pageSize,new Sort(new Sort.Order(Sort.Direction.DESC,"createDate")));
+        return orderRepository.findByMerchantIdAndStatusAndCreateDateBetween(rid,solvedStatus,todayStart,todayEnd,pageRequest);
     }
 
     static final class ItemKey {
