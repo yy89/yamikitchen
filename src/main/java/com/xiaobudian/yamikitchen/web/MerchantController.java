@@ -4,7 +4,6 @@ import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
-import com.xiaobudian.yamikitchen.repository.MerchantRepository;
 import com.xiaobudian.yamikitchen.service.MemberService;
 import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.web.dto.MerchantResponse;
@@ -45,10 +44,10 @@ public class MerchantController {
         return Result.successResult(responses);
     }
 
-    @RequestMapping(value = "/merchants/{rid}/products", method = RequestMethod.GET)
-    @ResponseBody
-    public Result getProductsOfMerchant(@PathVariable Long rid, @RequestParam("page") Integer page,
-                                        @RequestParam("size") Integer size) {
+     @RequestMapping(value = "/merchants/{rid}/products", method = RequestMethod.GET)
+     @ResponseBody
+     public Result getProductsOfMerchant(@PathVariable Long rid, @RequestParam("page") Integer page,
+                                         @RequestParam("size") Integer size) {
         Merchant merchant = merchantService.getMerchantBy(rid);
         MerchantResponse response = new MerchantResponse.Builder()
                 .merchant(merchant)

@@ -12,7 +12,7 @@ import org.springframework.session.web.http.HttpSessionStrategy;
  * Created by Johnson on 2015/4/22.
  */
 @Configuration
-@EnableRedisHttpSession
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 18000000)
 public class HttpSessionConfig {
     @Value(value = "${session.redis.host}")
     private String host;

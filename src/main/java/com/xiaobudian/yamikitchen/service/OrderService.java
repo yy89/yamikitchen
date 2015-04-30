@@ -21,5 +21,5 @@ public interface OrderService {
 
     public List<OrderItem>  getItemsInOrder(String orderNo);
 
-
+    public boolean removeCart(Long id);
 }

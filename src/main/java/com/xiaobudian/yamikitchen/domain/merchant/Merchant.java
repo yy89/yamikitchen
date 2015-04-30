@@ -28,11 +28,6 @@ public class Merchant implements Serializable {
     private Integer countOfMessHall;
     private boolean selfPickup;
     private boolean supportDelivery;
-    private String businessHours;
-    private String realName;
-    private String businessDayPerWeek;
-    private Long deliverFee;
-    private String deliverComment;
     private boolean isRest = true;
     private String restMark;
     private Integer mLevel = 1;
@@ -47,8 +42,13 @@ public class Merchant implements Serializable {
     @Transient
     private String distance;
     private Long creator;
+    private String businessHours;
+    private String realName;
+    private String businessDayPerWeek;
+    private Long deliverFee;
+    private String deliverComment;
 
-    public Long getId() {
+   public Long getId() {
         return id;
     }
 
@@ -269,10 +269,8 @@ public class Merchant implements Serializable {
     }
 
     public String getBusinessHours() {
-
-        return businessHours;
+        return this.businessHours;
     }
-
     public void setBusinessHours(String businessHours) {
         this.businessHours = businessHours;
     }
@@ -308,6 +306,4 @@ public class Merchant implements Serializable {
     public void setDeliverComment(String deliverComment) {
         this.deliverComment = deliverComment;
     }
-
-
 }
