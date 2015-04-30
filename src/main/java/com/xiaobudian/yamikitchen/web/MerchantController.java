@@ -30,14 +30,15 @@ public class MerchantController {
     public Result getMerchants(@RequestParam("page") Integer page,
                                @RequestParam("size") Integer size,
                                @RequestParam("lat") Double longitude,
-                               @RequestParam("lng") Double latitude) {
+                               @RequestParam("lng") Double latitude,
+                               @AuthenticationPrincipal User user) {
         List<Merchant> merchants = merchantService.getMerchants(page, size, longitude, latitude);
         List<MerchantResponse> responses = new ArrayList<>();
         for (Merchant merchant : merchants) {
             merchant.setDistance(String.valueOf(Math.pow(Math.abs(merchant.getLongitude() - longitude) % 360, 2) + Math.pow(Math.abs(merchant.getLatitude() - latitude) % 360, 2)));
             responses.add(new MerchantResponse.Builder()
                     .merchant(merchant)
-                    .hasFavorite(false)
+                    .hasFavorite(user != null && merchantService.hasFavorite(merchant.getId(), user.getId()))
                     .user(memberService.getUser(merchant.getCreator()))
                     .products(merchantService.gteMainProduct(merchant.getId())).build());
         }

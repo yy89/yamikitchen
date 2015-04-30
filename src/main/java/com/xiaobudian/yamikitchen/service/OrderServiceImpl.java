@@ -3,15 +3,11 @@ package com.xiaobudian.yamikitchen.service;
 import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.domain.Order;
 import com.xiaobudian.yamikitchen.domain.OrderItem;
+import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
-import com.xiaobudian.yamikitchen.repository.OrderItemRepository;
-import com.xiaobudian.yamikitchen.repository.OrderRepository;
-import com.xiaobudian.yamikitchen.repository.ProductRepository;
-import com.xiaobudian.yamikitchen.repository.RedisRepository;
+import com.xiaobudian.yamikitchen.repository.*;
 import com.xiaobudian.yamikitchen.util.DateUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -33,23 +29,25 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
     @Inject
     private OrderItemRepository orderItemRepository;
+    private MerchantRepository merchantRepository;
 
     @Override
-    public List<OrderItem> addProductInCart(Long uid, Long rid, Long productId) {
+    public Cart addProductInCart(Long uid, Long rid, Long productId) {
         final String key = Keys.cartKey(uid);
         for (String itemKey : redisRepository.members(key)) {
             ItemKey k = ItemKey.valueOf(itemKey);
             if (k.product.equals(productId)) {
+                redisRepository.removeForZSet(key, itemKey);
                 redisRepository.addForZSet(key, Keys.cartItemKey(rid, productId, k.quality + 1));
-                return getItemsInCart(uid);
+                return getCart(uid);
             }
         }
         redisRepository.addForZSet(key, Keys.cartItemKey(rid, productId, 1));
-        return getItemsInCart(uid);
+        return getCart(uid);
     }
 
     @Override
-    public List<OrderItem> removeProductInCart(Long uid, Long rid, Long productId) {
+    public Cart removeProductInCart(Long uid, Long rid, Long productId) {
         final String key = Keys.cartKey(uid);
         for (String itemKey : redisRepository.members(Keys.cartKey(uid))) {
             ItemKey k = ItemKey.valueOf(itemKey);
@@ -59,20 +57,25 @@ public class OrderServiceImpl implements OrderService {
                     redisRepository.addForZSet(key, Keys.cartItemKey(rid, k.getProduct(), k.getQuality() - 1));
             }
         }
-        return getItemsInCart(uid);
+        return getCart(uid);
     }
 
     @Override
-    public List<OrderItem> getItemsInCart(Long uid) {
-        List<OrderItem> result = new ArrayList<>();
+    public Cart getCart(Long uid) {
+        List<OrderItem> items = new ArrayList<>();
         final String key = Keys.cartKey(uid);
+        Cart cart = new Cart();
+        cart.setUid(uid);
         for (String itemKey : redisRepository.members(key)) {
             ItemKey k = ItemKey.valueOf(itemKey);
             Product product = productRepository.findOne(k.getProduct());
             OrderItem orderItem = new OrderItem(product, k.getQuality());
-            result.add(orderItem);
+            cart.setMerchantId(k.getRid());
+            items.add(orderItem);
         }
-        return result;
+        cart.setItems(items);
+        cart.setMerchantName(merchantRepository.findOne(cart.getMerchantId()).getName());
+        return cart;
     }
 
     @Override

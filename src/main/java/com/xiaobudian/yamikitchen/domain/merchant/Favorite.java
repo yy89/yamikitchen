@@ -19,7 +19,6 @@ public class Favorite implements Serializable {
     private Long id;
     private Long uid;
     private Long merchantId;
-    private String merchantName;
     private String nickName;
     private String headPic;
     private Date createDate = new Date();
@@ -55,14 +54,6 @@ public class Favorite implements Serializable {
 
     public void setMerchantId(Long merchantId) {
         this.merchantId = merchantId;
-    }
-
-    public String getMerchantName() {
-        return merchantName;
-    }
-
-    public void setMerchantName(String merchantName) {
-        this.merchantName = merchantName;
     }
 
     public String getNickName() {

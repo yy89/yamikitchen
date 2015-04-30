@@ -35,7 +35,7 @@ public class OrderController {
 
     @RequestMapping(value = "/carts", method = RequestMethod.GET)
     public Result getProductForCart(@AuthenticationPrincipal User user) {
-        return Result.successResult(orderService.getItemsInCart(user.getId()));
+        return Result.successResult(orderService.getCart(user.getId()));
     }
 
     @RequestMapping(value = "/carts", method = RequestMethod.DELETE)
