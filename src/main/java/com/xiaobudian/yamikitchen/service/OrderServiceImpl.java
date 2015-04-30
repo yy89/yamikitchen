@@ -1,14 +1,20 @@
 package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.Keys;
+import com.xiaobudian.yamikitchen.domain.Order;
 import com.xiaobudian.yamikitchen.domain.OrderItem;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
+import com.xiaobudian.yamikitchen.repository.OrderItemRepository;
+import com.xiaobudian.yamikitchen.repository.OrderRepository;
 import com.xiaobudian.yamikitchen.repository.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.RedisRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,6 +26,11 @@ public class OrderServiceImpl implements OrderService {
     private RedisRepository redisRepository;
     @Inject
     private ProductRepository productRepository;
+    @Inject
+    private OrderRepository orderRepository;
+    @Inject
+    private OrderItemRepository orderItemRepository;
+
 
     @Override
     public List<OrderItem> addProductInCart(Long uid, Long rid, Long productId) {
@@ -57,6 +68,16 @@ public class OrderServiceImpl implements OrderService {
 
         }
         return result;
+    }
+
+    @Override
+    public List<Order> getOrdersByMerchantIdAndStatusAndCreateDateBetween(int page, int pageSize,long rid,long status,Date dateFrom,Date dateTo) {
+        return orderRepository.findByMerchantIdAndStatusAndCreateDateBetween(rid, status, dateFrom, dateTo, new PageRequest(page, pageSize));
+    }
+
+    @Override
+    public List<OrderItem> getItemsInOrder(String orderNo) {
+        return orderItemRepository.findByOrderNo(orderNo);
     }
 
     static final class ItemKey {

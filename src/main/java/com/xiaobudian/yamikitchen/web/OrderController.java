@@ -1,15 +1,18 @@
 package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
+import com.xiaobudian.yamikitchen.domain.Order;
+import com.xiaobudian.yamikitchen.domain.OrderItem;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.service.OrderService;
+import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.ws.rs.QueryParam;
+import java.util.*;
 
 /**
  * Created by johnson1 on 4/27/15.
@@ -33,5 +36,39 @@ public class OrderController {
     @RequestMapping(value = "/carts", method = RequestMethod.GET)
     public Result getProductForCart(@AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getItemsInCart(user.getId()));
+    }
+
+    @RequestMapping(value = "/{rid}/orders",method = RequestMethod.GET)
+    @ResponseBody
+    public Result getOrders(@PathVariable("rid") Long rid,
+                           @RequestParam("status") Long status,
+                           @RequestParam("page") Integer page,
+                           @RequestParam("size") Integer size,
+                            @RequestParam("date") @DateTimeFormat(pattern="yyyy-MM-dd") Date date){
+        List<Order> orders = orderService.getOrdersByMerchantIdAndStatusAndCreateDateBetween(page, size, rid, status, date,nextDay(date));
+        List<OrderResponse> responses = new ArrayList<>();
+        for(Order order:orders){
+            List<OrderItem> orderItems = orderService.getItemsInOrder(order.getOrderNo());
+            OrderResponse orderResponse = new OrderResponse.Builder().order(order).orderItems(orderItems).build();
+            responses.add(orderResponse);
+        }
+        return Result.successResult(responses);
+    }
+
+    @RequestMapping(value = "{rid}/today/orders/",method = RequestMethod.GET)
+    @ResponseBody
+    public Result getTodayOrders(@PathVariable("rid") Long rid,
+                                 @RequestParam("page") Integer page,
+                                 @RequestParam("size")Integer size){
+        return null;
+    }
+
+
+    private Date nextDay(Date date){
+        if(date==null)return null;
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.add(calendar.DATE,1);
+        return calendar.getTime();
     }
 }

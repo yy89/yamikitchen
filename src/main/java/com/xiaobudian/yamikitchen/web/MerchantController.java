@@ -111,8 +111,23 @@ public class MerchantController {
         if(StringUtils.isNotEmpty(merchant.getPhone())){
             merchantdb.setPhone(merchant.getPhone());
         }
+        if(StringUtils.isNotEmpty(merchant.getRealName())){
+            merchantdb.setRealName(merchant.getRealName());
+        }
+        if(StringUtils.isNotEmpty(merchant.getBusinessHours())){
+            merchantdb.setBusinessHours(merchant.getBusinessHours());
+        }
+        if(StringUtils.isNotEmpty(merchant.getBusinessDayPerWeek())){
+            merchantdb.setBusinessDayPerWeek(merchant.getBusinessDayPerWeek());
+        }
         if(merchant.isSupportDelivery()!=merchantdb.isSupportDelivery()){
             merchantdb.setSupportDelivery(merchant.isSupportDelivery());
+        }
+        if(merchant.getDeliverFee()!=0L){
+            merchantdb.setDeliverFee(merchant.getDeliverFee());
+        }
+        if(StringUtils.isNotEmpty(merchant.getDeliverComment())){
+            merchantdb.setDeliverComment(merchant.getDeliverComment());
         }
         if(merchant.isMessHall()!=merchantdb.isMessHall()){
             merchantdb.setMessHall(merchant.isMessHall());
@@ -160,10 +175,6 @@ public class MerchantController {
         if(StringUtils.isNotEmpty(product.getSummary())){
             productdb.setSummary(product.getSummary());
         }
-        if(){
-
-        }
-
         merchantService.saveProduct(productdb);
         return Result.successResult(product);
     }
@@ -174,7 +185,5 @@ public class MerchantController {
         merchantService.removeProduct(pid);
         return Result.successResultWithoutData();
     }
-
-
 
 }

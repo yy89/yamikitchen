@@ -41,11 +41,13 @@ public class Order implements Serializable {
     private boolean hasPaid = false;
     private boolean complainable = false;
     private boolean commentable = false;
+    private boolean refundable = false;
     private String checkFlag;
     private Long couponId;
     private boolean firstDeal;
     private Double longitude;
     private Double latitude;
+    private String distance;
 
     public Long getId() {
         return id;
@@ -293,5 +295,21 @@ public class Order implements Serializable {
 
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
+    }
+
+    public boolean isRefundable() {
+        return refundable;
+    }
+
+    public void setRefundable(boolean refundable) {
+        this.refundable = refundable;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 }
