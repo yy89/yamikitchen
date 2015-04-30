@@ -27,11 +27,15 @@ public class OrderController {
     @RequestMapping(value = "/carts/merchants/{rid}/{productId}", method = RequestMethod.DELETE)
     public Result removeProductForCart(@PathVariable Long rid, @PathVariable Long productId, @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.removeProductInCart(user.getId(), rid, productId));
-
     }
 
     @RequestMapping(value = "/carts", method = RequestMethod.GET)
     public Result getProductForCart(@AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getItemsInCart(user.getId()));
+    }
+
+    @RequestMapping(value = "/carts", method = RequestMethod.DELETE)
+    public Result removeCart(@AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.removeCart(user.getId()));
     }
 }

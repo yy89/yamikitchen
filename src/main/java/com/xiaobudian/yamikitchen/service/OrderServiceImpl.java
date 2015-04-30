@@ -40,7 +40,11 @@ public class OrderServiceImpl implements OrderService {
         final String key = Keys.cartKey(uid);
         for (String itemKey : redisRepository.members(Keys.cartKey(uid))) {
             ItemKey k = ItemKey.valueOf(itemKey);
-            if (k.getProduct().equals(productId)) redisRepository.removeForZSet(key, itemKey);
+            if (k.getProduct().equals(productId)) {
+                redisRepository.removeForZSet(key, itemKey);
+                if (k.getQuality() > 1)
+                    redisRepository.addForZSet(key, Keys.cartItemKey(rid, k.getProduct(), k.getQuality() - 1));
+            }
         }
         return getItemsInCart(uid);
     }
@@ -54,9 +58,15 @@ public class OrderServiceImpl implements OrderService {
             Product product = productRepository.findOne(k.getProduct());
             OrderItem orderItem = new OrderItem(product, k.getQuality());
             result.add(orderItem);
-
         }
         return result;
+    }
+
+    @Override
+    public boolean removeCart(Long uid) {
+        final String key = Keys.cartKey(uid);
+        redisRepository.removeKey(key);
+        return true;
     }
 
     static final class ItemKey {

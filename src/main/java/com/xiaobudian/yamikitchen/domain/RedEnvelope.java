@@ -19,7 +19,7 @@ public class RedEnvelope  implements Serializable {
     private Double amount;
     private Integer usageCondition;
     private Integer expiredDays;
-    private Integer quality;
+    private Integer quantity;
     private Date createDate;
     private boolean hasUsed = false;
     private boolean hasExpired = false;
@@ -56,12 +56,12 @@ public class RedEnvelope  implements Serializable {
         this.expiredDays = expiredDays;
     }
 
-    public Integer getQuality() {
-        return quality;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setQuality(Integer quality) {
-        this.quality = quality;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public Date getCreateDate() {

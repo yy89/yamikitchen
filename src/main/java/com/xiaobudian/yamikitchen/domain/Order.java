@@ -17,7 +17,7 @@ public class Order implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String orderNo;
-    private Integer totalQuality;
+    private Integer totalQuantity;
     private Double price;
     private Date createDate;
     private Date deliverDate;
@@ -41,6 +41,8 @@ public class Order implements Serializable {
     private boolean hasPaid = false;
     private boolean complainable = false;
     private boolean commentable = false;
+    private boolean refundable;
+    private String distance;
     private String checkFlag;
     private Long couponId;
     private boolean firstDeal;
@@ -63,12 +65,12 @@ public class Order implements Serializable {
         this.orderNo = orderNo;
     }
 
-    public Integer getTotalQuality() {
-        return totalQuality;
+    public Integer getTotalQuantity() {
+        return totalQuantity;
     }
 
-    public void setTotalQuality(Integer totalQuality) {
-        this.totalQuality = totalQuality;
+    public void setTotalQuantity(Integer totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
 
     public Double getPrice() {
@@ -293,5 +295,21 @@ public class Order implements Serializable {
 
     public void setLatitude(Double latitude) {
         this.latitude = latitude;
+    }
+
+    public boolean isRefundable() {
+        return refundable;
+    }
+
+    public void setRefundable(boolean refundable) {
+        this.refundable = refundable;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 }

@@ -15,4 +15,5 @@ public interface OrderService {
 
     public List<OrderItem> getItemsInCart(Long id);
 
+    public boolean removeCart(Long id);
 }

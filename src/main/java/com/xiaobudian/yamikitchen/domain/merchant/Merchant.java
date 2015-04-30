@@ -42,8 +42,13 @@ public class Merchant implements Serializable {
     @Transient
     private String distance;
     private Long creator;
+    private String businessHours;
+    private String realName;
+    private String businessDayPerWeek;
+    private Long deliverFee;
+    private String deliverComment;
 
-    public Long getId() {
+   public Long getId() {
         return id;
     }
 
@@ -257,5 +262,45 @@ public class Merchant implements Serializable {
 
     public void setCreator(Long creator) {
         this.creator = creator;
+    }
+
+    public String getBusinessHours() {
+        return businessHours;
+    }
+
+    public void setBusinessHours(String businessHours) {
+        this.businessHours = businessHours;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getBusinessDayPerWeek() {
+        return businessDayPerWeek;
+    }
+
+    public void setBusinessDayPerWeek(String businessDayPerWeek) {
+        this.businessDayPerWeek = businessDayPerWeek;
+    }
+
+    public Long getDeliverFee() {
+        return deliverFee;
+    }
+
+    public void setDeliverFee(Long deliverFee) {
+        this.deliverFee = deliverFee;
+    }
+
+    public String getDeliverComment() {
+        return deliverComment;
+    }
+
+    public void setDeliverComment(String deliverComment) {
+        this.deliverComment = deliverComment;
     }
 }

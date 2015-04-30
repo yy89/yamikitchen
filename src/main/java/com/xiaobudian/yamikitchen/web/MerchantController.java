@@ -73,5 +73,4 @@ public class MerchantController {
                                @RequestParam("size") Integer pageSize, @AuthenticationPrincipal User user) {
         return Result.successResult(merchantService.getFavorites(user.getId(), pageFrom, pageSize));
     }
-
 }

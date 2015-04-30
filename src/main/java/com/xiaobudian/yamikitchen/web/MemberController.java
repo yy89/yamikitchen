@@ -74,4 +74,12 @@ public class MemberController {
         address.setUid(user.getId());
         return Result.successResult(memberService.addAddress(address));
     }
+
+    @RequestMapping(value = "/addresses", method = RequestMethod.PUT)
+    @ResponseBody
+    public Result editAddress(@RequestBody UserAddress address, @AuthenticationPrincipal User user) {
+        address.setUid(user.getId());
+        return Result.successResult(memberService.addAddress(address));
+    }
+
 }

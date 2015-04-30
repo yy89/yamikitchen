@@ -40,4 +40,7 @@ public class RedisRepository {
         stringRedisTemplate.opsForZSet().remove(key, value);
     }
 
+    public void removeKey(String key) {
+        stringRedisTemplate.delete(key);
+    }
 }
