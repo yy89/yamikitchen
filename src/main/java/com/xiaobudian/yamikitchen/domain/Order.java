@@ -33,6 +33,7 @@ public class Order implements Serializable {
     private String merchantPhone;
     private String remark;
     private Double deliverPrice;
+    private Integer deliverMethod;
     private Integer paymentTimeLimit;
     private String address;
     private Integer status;
@@ -311,5 +312,13 @@ public class Order implements Serializable {
 
     public void setDistance(String distance) {
         this.distance = distance;
+    }
+
+    public Integer getDeliverMethod() {
+        return deliverMethod;
+    }
+
+    public void setDeliverMethod(Integer deliverMethod) {
+        this.deliverMethod = deliverMethod;
     }
 }

@@ -11,7 +11,7 @@ import java.util.Date;
  * Created by Johnson on 2015/4/22.
  */
 @Entity
-public class RedEnvelope  implements Serializable {
+public class Coupon implements Serializable {
     private static final long serialVersionUID = -461378934511020093L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

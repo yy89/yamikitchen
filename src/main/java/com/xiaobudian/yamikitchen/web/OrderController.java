@@ -1,13 +1,12 @@
 package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
+import com.xiaobudian.yamikitchen.domain.Order;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.service.OrderService;
+import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 
@@ -38,4 +37,19 @@ public class OrderController {
     public Result removeCart(@AuthenticationPrincipal User user) {
         return Result.successResult(orderService.removeCart(user.getId()));
     }
+
+    @RequestMapping(value = "/settlement", method = RequestMethod.POST)
+    public Result settlementOrder(@RequestBody OrderRequest orderRequest, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.initOrder(orderRequest));
+    }
+
+    @RequestMapping(value = "/orders", method = RequestMethod.POST)
+    public Result createOrder(@RequestBody Order order, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.createOrder(order));
+    }
+
+
+
+
+
 }
