@@ -3,6 +3,7 @@ package com.xiaobudian.yamikitchen.service;
 import com.xiaobudian.yamikitchen.domain.Order;
 import com.xiaobudian.yamikitchen.domain.OrderItem;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
+import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 
 import java.util.Date;
 import java.util.List;
@@ -26,5 +27,8 @@ public interface OrderService {
     public List<Order> getTodayHandingOrdersBy(int page,int pageSize,long rid);
 
     public List<Order> getTodaySolvedOrdersBy(int page,int pageSize,long rid);
+    public Order initOrder(OrderRequest orderRequest);
+
+    public Order createOrder(Order order);
 
 }

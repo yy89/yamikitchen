@@ -9,27 +9,39 @@ import com.xiaobudian.yamikitchen.repository.*;
 import com.xiaobudian.yamikitchen.util.DateUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import com.xiaobudian.yamikitchen.repository.MerchantRepository;
+import com.xiaobudian.yamikitchen.repository.OrderRepository;
+import com.xiaobudian.yamikitchen.repository.ProductRepository;
+import com.xiaobudian.yamikitchen.repository.RedisRepository;
+import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by johnson1 on 4/28/15.
  */
 @Service(value = "orderService")
 public class OrderServiceImpl implements OrderService {
+    @Value(value = "${extra.field.name}")
+    private String extraFieldName;
+    @Value(value = "${extra.deliver.price}")
+    private String deliverPrice;
     @Inject
     private RedisRepository redisRepository;
     @Inject
     private ProductRepository productRepository;
     @Inject
-    private OrderRepository orderRepository;
-    @Inject
     private OrderItemRepository orderItemRepository;
     private MerchantRepository merchantRepository;
+    @Inject
+    private OrderRepository orderRepository;
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId) {
@@ -62,11 +74,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Cart getCart(Long uid) {
-        List<OrderItem> items = new ArrayList<>();
         final String key = Keys.cartKey(uid);
+        Set<String> itemKeys = redisRepository.members(key);
+        if (CollectionUtils.isEmpty(itemKeys)) return null;
+        List<OrderItem> items = new ArrayList<>();
         Cart cart = new Cart();
         cart.setUid(uid);
-        for (String itemKey : redisRepository.members(key)) {
+        for (String itemKey : itemKeys) {
             ItemKey k = ItemKey.valueOf(itemKey);
             Product product = productRepository.findOne(k.getProduct());
             OrderItem orderItem = new OrderItem(product, k.getQuality());
@@ -75,6 +89,7 @@ public class OrderServiceImpl implements OrderService {
         }
         cart.setItems(items);
         cart.setMerchantName(merchantRepository.findOne(cart.getMerchantId()).getName());
+        cart.putExtra(extraFieldName, deliverPrice);
         return cart;
     }
 
@@ -115,8 +130,23 @@ public class OrderServiceImpl implements OrderService {
         Date todayStart = DateUtils.getTodayStart();
         Date todayEnd = DateUtils.getTodayEnd();
         int solvedStatus = 0;
-        PageRequest pageRequest = new PageRequest(page,pageSize,new Sort(new Sort.Order(Sort.Direction.DESC,"createDate")));
-        return orderRepository.findByMerchantIdAndStatusAndCreateDateBetween(rid,solvedStatus,todayStart,todayEnd,pageRequest);
+        PageRequest pageRequest = new PageRequest(page, pageSize, new Sort(new Sort.Order(Sort.Direction.DESC, "createDate")));
+        return orderRepository.findByMerchantIdAndStatusAndCreateDateBetween(rid, solvedStatus, todayStart, todayEnd, pageRequest);
+    }
+        public Order initOrder(OrderRequest orderRequest) {
+        Order order = new Order();
+        order.setStatus(0);
+        order.setCouponId(orderRequest.getCouponId());
+        order.setFirstDeal(true);
+        order.setHasPaid(false);
+        order.setPaymentMethod(orderRequest.getPaymentMethod());
+        order.setDeliverMethod(orderRequest.getDeliverMethod());
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public Order createOrder(Order order) {
+        return orderRepository.save(order);
     }
 
     static final class ItemKey {

@@ -45,14 +45,14 @@ public class MerchantController {
         return Result.successResult(responses);
     }
 
-     @RequestMapping(value = "/merchants/{rid}/products", method = RequestMethod.GET)
-     @ResponseBody
-     public Result getProductsOfMerchant(@PathVariable Long rid, @RequestParam("page") Integer page,
-                                         @RequestParam("size") Integer size) {
+    @RequestMapping(value = "/merchants/{rid}/products", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getProductsOfMerchant(@PathVariable Long rid, @RequestParam("page") Integer page,
+                                        @RequestParam("size") Integer size, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantBy(rid);
         MerchantResponse response = new MerchantResponse.Builder()
                 .merchant(merchant)
-                .hasFavorite(false)
+                .hasFavorite(user != null && merchantService.hasFavorite(merchant.getId(), user.getId()))
                 .user(memberService.getUser(merchant.getCreator()))
                 .products(merchantService.getProductsBy(rid, page, size)).build();
         return Result.successResult(response);

@@ -8,6 +8,9 @@ import com.xiaobudian.yamikitchen.service.OrderService;
 import com.xiaobudian.yamikitchen.util.DateUtils;
 import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
 import org.springframework.format.annotation.DateTimeFormat;
+import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.service.OrderService;
+import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -90,6 +93,15 @@ public class OrderController {
         return Result.successResult(responses);
     }
 
+    @RequestMapping(value = "/settlement", method = RequestMethod.POST)
+    public Result settlementOrder(@RequestBody OrderRequest orderRequest, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.initOrder(orderRequest));
+    }
+
+    @RequestMapping(value = "/orders", method = RequestMethod.POST)
+    public Result createOrder(@RequestBody Order order, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.createOrder(order));
+    }
 
 
 }
