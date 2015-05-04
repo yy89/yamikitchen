@@ -154,6 +154,13 @@ public class MerchantController {
         return Result.successResult(merchant);
     }
 
+    @RequestMapping(value = "/merchants/{rid}", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getMerchant(@PathVariable long rid) {
+        Merchant merchant = merchantService.getMerchantBy(rid);
+        return Result.successResult(merchant);
+    }
+
     @RequestMapping(value = "/merchants/{rid}", method = RequestMethod.DELETE)
     @ResponseBody
     public Result removeMerchant(@PathVariable long rid,@AuthenticationPrincipal User user) {
@@ -225,6 +232,13 @@ public class MerchantController {
         }
         merchantService.removeProduct(pid);
         return Result.successResultWithoutData();
+    }
+
+    @RequestMapping(value = "/products/{pid}", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getProduct(@PathVariable long pid) {
+        Product product = merchantService.getProductBy(pid);
+        return Result.successResult(product);
     }
 
 }
