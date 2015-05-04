@@ -42,6 +42,7 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public void removeMerchant(long id) {
         merchantRepository.delete(id);
+        productRepository.deleteByMerchantId(id);
     }
 
     @Override

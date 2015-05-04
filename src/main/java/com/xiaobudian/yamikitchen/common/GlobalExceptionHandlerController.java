@@ -26,6 +26,8 @@ public class GlobalExceptionHandlerController {
             return Result.failResult(localizedMessageSource.getMessage("http.method.notsupport"));
         if (e instanceof TypeMismatchException)
             return Result.failResult(localizedMessageSource.getMessage("http.type.mismatch"));
+        if(e instanceof IllegalArgumentException)
+            return Result.failResult(localizedMessageSource.getMessage("illegal.arguments"));
         return Result.failResult(localizedMessageSource.getMessage(StringUtils.isEmpty(e.getMessage()) ? "server.internal.error" : e.getMessage()));
     }
 }

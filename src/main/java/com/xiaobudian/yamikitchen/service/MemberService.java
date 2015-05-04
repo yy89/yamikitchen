@@ -21,4 +21,6 @@ public interface MemberService {
 
     public User getUser(Long creator);
 
+    public User saveUser(User user);
+
 }

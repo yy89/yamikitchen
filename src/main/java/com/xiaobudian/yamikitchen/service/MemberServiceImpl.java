@@ -62,4 +62,9 @@ public class MemberServiceImpl implements MemberService {
     public User getUser(Long creator) {
         return userRepository.findOne(creator);
     }
+
+    @Override
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
 }

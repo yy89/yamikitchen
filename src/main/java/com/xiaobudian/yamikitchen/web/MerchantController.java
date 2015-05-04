@@ -90,9 +90,7 @@ public class MerchantController {
     @ResponseBody
     public Result editMerchant(@RequestBody Merchant merchant,@AuthenticationPrincipal User user) {
         Merchant merchantTmp = merchantService.getMerchantBy(merchant.getId());
-        if(merchantTmp.getCreator()!=user.getId()){
-            System.out.println("===================creator==========="+merchantTmp.getCreator());
-            System.out.println("===================user==========="+user.getId());
+        if(merchantTmp.getCreator().longValue()!=user.getId()){
             throw new IllegalArgumentException("merchant creator not equals userId");
         }
         Merchant merchantdb = merchantService.getMerchantBy(merchant.getId());
@@ -104,8 +102,9 @@ public class MerchantController {
         }
         if(StringUtils.isNotEmpty(merchant.getHeadPic())){
             merchantdb.setHeadPic(merchant.getHeadPic());
+            user.setHeadPic(user.getHeadPic());
         }
-        if(merchant.getType()!=0){
+        if(merchant.getType()!=null){
             merchantdb.setType(merchant.getType());
         }
         if(StringUtils.isNotEmpty(merchant.getVoiceIntroduction())){
@@ -119,12 +118,15 @@ public class MerchantController {
         }
         if(StringUtils.isNotEmpty(merchant.getRealName())){
             merchantdb.setRealName(merchant.getRealName());
+            user.setUsername(merchant.getRealName());
         }
-        if(merchant.getGender()!=0){
+        if(merchant.getGender()!=null){
             merchantdb.setGender(merchant.getGender());
+            user.setGender(user.getGender());
         }
         if(StringUtils.isNotEmpty(merchant.getRegion())){
             merchantdb.setRegion(merchant.getRegion());
+            user.setRegion(merchant.getRegion());
         }
         if(StringUtils.isNotEmpty(merchant.getGoodCuisine())){
             merchantdb.setGoodCuisine(merchant.getGoodCuisine());
@@ -138,7 +140,7 @@ public class MerchantController {
         if(merchant.isSupportDelivery()!=merchantdb.isSupportDelivery()){
             merchantdb.setSupportDelivery(merchant.isSupportDelivery());
         }
-        if(merchant.getDeliverFee()!=0L){
+        if(merchant.getDeliverFee()!=null){
             merchantdb.setDeliverFee(merchant.getDeliverFee());
         }
         if(StringUtils.isNotEmpty(merchant.getDeliverComment())){
@@ -147,14 +149,19 @@ public class MerchantController {
         if(merchant.isMessHall()!=merchantdb.isMessHall()){
             merchantdb.setMessHall(merchant.isMessHall());
         }
-        if(merchant.getCountOfMessHall()!=0){
+        if(merchant.getCountOfMessHall()!=null){
             merchantdb.setCountOfMessHall(merchant.getCountOfMessHall());
         }
         if(merchant.isSelfPickup()!=merchantdb.isSelfPickup()){
             merchantdb.setCountOfMessHall(merchant.getCountOfMessHall());
         }
+        if(StringUtils.isNotEmpty(merchant.getDescription())){
+            merchantdb.setDescription(merchant.getDescription());
+            user.setDescription(merchant.getDescription());
+        }
         merchantService.saveMerchant(merchantdb);
-        return Result.successResult(merchant);
+        memberService.saveUser(user);
+        return Result.successResult(merchantdb);
     }
 
     @RequestMapping(value = "/merchants/{rid}", method = RequestMethod.GET)
@@ -168,8 +175,8 @@ public class MerchantController {
     @ResponseBody
     public Result removeMerchant(@PathVariable long rid,@AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantBy(rid);
-        if(merchant.getCreator()!=user.getId()){
-            throw new IllegalArgumentException("merchant creator not equals userId");
+        if(merchant.getCreator().longValue()!=user.getId()){
+            throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
         }
         merchantService.removeMerchant(rid);
         return Result.successResultWithoutData();
@@ -179,8 +186,8 @@ public class MerchantController {
     @ResponseBody
     public Result addProduct(@RequestBody Product product,@AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
-        if(merchant.getCreator()!=user.getId()){
-            throw new IllegalArgumentException("merchant creator not equals userId");
+        if(merchant.getCreator().longValue()!=user.getId()){
+            throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
         }
         merchantService.saveProduct(product);
         return Result.successResult(product);
@@ -190,8 +197,8 @@ public class MerchantController {
     @ResponseBody
     public Result editProduct(@RequestBody Product product,@AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
-        if(merchant.getCreator()!=user.getId()){
-            throw new IllegalArgumentException("merchant creator not equals userId");
+        if(merchant.getCreator().longValue()!=user.getId()){
+            throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
         }
         Product productdb = merchantService.getProductBy(product.getId());
         if(StringUtils.isNotEmpty(product.getName())){
@@ -200,7 +207,7 @@ public class MerchantController {
         if(StringUtils.isNotEmpty(product.getPictures())){
             productdb.setPictures(product.getPictures());
         }
-        if(product.getPrice()!=0L){
+        if(product.getPrice()!=null){
             productdb.setPrice(product.getPrice());
         }
         if(StringUtils.isNotEmpty(product.getTags())){
@@ -212,7 +219,7 @@ public class MerchantController {
         if(StringUtils.isNotEmpty(product.getSummary())){
             productdb.setSummary(product.getSummary());
         }
-        if(product.getSupplyPerDay()!=0L){
+        if(product.getSupplyPerDay()!=null){
             productdb.setSupplyPerDay(product.getSupplyPerDay());
         }
         if(product.isAvailable()!=productdb.isAvailable()){
@@ -222,7 +229,7 @@ public class MerchantController {
             productdb.setMain(product.isMain());
         }
         merchantService.saveProduct(productdb);
-        return Result.successResult(product);
+        return Result.successResult(productdb);
     }
 
     @RequestMapping(value = "/products/{pid}", method = RequestMethod.DELETE)
@@ -230,8 +237,8 @@ public class MerchantController {
     public Result removeProduct(@PathVariable long pid,@AuthenticationPrincipal User user) {
         Product product = merchantService.getProductBy(pid);
         Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
-        if(merchant.getCreator()!=user.getId()){
-            throw new IllegalArgumentException("merchant creator not equals userId");
+        if(merchant.getCreator().longValue()!=user.getId()){
+            throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
         }
         merchantService.removeProduct(pid);
         return Result.successResultWithoutData();
@@ -239,7 +246,7 @@ public class MerchantController {
 
     @RequestMapping(value = "/products/{pid}", method = RequestMethod.GET)
     @ResponseBody
-    public Result getProduct(@PathVariable long pid) {
+    public Result getProduct(@PathVariable long pid,@AuthenticationPrincipal User user) {
         Product product = merchantService.getProductBy(pid);
         return Result.successResult(product);
     }
