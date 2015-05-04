@@ -38,9 +38,9 @@ public class OrderController {
         return Result.successResult(orderService.removeCart(user.getId()));
     }
 
-    @RequestMapping(value = "/settlement", method = RequestMethod.GET)
-    public Result settlementOrder(@AuthenticationPrincipal User user) {
-        return Result.successResult(orderService.getSettlement(user.getId()));
+    @RequestMapping(value = "/settlement", method = RequestMethod.POST)
+    public Result settlementOrder(@RequestBody OrderRequest orderRequest, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.initOrder(orderRequest));
     }
 
     @RequestMapping(value = "/orders", method = RequestMethod.POST)
@@ -53,8 +53,6 @@ public class OrderController {
         return Result.successResult(orderService.getOrders(user.getId()));
     }
 
-
-    //change deliver method extra deliver method feed
 
 
 

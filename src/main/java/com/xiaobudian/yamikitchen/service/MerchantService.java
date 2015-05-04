@@ -13,7 +13,15 @@ import java.util.List;
 public interface MerchantService {
     public List<Merchant> getMerchants(int page, int pageSize, Double longitude, Double latitude);
 
+    public Merchant saveMerchant(Merchant merchant);
+
+    public void removeMerchant(long id);
+
     public List<Product> getProductsBy(Long rid, Integer page, Integer size);
+
+    public Product saveProduct(Product product);
+
+    public void removeProduct(long id);
 
     public FavoriteResult addFavorite(Long rid, Long uid);
 
@@ -23,7 +31,9 @@ public interface MerchantService {
 
     public List<Merchant> getFavorites(Long uid, Integer pageFrom, Integer pageSize);
 
-    List<Product> gteMainProduct(Long rid);
+    public List<Product> gteMainProduct(Long rid);
 
     public Merchant getMerchantBy(Long rid);
+
+    public Product getProductBy(long pid);
 }

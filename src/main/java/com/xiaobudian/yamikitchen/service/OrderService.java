@@ -6,6 +6,7 @@ import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,8 +19,15 @@ public interface OrderService {
 
     public Cart getCart(Long id);
 
+    public List<Order> getOrdersByMerchantIdAndStatusAndCreateDateBetween(int page, int pageSize,long rid,int status,Date dateFrom,Date dateTo);
+
+    public List<OrderItem>  getItemsInOrder(String orderNo);
+
     public boolean removeCart(Long id);
 
+    public List<Order> getTodayHandingOrdersBy(int page,int pageSize,long rid);
+
+    public List<Order> getTodaySolvedOrdersBy(int page,int pageSize,long rid);
     public Order initOrder(OrderRequest orderRequest);
 
     public Order createOrder(Order order);

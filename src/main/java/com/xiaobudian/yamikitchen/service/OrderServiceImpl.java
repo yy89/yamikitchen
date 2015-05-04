@@ -4,10 +4,11 @@ import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.domain.Order;
 import com.xiaobudian.yamikitchen.domain.OrderItem;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
-import com.xiaobudian.yamikitchen.domain.cart.Settlement;
-import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
-import com.xiaobudian.yamikitchen.repository.*;
+import com.xiaobudian.yamikitchen.repository.MerchantRepository;
+import com.xiaobudian.yamikitchen.repository.OrderRepository;
+import com.xiaobudian.yamikitchen.repository.ProductRepository;
+import com.xiaobudian.yamikitchen.repository.RedisRepository;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,10 +36,6 @@ public class OrderServiceImpl implements OrderService {
     private MerchantRepository merchantRepository;
     @Inject
     private OrderRepository orderRepository;
-    @Inject
-    private UserAddressRepository userAddressRepository;
-    @Inject
-    private CouponRepository couponRepository;
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId) {
@@ -117,17 +114,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getOrders(Long uid) {
         return orderRepository.findByUid(uid);
-    }
-
-    @Override
-    public Settlement getSettlement(Long uid) {
-        Settlement settlement = new Settlement();
-        settlement.setAddress(userAddressRepository.findByUidAndIsDefaultTrue(uid));
-        List<Coupon> coupons = couponRepository.findByUid(uid);
-        settlement.setCoupon(CollectionUtils.isEmpty(coupons) ? null : coupons.get(0));
-        settlement.setCart(getCart(uid));
-        settlement.setPaymentMethod(0);
-        return settlement;
     }
 
     static final class ItemKey {

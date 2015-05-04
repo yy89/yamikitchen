@@ -11,12 +11,9 @@ import com.xiaobudian.yamikitchen.repository.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Johnson on 2015/4/24.
@@ -38,8 +35,28 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
+    public Merchant saveMerchant(Merchant merchant) {
+        return merchantRepository.save(merchant);
+    }
+
+    @Override
+    public void removeMerchant(long id) {
+        merchantRepository.delete(id);
+    }
+
+    @Override
     public List<Product> getProductsBy(Long rid, Integer page, Integer size) {
         return productRepository.findByMerchantId(rid, new PageRequest(page, size));
+    }
+
+    @Override
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    @Override
+    public void removeProduct(long id) {
+        productRepository.delete(id);
     }
 
     @Override
@@ -78,6 +95,7 @@ public class MerchantServiceImpl implements MerchantService {
         return merchantRepository.findByUidFavorite(uid, new PageRequest(page, size));
     }
 
+
     @Override
     public List<Product> gteMainProduct(Long rid) {
         return productRepository.findByMerchantIdAndMainIsTrue(rid);
@@ -86,5 +104,10 @@ public class MerchantServiceImpl implements MerchantService {
     @Override
     public Merchant getMerchantBy(Long rid) {
         return merchantRepository.findOne(rid);
+    }
+
+    @Override
+    public Product getProductBy(long pid) {
+        return productRepository.findOne(pid);
     }
 }
