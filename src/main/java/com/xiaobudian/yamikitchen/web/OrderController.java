@@ -6,17 +6,16 @@ import com.xiaobudian.yamikitchen.domain.OrderItem;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.service.OrderService;
 import com.xiaobudian.yamikitchen.util.DateUtils;
+import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
 import org.springframework.format.annotation.DateTimeFormat;
-import com.xiaobudian.yamikitchen.domain.User;
-import com.xiaobudian.yamikitchen.service.OrderService;
-import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import javax.ws.rs.QueryParam;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by johnson1 on 4/27/15.
@@ -83,7 +82,7 @@ public class OrderController {
     public Result getTodaySolvedOrders(@PathVariable("rid") Long rid,
                                         @RequestParam("page") Integer page,
                                         @RequestParam("size") Integer size) {
-        List<Order> orders = orderService.getTodaySolvedOrdersBy(page,size,rid);
+        List<Order> orders = orderService.getTodaySolvedOrdersBy(page, size, rid);
         List<OrderResponse> responses = new ArrayList<>();
         for (Order order : orders) {
             List<OrderItem> orderItems = orderService.getItemsInOrder(order.getOrderNo());

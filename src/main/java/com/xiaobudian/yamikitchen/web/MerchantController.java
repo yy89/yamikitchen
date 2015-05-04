@@ -88,7 +88,10 @@ public class MerchantController {
 
     @RequestMapping(value = "/merchants", method = RequestMethod.PUT)
     @ResponseBody
-    public Result editMerchant(@RequestBody Merchant merchant) {
+    public Result editMerchant(@RequestBody Merchant merchant,@AuthenticationPrincipal User user) {
+        if(merchant.getCreator()!=user.getId()){
+            throw new IllegalArgumentException("merchant creator not equals userId");
+        }
         Merchant merchantdb = merchantService.getMerchantBy(merchant.getId());
         if(StringUtils.isNotEmpty(merchant.getPictures())){
             merchantdb.setPictures(merchant.getPictures());
@@ -144,22 +147,37 @@ public class MerchantController {
 
     @RequestMapping(value = "/merchants/{rid}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Result removeMerchant(@PathVariable long rid) {
+    public Result removeMerchant(@PathVariable long rid,@AuthenticationPrincipal User user) {
+        Merchant merchant = merchantService.getMerchantBy(rid);
+        if(merchant.getCreator()!=user.getId()){
+            throw new IllegalArgumentException("merchant creator not equals userId");
+        }
         merchantService.removeMerchant(rid);
         return Result.successResultWithoutData();
     }
 
     @RequestMapping(value = "/products", method = RequestMethod.POST)
     @ResponseBody
-    public Result addProduct(@RequestBody Product product) {
+    public Result addProduct(@RequestBody Product product,@AuthenticationPrincipal User user) {
+        Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
+        if(merchant.getCreator()!=user.getId()){
+            throw new IllegalArgumentException("merchant creator not equals userId");
+        }
         merchantService.saveProduct(product);
         return Result.successResult(product);
     }
 
     @RequestMapping(value = "/products", method = RequestMethod.PUT)
     @ResponseBody
-    public Result editProduct(@RequestBody Product product) {
+    public Result editProduct(@RequestBody Product product,@AuthenticationPrincipal User user) {
+        Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
+        if(merchant.getCreator()!=user.getId()){
+            throw new IllegalArgumentException("merchant creator not equals userId");
+        }
         Product productdb = merchantService.getProductBy(product.getId());
+        if(StringUtils.isNotEmpty(product.getName())){
+            productdb.setName(product.getName());
+        }
         if(StringUtils.isNotEmpty(product.getPictures())){
             productdb.setPictures(product.getPictures());
         }
@@ -175,13 +193,24 @@ public class MerchantController {
         if(StringUtils.isNotEmpty(product.getSummary())){
             productdb.setSummary(product.getSummary());
         }
+        if(product.isAvailable()!=productdb.isAvailable()){
+            productdb.setAvailable(product.isAvailable());
+        }
+        if(product.isMain()!=productdb.isMain()){
+            productdb.setMain(product.isMain());
+        }
         merchantService.saveProduct(productdb);
         return Result.successResult(product);
     }
 
     @RequestMapping(value = "/products/{pid}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Result removeProduct(@PathVariable long pid) {
+    public Result removeProduct(@PathVariable long pid,@AuthenticationPrincipal User user) {
+        Product product = merchantService.getProductBy(pid);
+        Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
+        if(merchant.getCreator()!=user.getId()){
+            throw new IllegalArgumentException("merchant creator not equals userId");
+        }
         merchantService.removeProduct(pid);
         return Result.successResultWithoutData();
     }

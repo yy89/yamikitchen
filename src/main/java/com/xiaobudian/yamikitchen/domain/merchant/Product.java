@@ -29,7 +29,6 @@ public class Product implements Serializable {
     private boolean available = true;
     private boolean main = false;
 
-
     public Long getId() {
         return id;
     }
