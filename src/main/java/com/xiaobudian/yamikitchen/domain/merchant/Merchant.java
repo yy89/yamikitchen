@@ -51,7 +51,7 @@ public class Merchant implements Serializable {
     private Long deliverFee;
     private String deliverComment;
 
-   public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -274,6 +274,7 @@ public class Merchant implements Serializable {
     public String getBusinessHours() {
         return this.businessHours;
     }
+
     public void setBusinessHours(String businessHours) {
         this.businessHours = businessHours;
     }
@@ -333,4 +334,5 @@ public class Merchant implements Serializable {
     public void setGoodCuisine(String goodCuisine) {
         this.goodCuisine = goodCuisine;
     }
+
 }

@@ -89,7 +89,10 @@ public class MerchantController {
     @RequestMapping(value = "/merchants", method = RequestMethod.PUT)
     @ResponseBody
     public Result editMerchant(@RequestBody Merchant merchant,@AuthenticationPrincipal User user) {
-        if(merchant.getCreator()!=user.getId()){
+        Merchant merchantTmp = merchantService.getMerchantBy(merchant.getId());
+        if(merchantTmp.getCreator()!=user.getId()){
+            System.out.println("===================creator==========="+merchantTmp.getCreator());
+            System.out.println("===================user==========="+user.getId());
             throw new IllegalArgumentException("merchant creator not equals userId");
         }
         Merchant merchantdb = merchantService.getMerchantBy(merchant.getId());
