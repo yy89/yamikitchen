@@ -1,4 +1,4 @@
-package com.xiaobudian.yamikitchen.domain;
+package com.xiaobudian.yamikitchen.domain.coupon;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

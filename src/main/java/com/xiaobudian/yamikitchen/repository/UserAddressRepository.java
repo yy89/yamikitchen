@@ -10,4 +10,7 @@ import java.util.List;
  */
 public interface UserAddressRepository extends JpaRepository<UserAddress, Long> {
     public List<UserAddress> findByUid(Long uid);
+
+    public UserAddress findByUidAndIsDefaultTrue(Long uid);
+
 }
