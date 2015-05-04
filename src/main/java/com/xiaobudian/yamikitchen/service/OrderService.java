@@ -21,7 +21,8 @@ public interface OrderService {
 
     public Order initOrder(OrderRequest orderRequest);
 
-    public Order
-    createOrder(Order order);
+    public Order createOrder(Order order);
+
+    public List<Order> getOrders(Long id);
 
 }

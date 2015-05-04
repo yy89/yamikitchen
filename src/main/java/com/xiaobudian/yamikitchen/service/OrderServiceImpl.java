@@ -111,6 +111,11 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order);
     }
 
+    @Override
+    public List<Order> getOrders(Long uid) {
+        return orderRepository.findByUid(uid);
+    }
+
     static final class ItemKey {
         private static final String DELIMITER = ":";
         private Long rid;
