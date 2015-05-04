@@ -16,4 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     public List<Order> findByMerchantIdAndStatusAndCreateDateBetween(long merchantId,Integer status,Date dateFrom ,Date dateTo,Pageable pageable);
 
+    List<Order> findByUid(Long uid);
+
 }

@@ -103,5 +103,11 @@ public class OrderController {
         return Result.successResult(orderService.createOrder(order));
     }
 
+    @RequestMapping(value = "/orders", method = RequestMethod.GET)
+    public Result getOrders(@RequestBody Order order, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.getOrders(user.getId()));
+    }
+
+
 
 }
