@@ -4,6 +4,7 @@ import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.domain.Order;
 import com.xiaobudian.yamikitchen.domain.OrderItem;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
+import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
 import com.xiaobudian.yamikitchen.repository.MerchantRepository;
 import com.xiaobudian.yamikitchen.repository.OrderRepository;
@@ -16,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -88,10 +90,30 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> getOrdersByMerchantIdAndStatusAndCreateDateBetween(int page, int pageSize, long rid, int status, Date dateFrom, Date dateTo) {
+        return null;
+    }
+
+    @Override
+    public List<OrderItem> getItemsInOrder(String orderNo) {
+        return null;
+    }
+
+    @Override
     public boolean removeCart(Long uid) {
         final String key = Keys.cartKey(uid);
         redisRepository.removeKey(key);
         return true;
+    }
+
+    @Override
+    public List<Order> getTodayHandingOrdersBy(int page, int pageSize, long rid) {
+        return null;
+    }
+
+    @Override
+    public List<Order> getTodaySolvedOrdersBy(int page, int pageSize, long rid) {
+        return null;
     }
 
     @Override
@@ -114,6 +136,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getOrders(Long uid) {
         return orderRepository.findByUid(uid);
+    }
+
+    @Override
+    public Settlement getSettlement(Long id) {
+        return null;
     }
 
     static final class ItemKey {
