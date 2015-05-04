@@ -2,20 +2,13 @@ package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.Order;
-import com.xiaobudian.yamikitchen.domain.OrderItem;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.service.OrderService;
-import com.xiaobudian.yamikitchen.util.DateUtils;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
-import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by johnson1 on 4/27/15.
@@ -45,53 +38,6 @@ public class OrderController {
         return Result.successResult(orderService.removeCart(user.getId()));
     }
 
-    @RequestMapping(value = "/{rid}/orders", method = RequestMethod.GET)
-    @ResponseBody
-    public Result getOrders(@PathVariable("rid") Long rid,
-                            @RequestParam("status") Integer status,
-                            @RequestParam("page") Integer page,
-                            @RequestParam("size") Integer size,
-                            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-        List<Order> orders = orderService.getOrdersByMerchantIdAndStatusAndCreateDateBetween(page, size, rid, status, date, DateUtils.nextDay(date));
-        List<OrderResponse> responses = new ArrayList<>();
-        for (Order order : orders) {
-            List<OrderItem> orderItems = orderService.getItemsInOrder(order.getOrderNo());
-            OrderResponse orderResponse = new OrderResponse.Builder().order(order).orderItems(orderItems).build();
-            responses.add(orderResponse);
-        }
-        return Result.successResult(responses);
-    }
-
-    @RequestMapping(value = "{rid}/today/handing/orders/", method = RequestMethod.GET)
-    @ResponseBody
-    public Result getTodayHandingOrders(@PathVariable("rid") Long rid,
-                                 @RequestParam("page") Integer page,
-                                 @RequestParam("size") Integer size) {
-        List<Order> orders = orderService.getTodayHandingOrdersBy(page, size, rid);
-        List<OrderResponse> responses = new ArrayList<>();
-        for (Order order : orders) {
-            List<OrderItem> orderItems = orderService.getItemsInOrder(order.getOrderNo());
-            OrderResponse orderResponse = new OrderResponse.Builder().order(order).orderItems(orderItems).build();
-            responses.add(orderResponse);
-        }
-        return Result.successResult(responses);
-    }
-
-    @RequestMapping(value = "{rid}/today/solved/orders/", method = RequestMethod.GET)
-    @ResponseBody
-    public Result getTodaySolvedOrders(@PathVariable("rid") Long rid,
-                                        @RequestParam("page") Integer page,
-                                        @RequestParam("size") Integer size) {
-        List<Order> orders = orderService.getTodaySolvedOrdersBy(page, size, rid);
-        List<OrderResponse> responses = new ArrayList<>();
-        for (Order order : orders) {
-            List<OrderItem> orderItems = orderService.getItemsInOrder(order.getOrderNo());
-            OrderResponse orderResponse = new OrderResponse.Builder().order(order).orderItems(orderItems).build();
-            responses.add(orderResponse);
-        }
-        return Result.successResult(responses);
-    }
-
     @RequestMapping(value = "/settlement", method = RequestMethod.POST)
     public Result settlementOrder(@RequestBody OrderRequest orderRequest, @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.initOrder(orderRequest));
@@ -106,6 +52,9 @@ public class OrderController {
     public Result getOrders(@RequestBody Order order, @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getOrders(user.getId()));
     }
+
+
+
 
 
 

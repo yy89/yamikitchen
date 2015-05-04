@@ -42,7 +42,7 @@ public class Merchant implements Serializable {
     @Transient
     private String distance;
     private Long creator;
-    private String businessHours;
+    private String businessHours;//8:00-10:00,14:00-18:00
     private String realName;
     private Integer gender;
     private String region;
