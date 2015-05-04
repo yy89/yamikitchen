@@ -1,11 +1,20 @@
 package com.xiaobudian.yamikitchen.domain.coupon;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by johnson1 on 5/4/15.
  */
-public class Coupon {
+@Entity
+public class Coupon implements Serializable {
+    private static final long serialVersionUID = 4324002654818738897L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private Long amount;
