@@ -24,6 +24,7 @@ public class Product implements Serializable {
     private Long restCount = 0l;
     private String tags;
     private Long soldCount = 0l;
+    private Integer supplyPerDay;
     private Long commentCount = 0l;
     private Long favoriteCount = 0l;
     private boolean available = true;
@@ -139,5 +140,13 @@ public class Product implements Serializable {
 
     public void setMain(boolean main) {
         this.main = main;
+    }
+
+    public Integer getSupplyPerDay() {
+        return supplyPerDay;
+    }
+
+    public void setSupplyPerDay(Integer supplyPerDay) {
+        this.supplyPerDay = supplyPerDay;
     }
 }

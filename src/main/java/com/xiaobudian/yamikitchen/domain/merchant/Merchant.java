@@ -44,6 +44,9 @@ public class Merchant implements Serializable {
     private Long creator;
     private String businessHours;
     private String realName;
+    private Integer gender;
+    private String region;
+    private String goodCuisine;
     private String businessDayPerWeek;
     private Long deliverFee;
     private String deliverComment;
@@ -305,5 +308,29 @@ public class Merchant implements Serializable {
 
     public void setDeliverComment(String deliverComment) {
         this.deliverComment = deliverComment;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getGoodCuisine() {
+        return goodCuisine;
+    }
+
+    public void setGoodCuisine(String goodCuisine) {
+        this.goodCuisine = goodCuisine;
     }
 }

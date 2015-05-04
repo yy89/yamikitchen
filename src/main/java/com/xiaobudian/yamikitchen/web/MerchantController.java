@@ -117,6 +117,15 @@ public class MerchantController {
         if(StringUtils.isNotEmpty(merchant.getRealName())){
             merchantdb.setRealName(merchant.getRealName());
         }
+        if(merchant.getGender()!=0){
+            merchantdb.setGender(merchant.getGender());
+        }
+        if(StringUtils.isNotEmpty(merchant.getRegion())){
+            merchantdb.setRegion(merchant.getRegion());
+        }
+        if(StringUtils.isNotEmpty(merchant.getGoodCuisine())){
+            merchantdb.setGoodCuisine(merchant.getGoodCuisine());
+        }
         if(StringUtils.isNotEmpty(merchant.getBusinessHours())){
             merchantdb.setBusinessHours(merchant.getBusinessHours());
         }
@@ -192,6 +201,9 @@ public class MerchantController {
         }
         if(StringUtils.isNotEmpty(product.getSummary())){
             productdb.setSummary(product.getSummary());
+        }
+        if(product.getSupplyPerDay()!=0L){
+            productdb.setSupplyPerDay(product.getSupplyPerDay());
         }
         if(product.isAvailable()!=productdb.isAvailable()){
             productdb.setAvailable(product.isAvailable());
