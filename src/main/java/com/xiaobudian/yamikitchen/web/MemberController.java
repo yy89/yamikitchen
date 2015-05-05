@@ -87,5 +87,4 @@ public class MemberController {
     public Result removeAddress(@PathVariable Long addressId) {
         return Result.successResult(memberService.removeAddress(addressId));
     }
-
 }
