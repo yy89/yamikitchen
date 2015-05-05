@@ -1,6 +1,6 @@
 package com.xiaobudian.yamikitchen.repository;
 
-import com.xiaobudian.yamikitchen.domain.OrderItem;
+import com.xiaobudian.yamikitchen.domain.order.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -16,6 +16,7 @@ public class Coupon implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long uid;
     private String name;
     private Long amount;
     private String usageCondition;
@@ -86,5 +87,13 @@ public class Coupon implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Long getUid() {
+        return uid;
+    }
+
+    public void setUid(Long uid) {
+        this.uid = uid;
     }
 }

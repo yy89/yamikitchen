@@ -2,7 +2,7 @@ package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.LocalizedMessageSource;
 import com.xiaobudian.yamikitchen.domain.User;
-import com.xiaobudian.yamikitchen.domain.UserAddress;
+import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 import com.xiaobudian.yamikitchen.repository.UserAddressRepository;
 import com.xiaobudian.yamikitchen.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;

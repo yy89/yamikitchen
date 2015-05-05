@@ -1,8 +1,7 @@
 package com.xiaobudian.yamikitchen.web.dto;
 
-import com.xiaobudian.yamikitchen.domain.Order;
-import com.xiaobudian.yamikitchen.domain.OrderItem;
-import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.domain.order.Order;
+import com.xiaobudian.yamikitchen.domain.order.OrderItem;
 
 import java.util.ArrayList;
 import java.util.List;

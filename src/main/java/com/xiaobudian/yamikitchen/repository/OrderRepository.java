@@ -1,6 +1,6 @@
 package com.xiaobudian.yamikitchen.repository;
 
-import com.xiaobudian.yamikitchen.domain.Order;
+import com.xiaobudian.yamikitchen.domain.order.Order;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 

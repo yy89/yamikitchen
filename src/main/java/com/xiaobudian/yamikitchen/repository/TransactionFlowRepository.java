@@ -1,6 +1,6 @@
 package com.xiaobudian.yamikitchen.repository;
 
-import com.xiaobudian.yamikitchen.domain.TransactionFlow;
+import com.xiaobudian.yamikitchen.domain.account.TransactionFlow;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

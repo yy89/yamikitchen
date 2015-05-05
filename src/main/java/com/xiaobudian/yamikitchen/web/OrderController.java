@@ -1,10 +1,9 @@
 package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
-import com.xiaobudian.yamikitchen.domain.Order;
+import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.service.OrderService;
-import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +51,4 @@ public class OrderController {
     public Result getOrders(@RequestBody Order order, @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getOrders(user.getId()));
     }
-
-
 }

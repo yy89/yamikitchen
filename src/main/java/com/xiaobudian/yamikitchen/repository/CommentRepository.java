@@ -1,6 +1,6 @@
 package com.xiaobudian.yamikitchen.repository;
 
-import com.xiaobudian.yamikitchen.domain.Comment;
+import com.xiaobudian.yamikitchen.domain.merchant.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
