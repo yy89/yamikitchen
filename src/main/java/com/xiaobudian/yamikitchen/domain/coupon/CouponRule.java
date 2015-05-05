@@ -1,4 +1,4 @@
-package com.xiaobudian.yamikitchen.domain;
+package com.xiaobudian.yamikitchen.domain.coupon;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,11 +11,12 @@ import java.util.Date;
  * Created by Johnson on 2015/4/22.
  */
 @Entity
-public class Coupon implements Serializable {
+public class CouponRule implements Serializable {
     private static final long serialVersionUID = -461378934511020093L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String name;
     private Double amount;
     private Integer usageCondition;
     private Integer expiredDays;
@@ -86,5 +87,13 @@ public class Coupon implements Serializable {
 
     public void setHasExpired(boolean hasExpired) {
         this.hasExpired = hasExpired;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

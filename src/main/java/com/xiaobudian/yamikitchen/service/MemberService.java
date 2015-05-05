@@ -21,6 +21,4 @@ public interface MemberService {
 
     public User getUser(Long creator);
 
-    public boolean removeAddress(Long addressId);
-
 }

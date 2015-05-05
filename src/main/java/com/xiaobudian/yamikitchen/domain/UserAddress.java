@@ -1,7 +1,5 @@
 package com.xiaobudian.yamikitchen.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import java.io.Serializable;
 

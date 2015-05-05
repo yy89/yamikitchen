@@ -46,6 +46,13 @@ public class User implements Serializable, UserDetails {
         this.password = password;
     }
 
+    public User(String username,String headPic,Integer gender,String region,String description){
+        this.username = username;
+        this.headPic = headPic;
+        this.gender = gender;
+        this.region = region;
+        this.description = description;
+    }
     public Long getId() {
         return id;
     }
