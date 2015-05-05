@@ -6,10 +6,7 @@ import com.xiaobudian.yamikitchen.domain.OrderItem;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
-import com.xiaobudian.yamikitchen.repository.MerchantRepository;
-import com.xiaobudian.yamikitchen.repository.OrderRepository;
-import com.xiaobudian.yamikitchen.repository.ProductRepository;
-import com.xiaobudian.yamikitchen.repository.RedisRepository;
+import com.xiaobudian.yamikitchen.repository.*;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,6 +35,10 @@ public class OrderServiceImpl implements OrderService {
     private MerchantRepository merchantRepository;
     @Inject
     private OrderRepository orderRepository;
+    @Inject
+    private UserAddressRepository userAddressRepository;
+    @Inject
+    private CouponRepository couponRepository;
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId) {
@@ -140,7 +141,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Settlement getSettlement(Long uid) {
-        return null;
+        Settlement settlement = new Settlement();
+        settlement.setAddress(userAddressRepository.findByUidAndIsDefaultTrue(uid));
+        settlement.setPaymentMethod(1);
+        settlement.setCart(getCart(uid));
+        settlement.setCoupon(couponRepository.findFirstByUid(uid));
+        settlement.setDeliverDate(merchantRepository.findOne(settlement.getCart().getMerchantId()).getBusinessHours());
+        return settlement;
     }
 
     static final class ItemKey {

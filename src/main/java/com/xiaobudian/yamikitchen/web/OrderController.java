@@ -52,6 +52,4 @@ public class OrderController {
     public Result getOrders(@RequestBody Order order, @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getOrders(user.getId()));
     }
-
-
 }
