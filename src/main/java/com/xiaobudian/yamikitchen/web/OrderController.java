@@ -39,8 +39,8 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/settlement", method = RequestMethod.POST)
-    public Result settlementOrder(@RequestBody OrderRequest orderRequest, @AuthenticationPrincipal User user) {
-        return Result.successResult(orderService.initOrder(orderRequest));
+    public Result settlementOrder(@AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.getSettlement(user.getId()));
     }
 
     @RequestMapping(value = "/orders", method = RequestMethod.POST)
@@ -52,10 +52,6 @@ public class OrderController {
     public Result getOrders(@RequestBody Order order, @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getOrders(user.getId()));
     }
-
-
-
-
 
 
 }

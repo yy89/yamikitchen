@@ -165,7 +165,7 @@ public class MerchantController {
             user.setDescription(merchant.getDescription());
         }
         merchantService.saveMerchant(merchantdb);
-        memberService.saveUser(user);
+//        memberService.saveUser(user);
         return Result.successResult(merchantdb);
     }
 

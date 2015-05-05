@@ -64,7 +64,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public User saveUser(User user) {
-        return userRepository.save(user);
+    public boolean removeAddress(Long addressId) {
+        userAddressRepository.delete(addressId);
+        return true;
     }
 }

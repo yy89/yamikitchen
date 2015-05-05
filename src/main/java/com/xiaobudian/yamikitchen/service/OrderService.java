@@ -35,5 +35,5 @@ public interface OrderService {
 
     public List<Order> getOrders(Long id);
 
-    public Settlement getSettlement(Long id);
+    public Settlement getSettlement(Long uid);
 }

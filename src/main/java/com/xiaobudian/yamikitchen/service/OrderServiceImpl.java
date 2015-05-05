@@ -139,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Settlement getSettlement(Long id) {
+    public Settlement getSettlement(Long uid) {
         return null;
     }
 
