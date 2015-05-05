@@ -50,6 +50,8 @@ public class Merchant implements Serializable {
     private String businessDayPerWeek;
     private Long deliverFee;
     private String deliverComment;
+    private boolean isDelete = false;
+    private Integer verifyStatus = 0;//0  Î´ÉóºË£¬1 ÉóºËÍ¨¹ý 2£¬ÉóºË¾Ü¾ø
 
     public Long getId() {
         return id;
@@ -335,4 +337,19 @@ public class Merchant implements Serializable {
         this.goodCuisine = goodCuisine;
     }
 
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(boolean isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    public Integer getVerifyStatus() {
+        return verifyStatus;
+    }
+
+    public void setVerifyStatus(Integer verifyStatus) {
+        this.verifyStatus = verifyStatus;
+    }
 }

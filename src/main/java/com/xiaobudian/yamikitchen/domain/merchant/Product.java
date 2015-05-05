@@ -28,6 +28,7 @@ public class Product implements Serializable {
     private Long commentCount = 0l;
     private Long favoriteCount = 0l;
     private boolean available = true;
+    private boolean isDelete = false;
     private boolean main = false;
 
     public Long getId() {
@@ -148,5 +149,13 @@ public class Product implements Serializable {
 
     public void setSupplyPerDay(Integer supplyPerDay) {
         this.supplyPerDay = supplyPerDay;
+    }
+
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(boolean isDelete) {
+        this.isDelete = isDelete;
     }
 }

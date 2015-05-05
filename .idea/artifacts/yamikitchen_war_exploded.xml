@@ -63,8 +63,6 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.3.0" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.2.3" />
           <element id="library" level="project" name="Maven: joda-time:joda-time:2.3" />
-          <element id="file-copy" path="$PROJECT_DIR$/lib/jzsms-6.0.jar" />
-          <element id="file-copy" path="$PROJECT_DIR$/lib/CCP_REST_SDK_JAVA_v2.6r.jar" />
         </element>
       </element>
       <element id="directory" name="META-INF">

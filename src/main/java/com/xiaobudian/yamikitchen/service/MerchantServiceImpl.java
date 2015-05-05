@@ -41,8 +41,8 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public void removeMerchant(long id) {
-        merchantRepository.delete(id);
-        productRepository.deleteByMerchantId(id);
+        merchantRepository.removeById(id);
+        productRepository.removeByMerchantId(id);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public void removeProduct(long id) {
-        productRepository.delete(id);
+        productRepository.removeById(id);
     }
 
     @Override
@@ -108,7 +108,34 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
+    public Merchant getMerchantByProductId(long pid) {
+        Product product = productRepository.findOne(pid);
+        return merchantRepository.findOne(product.getMerchantId());
+    }
+
+    @Override
     public Product getProductBy(long pid) {
         return productRepository.findOne(pid);
+    }
+
+    @Override
+    public int countMerhcantsByCreator(long uid) {
+        return merchantRepository.countByCreator(uid);
+    }
+
+    @Override
+    public void rejectMerchants(long id) {
+        merchantRepository.rejectMerchants(id);
+    }
+
+    @Override
+    public void passMerchants(long id) {
+        Merchant merchant = merchantRepository.passMerchants(id);
+        userRepository.convertToMerchant(merchant.getCreator());
+    }
+
+    @Override
+    public Merchant getMerchantByCreator(long creator) {
+        return merchantRepository.findByCreator(creator);
     }
 }

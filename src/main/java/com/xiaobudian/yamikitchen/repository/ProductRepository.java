@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.repository;
 
+import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,8 +20,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     public List<Product> findByMerchantIdAndMainIsTrue(Long merchantId);
 
     @Modifying
-    @Query("delete from Product where merchantId = :merchantId")
+    @Query("update  Product set isDelete = true where merchantId = ?1")
     @Transactional
-    public void deleteByMerchantId(@Param("merchantId")long merchantId);
+    public void removeByMerchantId(long merchantId);
+
+    @Modifying
+    @Query("update Product set isDelete = true where id = ?1")
+    @Transactional
+    public void removeById(long pid);
 
 }

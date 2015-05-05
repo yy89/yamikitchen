@@ -1,7 +1,10 @@
 package com.xiaobudian.yamikitchen.repository;
 
 import com.xiaobudian.yamikitchen.domain.User;
+import org.hibernate.validator.constraints.Mod10Check;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 
 /**
@@ -9,4 +12,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
     public User findByUsername(String username);
+
+    @Modifying
+    @Query("update User set type = 1 where id = ?1")
+    public User convertToMerchant(long id);
+
 }

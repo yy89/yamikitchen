@@ -35,5 +35,15 @@ public interface MerchantService {
 
     public Merchant getMerchantBy(Long rid);
 
+    public Merchant getMerchantByProductId(long pid);
+
     public Product getProductBy(long pid);
+
+    public int countMerhcantsByCreator(long uid);
+
+    public void rejectMerchants(long id);
+
+    public void passMerchants(long id);
+
+    public Merchant getMerchantByCreator(long creator);
 }

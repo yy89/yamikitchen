@@ -81,6 +81,11 @@ public class MerchantController {
     @RequestMapping(value = "/merchants", method = RequestMethod.POST)
     @ResponseBody
     public Result addMerchant(@RequestBody Merchant merchant, @AuthenticationPrincipal User user) {
+        Long userId = user.getId();
+        int count  = merchantService.countMerhcantsByCreator(userId);
+        if(count!=0){
+            throw new IllegalArgumentException("用户对应的商户已存在，不能重复创建");
+        }
         merchant.setCreator(user.getId());
         merchantService.saveMerchant(merchant);
         return Result.successResult(merchant);
@@ -91,7 +96,7 @@ public class MerchantController {
     public Result editMerchant(@RequestBody Merchant merchant,@AuthenticationPrincipal User user) {
         Merchant merchantTmp = merchantService.getMerchantBy(merchant.getId());
         if(merchantTmp.getCreator().longValue()!=user.getId()){
-            throw new IllegalArgumentException("merchant creator not equals userId");
+            throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
         }
         Merchant merchantdb = merchantService.getMerchantBy(merchant.getId());
         if(StringUtils.isNotEmpty(merchant.getPictures())){
@@ -164,10 +169,10 @@ public class MerchantController {
         return Result.successResult(merchantdb);
     }
 
-    @RequestMapping(value = "/merchants/{rid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/merchants/info", method = RequestMethod.GET)
     @ResponseBody
-    public Result getMerchant(@PathVariable long rid) {
-        Merchant merchant = merchantService.getMerchantBy(rid);
+    public Result getMerchant(@AuthenticationPrincipal User user) {
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         return Result.successResult(merchant);
     }
 
@@ -181,6 +186,22 @@ public class MerchantController {
         merchantService.removeMerchant(rid);
         return Result.successResultWithoutData();
     }
+
+    @RequestMapping(value="/merchants/{rid}/reject",method = RequestMethod.POST)
+    @ResponseBody
+    public Result rejectMerchants(@PathVariable long rid,@AuthenticationPrincipal User user){
+        merchantService.rejectMerchants(rid);
+        return Result.successResultWithoutData();
+    }
+
+    @RequestMapping(value="/merchants/{rid}/pass",method = RequestMethod.POST)
+    @ResponseBody
+    public Result passMerchants(@PathVariable long rid,@AuthenticationPrincipal User user){
+        merchantService.passMerchants(rid);
+        return Result.successResultWithoutData();
+    }
+
+
 
     @RequestMapping(value = "/products", method = RequestMethod.POST)
     @ResponseBody
@@ -196,7 +217,7 @@ public class MerchantController {
     @RequestMapping(value = "/products", method = RequestMethod.PUT)
     @ResponseBody
     public Result editProduct(@RequestBody Product product,@AuthenticationPrincipal User user) {
-        Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
+        Merchant merchant = merchantService.getMerchantByProductId(product.getId());
         if(merchant.getCreator().longValue()!=user.getId()){
             throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
         }
