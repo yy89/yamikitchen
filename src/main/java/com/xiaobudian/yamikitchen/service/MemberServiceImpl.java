@@ -62,4 +62,10 @@ public class MemberServiceImpl implements MemberService {
     public User getUser(Long creator) {
         return userRepository.findOne(creator);
     }
+
+    @Override
+    public boolean removeAddress(Long addressId) {
+        userAddressRepository.delete(addressId);
+        return true;
+    }
 }

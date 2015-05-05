@@ -82,4 +82,10 @@ public class MemberController {
         return Result.successResult(memberService.addAddress(address));
     }
 
+    @RequestMapping(value = "/addresses/{addressId}", method = RequestMethod.PUT)
+    @ResponseBody
+    public Result removeAddress(@PathVariable Long addressId) {
+        return Result.successResult(memberService.removeAddress(addressId));
+    }
+
 }
