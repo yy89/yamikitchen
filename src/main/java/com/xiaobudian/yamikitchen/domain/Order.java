@@ -20,8 +20,9 @@ public class Order implements Serializable {
     private Integer totalQuantity;
     private Double price;
     private Date createDate;
-    private Date deliverDate;
-    private Date outDate;
+    private Date deliverDate;//到达时间
+    private Date outDate;//送达时间
+    private Date expectDate;//期望送达时间 0代表尽快送达
     private Integer paymentMethod;
     private Long uid;
     private String nickName;
@@ -321,4 +322,13 @@ public class Order implements Serializable {
     public void setDeliverMethod(Integer deliverMethod) {
         this.deliverMethod = deliverMethod;
     }
+
+    public Date getExpectDate() {
+        return expectDate;
+    }
+
+    public void setExpectDate(Date expectDate) {
+        this.expectDate = expectDate;
+    }
+
 }
