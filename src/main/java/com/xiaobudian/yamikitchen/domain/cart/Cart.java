@@ -1,6 +1,6 @@
 package com.xiaobudian.yamikitchen.domain.cart;
 
-import com.xiaobudian.yamikitchen.domain.OrderItem;
+import com.xiaobudian.yamikitchen.domain.order.OrderItem;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.persistence.Transient;

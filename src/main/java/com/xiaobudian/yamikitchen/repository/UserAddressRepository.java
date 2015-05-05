@@ -1,6 +1,6 @@
 package com.xiaobudian.yamikitchen.repository;
 
-import com.xiaobudian.yamikitchen.domain.UserAddress;
+import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

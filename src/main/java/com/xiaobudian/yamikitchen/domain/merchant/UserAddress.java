@@ -1,4 +1,4 @@
-package com.xiaobudian.yamikitchen.domain;
+package com.xiaobudian.yamikitchen.domain.merchant;
 
 import javax.persistence.*;
 import java.io.Serializable;

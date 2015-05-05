@@ -1,4 +1,4 @@
-package com.xiaobudian.yamikitchen.domain;
+package com.xiaobudian.yamikitchen.domain.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;

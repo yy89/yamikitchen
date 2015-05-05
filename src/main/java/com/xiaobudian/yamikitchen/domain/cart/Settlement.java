@@ -1,6 +1,6 @@
 package com.xiaobudian.yamikitchen.domain.cart;
 
-import com.xiaobudian.yamikitchen.domain.UserAddress;
+import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 
 /**
