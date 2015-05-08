@@ -4,15 +4,22 @@ import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
+import com.xiaobudian.yamikitchen.domain.order.Order;
+import com.xiaobudian.yamikitchen.domain.order.OrderItem;
 import com.xiaobudian.yamikitchen.service.MemberService;
 import com.xiaobudian.yamikitchen.service.MerchantService;
+import com.xiaobudian.yamikitchen.service.OrderService;
+import com.xiaobudian.yamikitchen.util.DateUtils;
 import com.xiaobudian.yamikitchen.web.dto.MerchantResponse;
+import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,6 +31,8 @@ public class MerchantController {
     private MerchantService merchantService;
     @Inject
     private MemberService memberService;
+    @Inject
+    private OrderService orderService;
 
     @RequestMapping(value = "/merchants", method = RequestMethod.GET)
     @ResponseBody
@@ -81,13 +90,10 @@ public class MerchantController {
     @RequestMapping(value = "/merchants", method = RequestMethod.POST)
     @ResponseBody
     public Result addMerchant(@RequestBody Merchant merchant, @AuthenticationPrincipal User user) {
-        if(user==null){
-            throw new IllegalArgumentException("please login!");
-        }
         Long userId = user.getId();
         int count  = merchantService.countMerhcantsByCreator(userId);
         if(count!=0){
-            throw new IllegalArgumentException("the user's merchants already exists, you can not create duplicate");
+            throw new RuntimeException("user.cannot.create.merchant.duplicate");
         }
         merchant.setCreator(user.getId());
         merchantService.saveMerchant(merchant);
@@ -97,139 +103,56 @@ public class MerchantController {
     @RequestMapping(value = "/merchants", method = RequestMethod.PUT)
     @ResponseBody
     public Result editMerchant(@RequestBody Merchant merchant,@AuthenticationPrincipal User user) {
-        if(user==null){
-            throw new IllegalArgumentException("please login!");
-        }
-        Merchant merchantTmp = merchantService.getMerchantBy(merchant.getId());
-        if(merchantTmp.getCreator().longValue()!=user.getId()){
-            throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
-        }
-        Merchant merchantdb = merchantService.getMerchantBy(merchant.getId());
-        if(StringUtils.isNotEmpty(merchant.getPictures())){
-            merchantdb.setPictures(merchant.getPictures());
-        }
-        if(StringUtils.isNotEmpty(merchant.getName())){
-            merchantdb.setName(merchant.getName());
-        }
-        if(StringUtils.isNotEmpty(merchant.getHeadPic())){
-            merchantdb.setHeadPic(merchant.getHeadPic());
-            user.setHeadPic(user.getHeadPic());
-        }
-        if(merchant.getType()!=null){
-            merchantdb.setType(merchant.getType());
-        }
-        if(StringUtils.isNotEmpty(merchant.getVoiceIntroduction())){
-            merchantdb.setVoiceIntroduction(merchant.getVoiceIntroduction());
-        }
-        if(StringUtils.isNotEmpty(merchant.getAddress())){
-            merchantdb.setAddress(merchant.getAddress());
-        }
-        if(StringUtils.isNotEmpty(merchant.getPhone())){
-            merchantdb.setPhone(merchant.getPhone());
-        }
-        if(StringUtils.isNotEmpty(merchant.getRealName())){
-            merchantdb.setRealName(merchant.getRealName());
-            user.setUsername(merchant.getRealName());
-        }
-        if(merchant.getGender()!=null){
-            merchantdb.setGender(merchant.getGender());
-            user.setGender(user.getGender());
-        }
-        if(StringUtils.isNotEmpty(merchant.getRegion())){
-            merchantdb.setRegion(merchant.getRegion());
-            user.setRegion(merchant.getRegion());
-        }
-        if(StringUtils.isNotEmpty(merchant.getGoodCuisine())){
-            merchantdb.setGoodCuisine(merchant.getGoodCuisine());
-        }
-        if(StringUtils.isNotEmpty(merchant.getBusinessHours())){
-            merchantdb.setBusinessHours(merchant.getBusinessHours());
-        }
-        if(StringUtils.isNotEmpty(merchant.getBusinessDayPerWeek())){
-            merchantdb.setBusinessDayPerWeek(merchant.getBusinessDayPerWeek());
-        }
-        if(merchant.isSupportDelivery()!=merchantdb.isSupportDelivery()){
-            merchantdb.setSupportDelivery(merchant.isSupportDelivery());
-        }
-        if(merchant.getDeliverFee()!=null){
-            merchantdb.setDeliverFee(merchant.getDeliverFee());
-        }
-        if(StringUtils.isNotEmpty(merchant.getDeliverComment())){
-            merchantdb.setDeliverComment(merchant.getDeliverComment());
-        }
-        if(merchant.isMessHall()!=merchantdb.isMessHall()){
-            merchantdb.setMessHall(merchant.isMessHall());
-        }
-        if(merchant.getCountOfMessHall()!=null){
-            merchantdb.setCountOfMessHall(merchant.getCountOfMessHall());
-        }
-        if(merchant.isSelfPickup()!=merchantdb.isSelfPickup()){
-            merchantdb.setCountOfMessHall(merchant.getCountOfMessHall());
-        }
-        if(StringUtils.isNotEmpty(merchant.getDescription())){
-            merchantdb.setDescription(merchant.getDescription());
-            user.setDescription(merchant.getDescription());
-        }
-        merchantService.saveMerchant(merchantdb);
-//        memberService.saveUser(user);
-        return Result.successResult(merchantdb);
+        Merchant merchantdb = merchantService.getMerchantByCreator(user.getId());
+        merchant.setId(merchantdb.getId());
+        return Result.successResult(merchantService.updateMerchant(merchant));
     }
 
     @RequestMapping(value = "/merchants/info", method = RequestMethod.GET)
     @ResponseBody
     public Result getMerchant(@AuthenticationPrincipal User user) {
-        if(user==null){
-            throw new IllegalArgumentException("please login!");
-        }
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         return Result.successResult(merchant);
     }
 
     @RequestMapping(value = "/merchants/{rid}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Result removeMerchant(@PathVariable long rid,@AuthenticationPrincipal User user) {
-        if(user==null){
-            throw new IllegalArgumentException("please login!");
-        }
+    public Result removeMerchant(@PathVariable("rid")long rid,@AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantBy(rid);
-        if(merchant.getCreator().longValue()!=user.getId()){
-            throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
+        if(merchant==null){
+            throw new RuntimeException("merchant.notexists");
+        }
+        if(merchant.getCreator()!=user.getId()) {
+            throw new RuntimeException("user.cannot.operate.other.merchant");
         }
         merchantService.removeMerchant(rid);
         return Result.successResultWithoutData();
     }
 
-    @RequestMapping(value="/merchants/{rid}/reject",method = RequestMethod.POST)
-    @ResponseBody
-    public Result rejectMerchants(@PathVariable long rid,@AuthenticationPrincipal User user){
-        if(user==null){
-            throw new IllegalArgumentException("please login!");
+    @RequestMapping(value = "/merchants/open",method = RequestMethod.POST)
+    public Result openMerchant(@AuthenticationPrincipal User user){
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        if(merchant==null){
+            new RuntimeException("user.not_create_merchant");
         }
-        merchantService.rejectMerchants(rid);
-        return Result.successResultWithoutData();
+        return Result.successResult(merchantService.openMerchant(merchant.getId()));
     }
 
-    @RequestMapping(value="/merchants/{rid}/pass",method = RequestMethod.POST)
-    @ResponseBody
-    public Result passMerchants(@PathVariable long rid,@AuthenticationPrincipal User user){
-        if(user==null){
-            throw new IllegalArgumentException("please login!");
+    @RequestMapping(value = "merchants/close",method = RequestMethod.POST)
+    public Result closeMerchant(@AuthenticationPrincipal User user){
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        if(merchant==null){
+            new RuntimeException("user.not_create_merchant");
         }
-        merchantService.passMerchants(rid);
-        return Result.successResultWithoutData();
+        return Result.successResult(merchantService.closeMerchant(merchant.getId()));
     }
-
-
 
     @RequestMapping(value = "/products", method = RequestMethod.POST)
     @ResponseBody
     public Result addProduct(@RequestBody Product product,@AuthenticationPrincipal User user) {
-        if(user==null){
-            throw new IllegalArgumentException("please login!");
-        }
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if(merchant.getCreator().longValue()!=user.getId()){
-            throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
+            throw new RuntimeException("user.cannot.operate.other.merchant");
         }
         product.setMerchantId(merchant.getId());
         merchantService.saveProduct(product);
@@ -239,55 +162,20 @@ public class MerchantController {
     @RequestMapping(value = "/products", method = RequestMethod.PUT)
     @ResponseBody
     public Result editProduct(@RequestBody Product product,@AuthenticationPrincipal User user) {
-        if(user==null){
-            throw new IllegalArgumentException("please login!");
-        }
         Merchant merchant = merchantService.getMerchantByProductId(product.getId());
         if(merchant.getCreator().longValue()!=user.getId()){
-            throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
+            throw new RuntimeException("user.cannot.operate.other.merchant.product");
         }
-        Product productdb = merchantService.getProductBy(product.getId());
-        if(StringUtils.isNotEmpty(product.getName())){
-            productdb.setName(product.getName());
-        }
-        if(StringUtils.isNotEmpty(product.getPictures())){
-            productdb.setPictures(product.getPictures());
-        }
-        if(product.getPrice()!=null){
-            productdb.setPrice(product.getPrice());
-        }
-        if(StringUtils.isNotEmpty(product.getTags())){
-            productdb.setTags(product.getTags());
-        }
-        if(StringUtils.isNotEmpty(product.getAvailableTime())){
-            productdb.setAvailableTime(product.getAvailableTime());
-        }
-        if(StringUtils.isNotEmpty(product.getSummary())){
-            productdb.setSummary(product.getSummary());
-        }
-        if(product.getSupplyPerDay()!=null){
-            productdb.setSupplyPerDay(product.getSupplyPerDay());
-        }
-        if(product.isAvailable()!=productdb.isAvailable()){
-            productdb.setAvailable(product.isAvailable());
-        }
-        if(product.isMain()!=productdb.isMain()){
-            productdb.setMain(product.isMain());
-        }
-        merchantService.saveProduct(productdb);
-        return Result.successResult(productdb);
+        return Result.successResult(merchantService.updateProduct(product));
     }
 
     @RequestMapping(value = "/products/{pid}", method = RequestMethod.DELETE)
     @ResponseBody
     public Result removeProduct(@PathVariable long pid,@AuthenticationPrincipal User user) {
-        if(user==null){
-            throw new IllegalArgumentException("please login!");
-        }
         Product product = merchantService.getProductBy(pid);
         Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
         if(merchant.getCreator().longValue()!=user.getId()){
-            throw new IllegalArgumentException("Can't operation does not belong to his own merchants");
+            throw new RuntimeException("user.cannot.operate.other.merchant.product");
         }
         merchantService.removeProduct(pid);
         return Result.successResultWithoutData();
@@ -296,11 +184,61 @@ public class MerchantController {
     @RequestMapping(value = "/products/{pid}", method = RequestMethod.GET)
     @ResponseBody
     public Result getProduct(@PathVariable long pid,@AuthenticationPrincipal User user) {
-        if(user==null){
-            throw new IllegalArgumentException("please login!");
-        }
         Product product = merchantService.getProductBy(pid);
         return Result.successResult(product);
     }
 
+    /**
+     * 上架菜品
+     * @param pid
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "/products/{pid}/puton",method = RequestMethod.POST)
+    public Result putOnProduct(@PathVariable long pid,@AuthenticationPrincipal User user){
+        Product product = merchantService.getProductBy(pid);
+        Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
+        if(merchant.getCreator().longValue()!=user.getId()){
+            throw new RuntimeException("user.cannot.operate.other.merchant.product");
+        }
+        return Result.successResult(merchantService.putOnProduct(pid));
+    }
+
+    @RequestMapping(value = "/products/{pid}/putoff",method = RequestMethod.POST)
+    public Result putOffProduct(@PathVariable long pid,@AuthenticationPrincipal User user){
+        Product product = merchantService.getProductBy(pid);
+        Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
+        if(merchant.getCreator().longValue()!=user.getId()){
+            throw new RuntimeException("user.cannot.operate.other.merchant.product");
+        }
+        return Result.successResult(merchantService.putOffProduct(pid));
+    }
+
+    @RequestMapping(value = "/merchants/today/pending/orders",method = RequestMethod.GET)
+    public Result getMerchantTodayPendingOrders(@RequestParam("page") Integer page,
+                                                @RequestParam("size") Integer size,
+                                                @AuthenticationPrincipal User user){
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        List<OrderResponse> orderResponses = new ArrayList<OrderResponse>();
+        List<Order> orders = orderService.getTodayPandingOrdersBy(page, size, merchant.getId());
+        for(Order order:orders){
+            List<OrderItem> orderItems = orderService.getItemsInOrder(order.getOrderNo());
+            orderResponses.add(new OrderResponse.Builder().order(order).orderItems(orderItems).build());
+        }
+        return Result.successResult(orderResponses);
+    }
+
+    @RequestMapping(value = "/merchants/today/completed/orders",method = RequestMethod.GET)
+        public Result getMerchantTodayCompletedOrders(@RequestParam("page") Integer page,
+                @RequestParam("size") Integer size,
+                @AuthenticationPrincipal User user){
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        List<OrderResponse> orderResponses = new ArrayList<OrderResponse>();
+        List<Order> orders = orderService.getTodayCompletedOrdersBy(page, size, merchant.getId());
+        for(Order order:orders){
+            List<OrderItem> orderItems = orderService.getItemsInOrder(order.getOrderNo());
+            orderResponses.add(new OrderResponse.Builder().order(order).orderItems(orderItems).build());
+        }
+        return Result.successResult(orderResponses);
+    }
 }

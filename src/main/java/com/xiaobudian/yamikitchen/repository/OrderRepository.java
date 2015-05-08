@@ -12,9 +12,7 @@ import java.util.List;
  */
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    public List<Order> findByMerchantIdAndStatusInAndCreateDateBetween(long merchantId,List<Integer> statuses,Date dateFrom ,Date dateTo,Pageable pageable);
-
-    public List<Order> findByMerchantIdAndStatusAndCreateDateBetween(long merchantId,Integer status,Date dateFrom ,Date dateTo,Pageable pageable);
+    public List<Order> findByMerchantIdAndStatusInAndExpectDateBetween(long merchantId,List<Integer> statuses,Date dateFrom ,Date dateTo,Pageable pageable);
 
     List<Order> findByUid(Long uid);
 

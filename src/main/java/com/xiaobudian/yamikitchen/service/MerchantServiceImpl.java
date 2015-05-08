@@ -9,6 +9,7 @@ import com.xiaobudian.yamikitchen.repository.FavoriteRepository;
 import com.xiaobudian.yamikitchen.repository.MerchantRepository;
 import com.xiaobudian.yamikitchen.repository.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.UserRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -124,18 +125,127 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public void rejectMerchants(long id) {
-        merchantRepository.rejectMerchants(id);
-    }
-
-    @Override
-    public void passMerchants(long id) {
-        Merchant merchant = merchantRepository.passMerchants(id);
-        userRepository.convertToMerchant(merchant.getCreator());
-    }
-
-    @Override
     public Merchant getMerchantByCreator(long creator) {
         return merchantRepository.findByCreator(creator);
+    }
+
+    @Override
+    public Merchant updateMerchant(Merchant merchant) {
+        Merchant merchantdb = merchantRepository.findOne(merchant.getId());
+        if(StringUtils.isNotEmpty(merchant.getPictures())){
+            merchantdb.setPictures(merchant.getPictures());
+        }
+        if(StringUtils.isNotEmpty(merchant.getName())){
+            merchantdb.setName(merchant.getName());
+        }
+        if(StringUtils.isNotEmpty(merchant.getHeadPic())){
+            merchantdb.setHeadPic(merchant.getHeadPic());
+        }
+        if(merchant.getType()!=null){
+            merchantdb.setType(merchant.getType());
+        }
+        if(StringUtils.isNotEmpty(merchant.getVoiceIntroduction())){
+            merchantdb.setVoiceIntroduction(merchant.getVoiceIntroduction());
+        }
+        if(StringUtils.isNotEmpty(merchant.getAddress())){
+            merchantdb.setAddress(merchant.getAddress());
+        }
+        if(StringUtils.isNotEmpty(merchant.getPhone())){
+            merchantdb.setPhone(merchant.getPhone());
+        }
+        if(StringUtils.isNotEmpty(merchant.getGoodCuisine())){
+            merchantdb.setGoodCuisine(merchant.getGoodCuisine());
+        }
+        if(StringUtils.isNotEmpty(merchant.getBusinessHours())){
+            merchantdb.setBusinessHours(merchant.getBusinessHours());
+        }
+        if(StringUtils.isNotEmpty(merchant.getBusinessDayPerWeek())){
+            merchantdb.setBusinessDayPerWeek(merchant.getBusinessDayPerWeek());
+        }
+        if(merchant.getSupportDelivery()!=null){
+            merchantdb.setSupportDelivery(merchant.getSupportDelivery());
+        }
+        if(merchant.getDeliverFee()!=null){
+            merchantdb.setDeliverFee(merchant.getDeliverFee());
+        }
+        if(StringUtils.isNotEmpty(merchant.getDeliverComment())){
+            merchantdb.setDeliverComment(merchant.getDeliverComment());
+        }
+        if(merchant.getMessHall()!=null){
+            merchantdb.setMessHall(merchant.getMessHall());
+        }
+        if(merchant.getCountOfMessHall()!=null){
+            merchantdb.setCountOfMessHall(merchant.getCountOfMessHall());
+        }
+        if(merchant.getSelfPickup()!=null){
+            merchantdb.setSelfPickup(merchant.getSelfPickup());
+        }
+        if(StringUtils.isNotEmpty(merchant.getDescription())){
+            merchantdb.setDescription(merchant.getDescription());
+        }
+        merchantRepository.save(merchantdb);
+        return merchantdb;
+    }
+
+    @Override
+    public Product updateProduct(Product product) {
+        Product productdb = productRepository.findOne(product.getId());
+        if(StringUtils.isNotEmpty(product.getName())){
+            productdb.setName(product.getName());
+        }
+        if(StringUtils.isNotEmpty(product.getPictures())){
+            productdb.setPictures(product.getPictures());
+        }
+        if(product.getPrice()!=null){
+            productdb.setPrice(product.getPrice());
+        }
+        if(StringUtils.isNotEmpty(product.getTags())){
+            productdb.setTags(product.getTags());
+        }
+        if(StringUtils.isNotEmpty(product.getAvailableTime())){
+            productdb.setAvailableTime(product.getAvailableTime());
+        }
+        if(StringUtils.isNotEmpty(product.getSummary())){
+            productdb.setSummary(product.getSummary());
+        }
+        if(product.getSupplyPerDay()!=null){
+            productdb.setSupplyPerDay(product.getSupplyPerDay());
+        }
+        if(product.getAvailable()!=null){
+            productdb.setAvailable(product.getAvailable());
+        }
+        if(product.getMain()!=null){
+            productdb.setMain(product.getMain());
+        }
+        productRepository.save(productdb);
+        return productdb;
+    }
+
+    @Override
+    public Merchant openMerchant(long rid) {
+        Merchant merchant = merchantRepository.findOne(rid);
+        merchant.setIsRest(false);
+        return merchantRepository.save(merchant);
+    }
+
+    @Override
+    public Merchant closeMerchant(long rid) {
+        Merchant merchant = merchantRepository.findOne(rid);
+        merchant.setIsRest(true);
+        return merchantRepository.save(merchant);
+    }
+
+    @Override
+    public Product putOnProduct(long pid) {
+        Product product = productRepository.findOne(pid);
+        product.setAvailable(true);
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Product putOffProduct(long pid) {
+        Product product = productRepository.findOne(pid);
+        product.setAvailable(false);
+        return productRepository.save(product);
     }
 }

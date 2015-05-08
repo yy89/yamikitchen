@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -28,13 +29,6 @@ public interface MerchantRepository extends JpaRepository<Merchant, Long> {
     @Query("select count(*) from Merchant where creator = ?1")
     public int countByCreator(long uid);
 
-    @Modifying
-    @Query("update Merchant set verifyStatus = 2 where id = ?1")
-    public Merchant rejectMerchants(long id);
-
-    @Modifying
-    @Query("update Merchant set verifyStatus = 1 where id = ?1")
-    public Merchant passMerchants(long id);
-
     public Merchant findByCreator(long creator);
+
 }

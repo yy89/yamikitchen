@@ -1,9 +1,6 @@
 package com.xiaobudian.yamikitchen.domain.order;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,6 +8,7 @@ import java.util.Date;
  * Created by Johnson on 2015/4/22.
  */
 @Entity
+@Table(name = "[order]")
 public class Order implements Serializable {
     private static final long serialVersionUID = -7595215227337455292L;
     @Id
@@ -37,7 +35,7 @@ public class Order implements Serializable {
     private Integer deliverMethod;
     private Integer paymentTimeLimit;
     private String address;
-    private Integer status;
+    private Integer status;// 1等待支付 2等待订单确认 3等待配送 4.外卖配送中 5订单完成待评论 6订单完成已评论 7订单取消
     private boolean cancelable = true;
     private boolean payable = true;
     private boolean hasPaid = false;

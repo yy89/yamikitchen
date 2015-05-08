@@ -24,33 +24,40 @@ public class Merchant implements Serializable {
     private String headPic;
     private String phone;
     private String pictures;
-    private boolean messHall;
+    private Boolean messHall;
     private Integer countOfMessHall;
-    private boolean selfPickup;
-    private boolean supportDelivery;
-    private boolean isRest = true;
+    private Boolean selfPickup;
+    private Boolean supportDelivery;
+    @Column(insertable = false,columnDefinition="bit default 0")
+    private Boolean isRest = false;
     private String restMark;
+    @Column(insertable = false,columnDefinition="int default 1")
     private Integer mLevel = 1;
-    private boolean hasOrder = false;
-    private Integer soldCount;
-    private Integer monthlySoldCount;
+    @Column(insertable = false,columnDefinition="bit default 0")
+    private Boolean hasOrder = false;
+    @Column(insertable = false,columnDefinition="int default 0")
+    private Integer soldCount = 0;
+    @Column(insertable = false,columnDefinition="int default 0")
+    private Integer monthlySoldCount = 0;
     private String comment;
     private String description;
     private String tags;
-    private Long favoriteCount = 0l;
+    @Column(insertable = false,columnDefinition="bigint default 0")
+    private Long favoriteCount ;
+    @Column(insertable = false,columnDefinition="bigint default 0")
     private Long commentCount = 0l;
     @Transient
     private String distance;
+    @Column(unique = true , nullable = false)
     private Long creator;
     private String businessHours;//8:00-10:00,14:00-18:00
-    private String realName;
-    private Integer gender;
-    private String region;
     private String goodCuisine;
     private String businessDayPerWeek;
     private Long deliverFee;
     private String deliverComment;
-    private boolean isDelete = false;
+    @Column(insertable = false,columnDefinition="bit default 0")
+    private Boolean isDelete = false;
+    @Column(insertable = false,columnDefinition="int default 0")
     private Integer verifyStatus = 0;//0  Î´ÉóºË£¬1 ÉóºËÍ¨¹ý 2£¬ÉóºË¾Ü¾ø
 
     public Long getId() {
@@ -133,11 +140,11 @@ public class Merchant implements Serializable {
         this.pictures = pictures;
     }
 
-    public boolean isMessHall() {
+    public Boolean getMessHall() {
         return messHall;
     }
 
-    public void setMessHall(boolean messHall) {
+    public void setMessHall(Boolean messHall) {
         this.messHall = messHall;
     }
 
@@ -149,27 +156,27 @@ public class Merchant implements Serializable {
         this.countOfMessHall = countOfMessHall;
     }
 
-    public boolean isSelfPickup() {
+    public Boolean getSelfPickup() {
         return selfPickup;
     }
 
-    public void setSelfPickup(boolean selfPickup) {
+    public void setSelfPickup(Boolean selfPickup) {
         this.selfPickup = selfPickup;
     }
 
-    public boolean isSupportDelivery() {
+    public Boolean getSupportDelivery() {
         return supportDelivery;
     }
 
-    public void setSupportDelivery(boolean supportDelivery) {
+    public void setSupportDelivery(Boolean supportDelivery) {
         this.supportDelivery = supportDelivery;
     }
 
-    public boolean isRest() {
+    public Boolean getIsRest() {
         return isRest;
     }
 
-    public void setRest(boolean isRest) {
+    public void setIsRest(Boolean isRest) {
         this.isRest = isRest;
     }
 
@@ -189,11 +196,11 @@ public class Merchant implements Serializable {
         this.mLevel = mLevel;
     }
 
-    public boolean isHasOrder() {
+    public Boolean getHasOrder() {
         return hasOrder;
     }
 
-    public void setHasOrder(boolean hasOrder) {
+    public void setHasOrder(Boolean hasOrder) {
         this.hasOrder = hasOrder;
     }
 
@@ -269,24 +276,20 @@ public class Merchant implements Serializable {
         this.creator = creator;
     }
 
-    public void setIsRest(boolean isRest) {
-        this.isRest = isRest;
-    }
-
     public String getBusinessHours() {
-        return this.businessHours;
+        return businessHours;
     }
 
     public void setBusinessHours(String businessHours) {
         this.businessHours = businessHours;
     }
 
-    public String getRealName() {
-        return realName;
+    public String getGoodCuisine() {
+        return goodCuisine;
     }
 
-    public void setRealName(String realName) {
-        this.realName = realName;
+    public void setGoodCuisine(String goodCuisine) {
+        this.goodCuisine = goodCuisine;
     }
 
     public String getBusinessDayPerWeek() {
@@ -313,35 +316,11 @@ public class Merchant implements Serializable {
         this.deliverComment = deliverComment;
     }
 
-    public Integer getGender() {
-        return gender;
-    }
-
-    public void setGender(Integer gender) {
-        this.gender = gender;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public String getGoodCuisine() {
-        return goodCuisine;
-    }
-
-    public void setGoodCuisine(String goodCuisine) {
-        this.goodCuisine = goodCuisine;
-    }
-
-    public boolean isDelete() {
+    public Boolean getIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(boolean isDelete) {
+    public void setIsDelete(Boolean isDelete) {
         this.isDelete = isDelete;
     }
 

@@ -23,4 +23,6 @@ public interface MemberService {
 
     public boolean removeAddress(Long addressId);
 
+    public User updateUserIntroduction(User user);
+
 }

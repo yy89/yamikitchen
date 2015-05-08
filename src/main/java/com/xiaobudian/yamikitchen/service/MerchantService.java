@@ -41,9 +41,18 @@ public interface MerchantService {
 
     public int countMerhcantsByCreator(long uid);
 
-    public void rejectMerchants(long id);
-
-    public void passMerchants(long id);
-
     public Merchant getMerchantByCreator(long creator);
+
+    public Merchant updateMerchant(Merchant merchant);
+
+    public Product updateProduct(Product product);
+
+    public Merchant openMerchant(long rid);
+
+    public Merchant closeMerchant(long rid);
+
+    public Product putOnProduct(long pid);
+
+    public Product putOffProduct(long id);
+
 }

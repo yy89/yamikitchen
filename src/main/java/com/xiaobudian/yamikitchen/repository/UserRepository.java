@@ -13,8 +13,4 @@ import org.springframework.data.jpa.repository.Query;
 public interface UserRepository extends JpaRepository<User, Long> {
     public User findByUsername(String username);
 
-    @Modifying
-    @Query("update User set type = 1 where id = ?1")
-    public User convertToMerchant(long id);
-
 }

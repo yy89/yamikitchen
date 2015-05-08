@@ -68,4 +68,26 @@ public class MemberServiceImpl implements MemberService {
         userAddressRepository.delete(addressId);
         return true;
     }
+
+    @Override
+    public User updateUserIntroduction(User user) {
+        User userdb = userRepository.findOne(user.getId());
+        if(StringUtils.isNotEmpty(user.getHeadPic())){
+            userdb.setHeadPic(user.getHeadPic());
+        }
+        if(StringUtils.isNotEmpty(user.getUsername())){
+            userdb.setUsername(user.getUsername());
+        }
+        if(user.getGender()!=null){
+            userdb.setGender(user.getGender());
+        }
+        if(StringUtils.isNotEmpty(user.getRegion())){
+            userdb.setRegion(user.getRegion());
+        }
+        if(StringUtils.isNotEmpty(user.getDescription())){
+            userdb.setDescription(user.getDescription());
+        }
+        userRepository.save(userdb);
+        return userdb;
+    }
 }

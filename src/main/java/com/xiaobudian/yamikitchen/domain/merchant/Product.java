@@ -1,9 +1,6 @@
 package com.xiaobudian.yamikitchen.domain.merchant;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -21,15 +18,19 @@ public class Product implements Serializable {
     private String summary;
     private String pictures;
     private String availableTime;
+    @Column(insertable = false,columnDefinition="int default 1")
     private Long restCount = 0l;
     private String tags;
+    @Column(insertable = false,columnDefinition="int default 1")
     private Long soldCount = 0l;
     private Integer supplyPerDay;
+    @Column(insertable = false,columnDefinition="int default 1")
     private Long commentCount = 0l;
+    @Column(insertable = false,columnDefinition="int default 1")
     private Long favoriteCount = 0l;
-    private boolean available = true;
-    private boolean isDelete = false;
-    private boolean main = false;
+    private Boolean available = true;
+    private Boolean isDelete = false;
+    private Boolean main = false;
 
     public Long getId() {
         return id;
@@ -111,6 +112,14 @@ public class Product implements Serializable {
         this.soldCount = soldCount;
     }
 
+    public Integer getSupplyPerDay() {
+        return supplyPerDay;
+    }
+
+    public void setSupplyPerDay(Integer supplyPerDay) {
+        this.supplyPerDay = supplyPerDay;
+    }
+
     public Long getCommentCount() {
         return commentCount;
     }
@@ -127,35 +136,27 @@ public class Product implements Serializable {
         this.favoriteCount = favoriteCount;
     }
 
-    public boolean isAvailable() {
+    public Boolean getAvailable() {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    public void setAvailable(Boolean available) {
         this.available = available;
     }
 
-    public boolean isMain() {
-        return main;
-    }
-
-    public void setMain(boolean main) {
-        this.main = main;
-    }
-
-    public Integer getSupplyPerDay() {
-        return supplyPerDay;
-    }
-
-    public void setSupplyPerDay(Integer supplyPerDay) {
-        this.supplyPerDay = supplyPerDay;
-    }
-
-    public boolean isDelete() {
+    public Boolean getIsDelete() {
         return isDelete;
     }
 
-    public void setIsDelete(boolean isDelete) {
+    public void setIsDelete(Boolean isDelete) {
         this.isDelete = isDelete;
+    }
+
+    public Boolean getMain() {
+        return main;
+    }
+
+    public void setMain(Boolean main) {
+        this.main = main;
     }
 }

@@ -7,8 +7,11 @@ import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
 import com.xiaobudian.yamikitchen.repository.*;
+import com.xiaobudian.yamikitchen.util.DateUtils;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -36,9 +39,21 @@ public class OrderServiceImpl implements OrderService {
     @Inject
     private OrderRepository orderRepository;
     @Inject
+    private OrderItemRepository orderItemRepository;
+    @Inject
     private UserAddressRepository userAddressRepository;
     @Inject
     private CouponRepository couponRepository;
+
+    private List<Integer> handingStatus = new ArrayList<Integer>(){
+        {add(2);}//等待订单确认
+        {add(3);}//等待配送
+    };
+
+    private List<Integer> solvedStatus = new ArrayList<Integer>(){
+        {add(5);}// 订单完成待评论
+        {add(6);}// 订单完成已评论
+    };
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId) {
@@ -91,13 +106,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrdersByMerchantIdAndStatusAndCreateDateBetween(int page, int pageSize, long rid, int status, Date dateFrom, Date dateTo) {
-        return null;
-    }
-
-    @Override
     public List<OrderItem> getItemsInOrder(String orderNo) {
-        return null;
+        return orderItemRepository.findByOrderNo(orderNo);
     }
 
     @Override
@@ -108,13 +118,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getTodayHandingOrdersBy(int page, int pageSize, long rid) {
-        return null;
+    public List<Order> getTodayPandingOrdersBy(int page, int pageSize, long rid) {
+        Date todayStart = DateUtils.getTodayStart();
+        Date todayEnd = DateUtils.getTodayStart();
+        Sort sort = new Sort(Sort.Direction.ASC, "status").and(new Sort(Sort.Direction.DESC, "createDate"));
+        PageRequest pageRequest = new PageRequest(page,pageSize,sort);
+        return orderRepository.findByMerchantIdAndStatusInAndExpectDateBetween(rid,handingStatus,todayStart,todayEnd,pageRequest);
     }
 
     @Override
-    public List<Order> getTodaySolvedOrdersBy(int page, int pageSize, long rid) {
-        return null;
+    public List<Order> getTodayCompletedOrdersBy(int page, int pageSize, long rid) {
+        Date todayStart = DateUtils.getTodayStart();
+        Date todayEnd = DateUtils.getTodayStart();
+        Sort sort = new Sort(Sort.Direction.DESC, "createDate");
+        PageRequest pageRequest = new PageRequest(page,pageSize,sort);
+        return orderRepository.findByMerchantIdAndStatusInAndExpectDateBetween(rid,solvedStatus,todayStart,todayEnd,pageRequest);
     }
 
     @Override
