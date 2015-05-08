@@ -55,4 +55,8 @@ public interface MerchantService {
 
     public Product putOffProduct(long id);
 
+    public Product setProductMain(long id);
+
+    public Product setProductUnmain(long id);
+
 }

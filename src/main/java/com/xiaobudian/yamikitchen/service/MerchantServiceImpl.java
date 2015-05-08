@@ -248,4 +248,18 @@ public class MerchantServiceImpl implements MerchantService {
         product.setAvailable(false);
         return productRepository.save(product);
     }
+
+    @Override
+    public Product setProductMain(long id) {
+        Product product = productRepository.findOne(id);
+        product.setMain(true);
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Product setProductUnmain(long id) {
+        Product product = productRepository.findOne(id);
+        product.setMain(false);
+        return productRepository.save(product);
+    }
 }

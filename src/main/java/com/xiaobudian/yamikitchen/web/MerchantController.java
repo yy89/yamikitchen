@@ -214,6 +214,26 @@ public class MerchantController {
         return Result.successResult(merchantService.putOffProduct(pid));
     }
 
+    @RequestMapping(value = "/products/{pid}/main",method = RequestMethod.POST)
+    public Result setProductMain(@PathVariable long pid,@AuthenticationPrincipal User user){
+        Product product = merchantService.getProductBy(pid);
+        Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
+        if(merchant.getCreator().longValue()!=user.getId()){
+            throw new RuntimeException("user.cannot.operate.other.merchant.product");
+        }
+        return Result.successResult(merchantService.setProductMain(pid));
+    }
+
+    @RequestMapping(value = "/products/{pid}/unmain",method = RequestMethod.POST)
+    public Result setProductUnmain(@PathVariable long pid,@AuthenticationPrincipal User user){
+        Product product = merchantService.getProductBy(pid);
+        Merchant merchant = merchantService.getMerchantBy(product.getMerchantId());
+        if(merchant.getCreator().longValue()!=user.getId()){
+            throw new RuntimeException("user.cannot.operate.other.merchant.product");
+        }
+        return Result.successResult(merchantService.setProductUnmain(pid));
+    }
+
     @RequestMapping(value = "/merchants/today/pending/orders",method = RequestMethod.GET)
     public Result getMerchantTodayPendingOrders(@RequestParam("page") Integer page,
                                                 @RequestParam("size") Integer size,
