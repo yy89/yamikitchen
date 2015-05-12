@@ -35,5 +35,14 @@ public interface OrderService {
 
     public Settlement getSettlement(Long uid);
     
+    /**
+     * 查询商户待确认的订单列表
+     * @param uid 商户uid
+     * @return
+     * @author Liuminglu
+     * @Date 2015年5月12日 下午5:17:18
+     */
     public Object getUnconfirmedOrders(Long uid);
+
+	public Order confirmOrder(Long uid, Long orderId);
 }

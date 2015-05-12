@@ -7,6 +7,7 @@ import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
 import com.xiaobudian.yamikitchen.repository.*;
+import com.xiaobudian.yamikitchen.util.Constants;
 import com.xiaobudian.yamikitchen.util.DateUtils;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
@@ -175,6 +177,7 @@ public class OrderServiceImpl implements OrderService {
     
     @Override
 	public Object getUnconfirmedOrders(Long uid) {
+    	Assert.notNull(uid, "param can't be null : uid");
     	List<Object[]> resultList = orderRepository.getUnconfirmedOrders(uid);
     	if (CollectionUtils.isEmpty(resultList)) {
     		return null;
@@ -202,6 +205,27 @@ public class OrderServiceImpl implements OrderService {
     	}
 		return orderResponseList;
 	}
+    
+    @Override
+    public Order confirmOrder(Long uid, Long orderId) {
+    	Assert.notNull(uid, "param can't be null : uid");
+    	Assert.notNull(orderId, "param can't be null : orderId");
+    	Order order = orderRepository.getOrderById(orderId);
+		Assert.notNull(order, "Order not longer exist");
+		Assert.isTrue(uid.equals(order.getUid()), "uid mismatching");
+		if (Constants.DELIVER_METHOD_0 == order.getDeliverMethod()) {
+			order.setStatus(Constants.ORDER_STATUS_3);
+		} else if (Constants.DELIVER_METHOD_1 == order.getDeliverMethod()) {
+			order.setStatus(Constants.ORDER_STATUS_6);
+		}
+		//TODO 有2个字段目前没有，后续加上需要赋值，详情参考产品原型说明
+		try {
+			orderRepository.save(order);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	return order;
+    }
 
     static final class ItemKey {
         private static final String DELIMITER = ":";

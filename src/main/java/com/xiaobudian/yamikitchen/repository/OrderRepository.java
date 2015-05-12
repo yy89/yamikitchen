@@ -21,4 +21,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("from Order o , OrderItem oi where o.orderNo = oi.orderNo and o.status = 2 and o.uid = ?1")
     List<Object[]> getUnconfirmedOrders(Long uid);
+    
+    @Query("from Order where id = ?1")
+    Order getOrderById(Long orderId);
+    
 }
