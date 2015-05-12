@@ -1,6 +1,7 @@
 package com.xiaobudian.yamikitchen.domain.order;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,26 +17,35 @@ public class Order implements Serializable {
     private Long id;
     private String orderNo;
     private Integer totalQuantity;
-    private Double price;
-    private Date createDate;
-    private Date deliverDate;//到达时间
-    private Date outDate;//送达时间
-    private Date expectDate;//期望送达时间 0代表尽快送达
+    private Long price;
+    private Date createDate = new Date();
+    private Date deliverDate;
+    private Date outDate;
+    @NotNull(message = "order.expectDate.not.empty")
+    @Temporal(TemporalType.TIME)
+    private Date expectDate;
+    @NotNull(message = "order.paymentMethod.not.empty")
     private Integer paymentMethod;
+    private Date acceptDate;
     private Long uid;
     private String nickName;
     private String headPic;
     private String phone;
     private Long merchantId;
+    private String merchantNo;
     private String merchantName;
     private String merchantHeadPic;
     private String merchantPhone;
+    private String merchantAddress;
     private String remark;
-    private Double deliverPrice;
+    private Long deliverPrice;
+    @NotNull(message = "order.deliverMethod.not.empty")
     private Integer deliverMethod;
-    private Integer paymentTimeLimit;
+    private Integer paymentTimeLimit = 15;
     private String address;
-    private Integer status;// 1等待支付 2等待订单确认 3等待配送 4.外卖配送中 5订单完成待评论 6订单完成已评论 7订单取消
+    private Long addressId;
+    private String name;
+    private Integer status = 1;
     private boolean cancelable = true;
     private boolean payable = true;
     private boolean hasPaid = false;
@@ -43,11 +53,12 @@ public class Order implements Serializable {
     private boolean commentable = false;
     private boolean refundable;
     private String distance;
-    private String checkFlag;
+    private String checkFlag = "I";
     private Long couponId;
     private boolean firstDeal;
     private Double longitude;
     private Double latitude;
+    private Integer deliverGroup;
 
     public Long getId() {
         return id;
@@ -73,11 +84,11 @@ public class Order implements Serializable {
         this.totalQuantity = totalQuantity;
     }
 
-    public Double getPrice() {
+    public Long getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Long price) {
         this.price = price;
     }
 
@@ -185,11 +196,11 @@ public class Order implements Serializable {
         this.remark = remark;
     }
 
-    public Double getDeliverPrice() {
+    public Long getDeliverPrice() {
         return deliverPrice;
     }
 
-    public void setDeliverPrice(Double deliverPrice) {
+    public void setDeliverPrice(Long deliverPrice) {
         this.deliverPrice = deliverPrice;
     }
 
@@ -329,4 +340,51 @@ public class Order implements Serializable {
         this.expectDate = expectDate;
     }
 
+    public Integer getDeliverGroup() {
+        return deliverGroup;
+    }
+
+    public void setDeliverGroup(Integer deliverGroup) {
+        this.deliverGroup = deliverGroup;
+    }
+
+    public String getMerchantNo() {
+        return merchantNo;
+    }
+
+    public void setMerchantNo(String merchantNo) {
+        this.merchantNo = merchantNo;
+    }
+
+    public Date getAcceptDate() {
+        return acceptDate;
+    }
+
+    public void setAcceptDate(Date acceptDate) {
+        this.acceptDate = acceptDate;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Long addressId) {
+        this.addressId = addressId;
+    }
+
+    public String getMerchantAddress() {
+        return merchantAddress;
+    }
+
+    public void setMerchantAddress(String merchantAddress) {
+        this.merchantAddress = merchantAddress;
+    }
 }
