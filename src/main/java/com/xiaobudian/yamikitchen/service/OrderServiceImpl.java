@@ -9,6 +9,8 @@ import com.xiaobudian.yamikitchen.domain.merchant.Product;
 import com.xiaobudian.yamikitchen.repository.*;
 import com.xiaobudian.yamikitchen.util.DateUtils;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
+import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -16,9 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,13 +51,13 @@ public class OrderServiceImpl implements OrderService {
     private CouponRepository couponRepository;
 
     private List<Integer> handingStatus = new ArrayList<Integer>(){
-        {add(2);}//µÈ´ý¶©µ¥È·ÈÏ
-        {add(3);}//µÈ´ýÅäËÍ
+        {add(2);}//ï¿½È´ï¿½È·ï¿½ï¿½
+        {add(3);}//ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½
     };
 
     private List<Integer> solvedStatus = new ArrayList<Integer>(){
-        {add(5);}// ¶©µ¥Íê³É´ýÆÀÂÛ
-        {add(6);}// ¶©µ¥Íê³ÉÒÑÆÀÂÛ
+        {add(5);}// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É´ï¿½ï¿½ï¿½ï¿½ï¿½
+        {add(6);}// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     };
 
     @Override
@@ -167,6 +172,36 @@ public class OrderServiceImpl implements OrderService {
         settlement.setDeliverDate(merchantRepository.findOne(settlement.getCart().getMerchantId()).getBusinessHours());
         return settlement;
     }
+    
+    @Override
+	public Object getUnconfirmedOrders(Long uid) {
+    	List<Object[]> resultList = orderRepository.getUnconfirmedOrders(uid);
+    	if (CollectionUtils.isEmpty(resultList)) {
+    		return null;
+    	}
+    	Map<Order, List<OrderItem>> order2OrderItemMap = new HashMap<Order, List<OrderItem>>();
+    	for (Object[] objs : resultList) {
+    		Order order = (Order) objs[0];
+    		OrderItem orderItem = (OrderItem) objs[1];
+    		List<OrderItem> orderItemList = order2OrderItemMap.get(order);
+    		if (CollectionUtils.isEmpty(orderItemList)) {
+    			orderItemList = new ArrayList<OrderItem>();
+    			orderItemList.add(orderItem);
+    			order2OrderItemMap.put(order, orderItemList);
+    			continue;
+    		}
+    		orderItemList.add(orderItem);
+    	}
+    	
+    	List<OrderResponse> orderResponseList = new ArrayList<OrderResponse>();
+    	for (Order order : order2OrderItemMap.keySet()) {
+    		OrderResponse orderResponse = new OrderResponse();
+    		orderResponse.setOrder(order);
+    		orderResponse.setOrderItems(order2OrderItemMap.get(order));
+    		orderResponseList.add(orderResponse);
+    	}
+		return orderResponseList;
+	}
 
     static final class ItemKey {
         private static final String DELIMITER = ":";
@@ -197,4 +232,5 @@ public class OrderServiceImpl implements OrderService {
             return new ItemKey(Long.valueOf(ps[1]), Long.valueOf(ps[3]), Integer.valueOf(ps[5]));
         }
     }
+
 }

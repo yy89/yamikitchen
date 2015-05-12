@@ -34,4 +34,6 @@ public interface OrderService {
     public List<Order> getOrders(Long id);
 
     public Settlement getSettlement(Long uid);
+    
+    public Object getUnconfirmedOrders(Long uid);
 }
