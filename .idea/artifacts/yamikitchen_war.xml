@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="yamikitchen:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="yamikitchen.war">
+      <element id="artifact" artifact-name="yamikitchen:war exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="file-copy" path="$PROJECT_DIR$/lib/CCP_REST_SDK_JAVA_v2.6r.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/jzsms-6.0.jar" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
