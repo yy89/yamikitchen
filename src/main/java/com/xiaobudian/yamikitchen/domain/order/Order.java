@@ -35,7 +35,7 @@ public class Order implements Serializable {
     private Integer deliverMethod;
     private Integer paymentTimeLimit;
     private String address;
-    private Integer status;// 1等待支付 2等待订单确认 3等待配送 4.外卖配送中 5订单完成待评论 6订单完成已评论 7订单取消
+    private Integer status;// 1等待支付 2等待订单确认 3等待配送 4.等待自取 5.配送中 5订单完成 6.订单取消
     private boolean cancelable = true;
     private boolean payable = true;
     private boolean hasPaid = false;
