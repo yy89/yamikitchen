@@ -1,16 +1,13 @@
 package com.xiaobudian.yamikitchen.service;
 
-import com.xiaobudian.yamikitchen.common.Keys;
-import com.xiaobudian.yamikitchen.domain.order.Order;
-import com.xiaobudian.yamikitchen.domain.order.OrderItem;
-import com.xiaobudian.yamikitchen.domain.cart.Cart;
-import com.xiaobudian.yamikitchen.domain.cart.Settlement;
-import com.xiaobudian.yamikitchen.domain.merchant.Product;
-import com.xiaobudian.yamikitchen.repository.*;
-import com.xiaobudian.yamikitchen.util.Constants;
-import com.xiaobudian.yamikitchen.util.DateUtils;
-import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
-import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -19,14 +16,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import javax.inject.Inject;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.xiaobudian.yamikitchen.common.Keys;
+import com.xiaobudian.yamikitchen.domain.cart.Cart;
+import com.xiaobudian.yamikitchen.domain.cart.Settlement;
+import com.xiaobudian.yamikitchen.domain.merchant.Product;
+import com.xiaobudian.yamikitchen.domain.order.Order;
+import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
+import com.xiaobudian.yamikitchen.domain.order.OrderItem;
+import com.xiaobudian.yamikitchen.repository.CouponRepository;
+import com.xiaobudian.yamikitchen.repository.MerchantRepository;
+import com.xiaobudian.yamikitchen.repository.OrderItemRepository;
+import com.xiaobudian.yamikitchen.repository.OrderRepository;
+import com.xiaobudian.yamikitchen.repository.ProductRepository;
+import com.xiaobudian.yamikitchen.repository.RedisRepository;
+import com.xiaobudian.yamikitchen.repository.UserAddressRepository;
+import com.xiaobudian.yamikitchen.util.Constants;
+import com.xiaobudian.yamikitchen.util.DateUtils;
+import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
+import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -176,34 +183,9 @@ public class OrderServiceImpl implements OrderService {
     }
     
     @Override
-	public List<OrderResponse> getUnconfirmedOrders(Long uid) {
+	public List<OrderDetail> getUnconfirmedOrders(Long uid) {
     	Assert.notNull(uid, "param can't be null : uid");
-    	List<Object[]> resultList = orderRepository.getUnconfirmedOrders(uid);
-    	if (CollectionUtils.isEmpty(resultList)) {
-    		return null;
-    	}
-    	Map<Order, List<OrderItem>> order2OrderItemMap = new HashMap<Order, List<OrderItem>>();
-    	for (Object[] objs : resultList) {
-    		Order order = (Order) objs[0];
-    		OrderItem orderItem = (OrderItem) objs[1];
-    		List<OrderItem> orderItemList = order2OrderItemMap.get(order);
-    		if (CollectionUtils.isEmpty(orderItemList)) {
-    			orderItemList = new ArrayList<OrderItem>();
-    			orderItemList.add(orderItem);
-    			order2OrderItemMap.put(order, orderItemList);
-    			continue;
-    		}
-    		orderItemList.add(orderItem);
-    	}
-    	
-    	List<OrderResponse> orderResponseList = new ArrayList<OrderResponse>();
-    	for (Order order : order2OrderItemMap.keySet()) {
-    		OrderResponse orderResponse = new OrderResponse();
-    		orderResponse.setOrder(order);
-    		orderResponse.setOrderItems(order2OrderItemMap.get(order));
-    		orderResponseList.add(orderResponse);
-    	}
-		return orderResponseList;
+    	return orderRepository.getUnconfirmedOrders(uid);
 	}
     
     @Override
