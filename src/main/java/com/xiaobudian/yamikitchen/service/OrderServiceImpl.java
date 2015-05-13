@@ -176,7 +176,7 @@ public class OrderServiceImpl implements OrderService {
     }
     
     @Override
-	public Object getUnconfirmedOrders(Long uid) {
+	public List<OrderResponse> getUnconfirmedOrders(Long uid) {
     	Assert.notNull(uid, "param can't be null : uid");
     	List<Object[]> resultList = orderRepository.getUnconfirmedOrders(uid);
     	if (CollectionUtils.isEmpty(resultList)) {
@@ -218,7 +218,8 @@ public class OrderServiceImpl implements OrderService {
 		} else if (Constants.DELIVER_METHOD_1 == order.getDeliverMethod()) {
 			order.setStatus(Constants.ORDER_STATUS_6);
 		}
-		//TODO 有2个字段目前没有，后续加上需要赋值，详情参考产品原型说明
+		order.setDirectCancelable(false);
+		order.setAcceptDate(new Date());
 		try {
 			orderRepository.save(order);
 		} catch (Exception e) {

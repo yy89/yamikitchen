@@ -5,6 +5,7 @@ import com.xiaobudian.yamikitchen.domain.order.OrderItem;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
+import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
 
 import java.util.Date;
 import java.util.List;
@@ -42,7 +43,7 @@ public interface OrderService {
      * @author Liuminglu
      * @Date 2015年5月12日 下午5:17:18
      */
-    public Object getUnconfirmedOrders(Long uid);
+    public List<OrderResponse> getUnconfirmedOrders(Long uid);
 
 	public Order confirmOrder(Long uid, Long orderId);
 }
