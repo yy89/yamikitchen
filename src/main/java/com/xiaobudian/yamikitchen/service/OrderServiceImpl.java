@@ -194,7 +194,7 @@ public class OrderServiceImpl implements OrderService {
     	Assert.notNull(orderId, "param can't be null : orderId");
     	Order order = orderRepository.getOrderById(orderId);
 		Assert.notNull(order, "Order not longer exist");
-		Assert.isTrue(uid.equals(order.getUid()), "uid mismatching");
+		Assert.isTrue(uid.equals(order.getMerchantId()), "uid mismatching");
 		if (Constants.DELIVER_METHOD_0 == order.getDeliverMethod()) {
 			order.setStatus(Constants.ORDER_STATUS_3);
 		} else if (Constants.DELIVER_METHOD_1 == order.getDeliverMethod()) {
