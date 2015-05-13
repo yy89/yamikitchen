@@ -47,7 +47,6 @@ public class Order implements Serializable {
     private String name;
     private Integer status = 1;
     private boolean cancelable = true;
-    private boolean directCancelable = true;
     private boolean payable = true;
     private boolean hasPaid = false;
     private boolean complainable = false;
@@ -236,14 +235,6 @@ public class Order implements Serializable {
     public void setCancelable(boolean cancelable) {
         this.cancelable = cancelable;
     }
-    
-    public boolean isDirectCancelable() {
-		return directCancelable;
-	}
-
-	public void setDirectCancelable(boolean directCancelable) {
-		this.directCancelable = directCancelable;
-	}
 
     public boolean isPayable() {
         return payable;
@@ -396,5 +387,4 @@ public class Order implements Serializable {
     public void setMerchantAddress(String merchantAddress) {
         this.merchantAddress = merchantAddress;
     }
-
 }
