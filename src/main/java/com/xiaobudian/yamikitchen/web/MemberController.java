@@ -88,9 +88,10 @@ public class MemberController {
         return Result.successResult(memberService.removeAddress(addressId));
     }
 
-    @RequestMapping(value = "/users",method = RequestMethod.POST)
-    public Result updateUserIntroduction(@RequestBody User  user,@AuthenticationPrincipal User authenticationUser){
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    public Result updateUserIntroduction(@RequestBody User user, @AuthenticationPrincipal User authenticationUser) {
         user.setId(authenticationUser.getId());
-        return Result.successResult( memberService.updateUserIntroduction(user));
+        return Result.successResult(memberService.updateUser(user));
     }
+
 }

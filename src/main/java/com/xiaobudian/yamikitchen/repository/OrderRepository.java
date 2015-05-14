@@ -8,24 +8,31 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.xiaobudian.yamikitchen.domain.order.Order;
-import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
+import com.xiaobudian.yamikitchen.domain.order.OrderItem;
 
 /**
  * Created by Johnson on 2015/4/22.
  */
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    public List<Order> findByMerchantIdAndStatusInAndExpectDateBetween(long merchantId,List<Integer> statuses,Date dateFrom ,Date dateTo,Pageable pageable);
+    public List<Order> findByMerchantIdAndStatusInAndExpectDateBetween(long merchantId, List<Integer> statuses, Date dateFrom, Date dateTo, Pageable pageable);
 
     List<Order> findByUid(Long uid);
 
-    @Query("from Order o , OrderItem oi where o.orderNo = oi.orderNo and o.status = 2 and o.uid = ?1 order by createDate desc")
-    List<OrderDetail> getUnconfirmedOrders(Long uid);
-    
-    @Query("from Order o , OrderItem oi where o.orderNo = oi.orderNo and o.status = 2 and o.uid = ?1 and createDate > ?2 order by createDate desc")
-    List<OrderDetail> getUnconfirmedOrders(Long uid, Date createDate);
-    
+    @Query("from Order o , OrderItem oi where o.orderNo = oi.orderNo and o.status = 2 and o.uid = ?1")
+    List<Object[]> getUnconfirmedOrders(Long uid);
+
     @Query("from Order where id = ?1")
     Order getOrderById(Long orderId);
-    
+
+    public Order findByOrderNo(String orderNo);
+
+    @Query("select o from Order o where o.uid=?1 and o.createDate >=?2 order by o.createDate desc")
+    public List<Order> findByUidAndCreateDateAfter(Long uid, Date date);
+
+    @Query("select o from Order o where o.uid=?1 and o.status in ?2 order by o.createDate desc")
+    List<Order> findByUidAndStatusIn(Long uid, Collection<Integer> statuses);
+
+    @Query("select o from Order o where o.uid=?1 and o.status = ?2 and o.commentable = true order by o.createDate desc")
+    List<Order> findByUidAndStatusAndCommentableTrue(Long uid, int status);
 }

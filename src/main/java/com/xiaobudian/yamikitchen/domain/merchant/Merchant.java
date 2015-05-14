@@ -17,6 +17,7 @@ public class Merchant implements Serializable {
     private Long id;
     private String name;
     private Integer type;
+    private String merchantNo;
     private String voiceIntroduction;
     private Double longitude;
     private Double latitude;
@@ -28,37 +29,37 @@ public class Merchant implements Serializable {
     private Integer countOfMessHall;
     private Boolean selfPickup;
     private Boolean supportDelivery;
-    @Column(insertable = false,columnDefinition="bit default 0")
+    @Column(insertable = false, columnDefinition = "bit default 0")
     private Boolean isRest = false;
     private String restMark;
-    @Column(insertable = false,columnDefinition="int default 1")
+    @Column(insertable = false, columnDefinition = "int default 1")
     private Integer mLevel = 1;
-    @Column(insertable = false,columnDefinition="bit default 0")
+    @Column(insertable = false, columnDefinition = "bit default 0")
     private Boolean hasOrder = false;
-    @Column(insertable = false,columnDefinition="int default 0")
+    @Column(insertable = false, columnDefinition = "int default 0")
     private Integer soldCount = 0;
-    @Column(insertable = false,columnDefinition="int default 0")
+    @Column(insertable = false, columnDefinition = "int default 0")
     private Integer monthlySoldCount = 0;
     private String comment;
     private String description;
     private String tags;
-    @Column(insertable = false,columnDefinition="bigint default 0")
-    private Long favoriteCount ;
-    @Column(insertable = false,columnDefinition="bigint default 0")
+    @Column(insertable = false, columnDefinition = "bigint default 0")
+    private Long favoriteCount;
+    @Column(insertable = false, columnDefinition = "bigint default 0")
     private Long commentCount = 0l;
     @Transient
     private String distance;
-    @Column(unique = true , nullable = false)
+    @Column(unique = true, nullable = false)
     private Long creator;
-    private String businessHours;//8:00-10:00,14:00-18:00
+    private String businessHours;
     private String goodCuisine;
     private String businessDayPerWeek;
     private Long deliverFee;
     private String deliverComment;
-    @Column(insertable = false,columnDefinition="bit default 0")
+    @Column(insertable = false, columnDefinition = "bit default 0")
     private Boolean isDelete = false;
-    @Column(insertable = false,columnDefinition="int default 0")
-    private Integer verifyStatus = 0;//0  Î´ÉóºË£¬1 ÉóºËÍ¨¹ý 2£¬ÉóºË¾Ü¾ø
+    @Column(insertable = false, columnDefinition = "int default 0")
+    private Integer verifyStatus = 0;
 
     public Long getId() {
         return id;
@@ -330,5 +331,13 @@ public class Merchant implements Serializable {
 
     public void setVerifyStatus(Integer verifyStatus) {
         this.verifyStatus = verifyStatus;
+    }
+
+    public String getMerchantNo() {
+        return merchantNo;
+    }
+
+    public void setMerchantNo(String merchantNo) {
+        this.merchantNo = merchantNo;
     }
 }
