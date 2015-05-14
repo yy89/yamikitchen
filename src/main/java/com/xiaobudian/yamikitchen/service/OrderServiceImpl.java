@@ -180,9 +180,13 @@ public class OrderServiceImpl implements OrderService {
     }
     
     @Override
-	public List<OrderDetail> getUnconfirmedOrders(Long uid) {
+	public List<OrderDetail> getUnconfirmedOrders(Long uid, Date createDate) {
     	Assert.notNull(uid, "param can't be null : uid");
-    	return orderRepository.getUnconfirmedOrders(uid);
+    	if (createDate == null) {
+    		return orderRepository.getUnconfirmedOrders(uid);
+    	} else {
+    		return orderRepository.getUnconfirmedOrders(uid, createDate);
+    	}
 	}
     
     @Override

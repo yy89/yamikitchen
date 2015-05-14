@@ -1,9 +1,12 @@
 package com.xiaobudian.yamikitchen.web;
 
+import java.util.Date;
+
 import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.service.OrderService;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,12 +55,17 @@ public class OrderController {
         return Result.successResult(orderService.getOrders(user.getId()));
     }
     
-    @RequestMapping(value = "/getUnconfirmedOrders", method = RequestMethod.GET)
+    @RequestMapping(value = "/orders/getUnconfirmedOrders", method = RequestMethod.GET)
     public Result getUnconfirmedOrders(@AuthenticationPrincipal User user) {
-        return Result.successResult(orderService.getUnconfirmedOrders(user.getId()));
+        return Result.successResult(orderService.getUnconfirmedOrders(user.getId(), null));
     }
     
-    @RequestMapping(value = "/confirmOrder/{orderId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/orders/getUnconfirmedOrders/{createDate}", method = RequestMethod.GET)
+    public Result getUnconfirmedOrdersByCreateDate(@PathVariable Long createDate, @AuthenticationPrincipal User user) {
+    	return Result.successResult(orderService.getUnconfirmedOrders(user.getId(), new Date(createDate)));
+    }
+    
+    @RequestMapping(value = "/orders/confirmOrder/{orderId}", method = RequestMethod.GET)
     public Result confirmOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.confirmOrder(user.getId(), orderId));
     }

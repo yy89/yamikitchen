@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
@@ -37,12 +38,13 @@ public interface OrderService {
     
     /**
      * 查询商户待确认的订单列表
-     * @param uid 商户uid
+     * @param uid
+     * @param createDate 根据创建时间增量查询
      * @return
      * @author Liuminglu
-     * @Date 2015年5月12日 下午5:17:18
+     * @Date 2015年5月14日 上午11:55:43
      */
-    public List<OrderDetail> getUnconfirmedOrders(Long uid);
+    public List<OrderDetail> getUnconfirmedOrders(Long uid, Date createDate);
 
     /**
      * 商户确认订单
