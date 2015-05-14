@@ -266,12 +266,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getInProgressOrders(Long uid) {
-        return orderRepository.findByUidAndStatusIn(uid, OrderStatus.inProgressStatuses());
+        return orderRepository.findByUidAndStatusIn(uid, null);
     }
 
     @Override
     public List<Order> getWaitForCommentOrders(Long uid) {
-        return orderRepository.findByUidAndStatusAndCommentableTrue(uid, OrderStatus.COMPLETED.ordinal() + 1);
+        return orderRepository.findByUidAndStatusAndCommentableTrue(uid, 6);
     }
 
     @Override
