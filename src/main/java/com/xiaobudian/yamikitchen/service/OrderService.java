@@ -1,13 +1,13 @@
 package com.xiaobudian.yamikitchen.service;
 
-import com.xiaobudian.yamikitchen.domain.order.Order;
-import com.xiaobudian.yamikitchen.domain.order.OrderItem;
+import java.util.List;
+
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
+import com.xiaobudian.yamikitchen.domain.order.Order;
+import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
+import com.xiaobudian.yamikitchen.domain.order.OrderItem;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by johnson1 on 4/27/15.
@@ -42,7 +42,15 @@ public interface OrderService {
      * @author Liuminglu
      * @Date 2015年5月12日 下午5:17:18
      */
-    public Object getUnconfirmedOrders(Long uid);
+    public List<OrderDetail> getUnconfirmedOrders(Long uid);
 
+    /**
+     * 商户确认订单
+     * @param uid
+     * @param orderId
+     * @return
+     * @author Liuminglu
+     * @Date 2015年5月13日 下午1:28:59
+     */
 	public Order confirmOrder(Long uid, Long orderId);
 }
