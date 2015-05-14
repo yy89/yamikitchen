@@ -32,6 +32,8 @@ public class Product implements Serializable {
     private Boolean available = true;
     private Boolean isDelete = false;
     private Boolean main = false;
+    @Column(insertable = false, columnDefinition = "int default 0")
+    private Integer verifyStatus = 0;
 
     public Long getId() {
         return id;
@@ -159,5 +161,13 @@ public class Product implements Serializable {
 
     public void setMain(Boolean main) {
         this.main = main;
+    }
+
+    public Integer getVerifyStatus() {
+        return verifyStatus;
+    }
+
+    public void setVerifyStatus(Integer verifyStatus) {
+        this.verifyStatus = verifyStatus;
     }
 }
