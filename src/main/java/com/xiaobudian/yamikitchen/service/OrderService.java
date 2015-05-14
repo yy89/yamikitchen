@@ -1,14 +1,14 @@
 package com.xiaobudian.yamikitchen.service;
 
-import com.xiaobudian.yamikitchen.domain.order.Order;
-import com.xiaobudian.yamikitchen.domain.order.OrderItem;
-import com.xiaobudian.yamikitchen.domain.cart.Cart;
-import com.xiaobudian.yamikitchen.domain.cart.Settlement;
-import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
-import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
-
 import java.util.Date;
 import java.util.List;
+
+import com.xiaobudian.yamikitchen.domain.cart.Cart;
+import com.xiaobudian.yamikitchen.domain.cart.Settlement;
+import com.xiaobudian.yamikitchen.domain.order.Order;
+import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
+import com.xiaobudian.yamikitchen.domain.order.OrderItem;
+import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 
 /**
  * Created by johnson1 on 4/27/15.
@@ -38,12 +38,23 @@ public interface OrderService {
     
     /**
      * 查询商户待确认的订单列表
-     * @param uid 商户uid
+     * @param uid
+     * @param createDate 根据创建时间增量查询
      * @return
      * @author Liuminglu
-     * @Date 2015年5月12日 下午5:17:18
+     * @Date 2015年5月14日 上午11:55:43
      */
-    public List<OrderResponse> getUnconfirmedOrders(Long uid);
+    public List<OrderDetail> getUnconfirmedOrders(Long uid, Date createDate);
 
+    /**
+     * 商户确认订单
+     * @param uid
+     * @param orderId
+     * @return
+     * @author Liuminglu
+     * @Date 2015年5月13日 下午1:28:59
+     */
 	public Order confirmOrder(Long uid, Long orderId);
+
+	public Object chooseDeliverGroup(Long id, Long orderId, Integer deliverGroup);
 }
