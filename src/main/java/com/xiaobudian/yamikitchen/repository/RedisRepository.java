@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.repository;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -20,8 +21,17 @@ public class RedisRepository {
         stringRedisTemplate.opsForValue().set(key, value, expireMinutes, TimeUnit.MINUTES);
     }
 
+    public void set(String key, String value) {
+        stringRedisTemplate.opsForValue().set(key, value);
+    }
+
     public String get(String key) {
         return stringRedisTemplate.opsForValue().get(key);
+    }
+
+    public String getWithDefault(String key, String defaultValue) {
+        String v = stringRedisTemplate.opsForValue().get(key);
+        return StringUtils.isEmpty(v) ? defaultValue : v;
     }
 
     public void addForZSet(String key, String value) {
@@ -42,5 +52,9 @@ public class RedisRepository {
 
     public void removeKey(String key) {
         stringRedisTemplate.delete(key);
+    }
+
+    public Long nextLong(String key) {
+        return stringRedisTemplate.opsForValue().increment(key, 1);
     }
 }

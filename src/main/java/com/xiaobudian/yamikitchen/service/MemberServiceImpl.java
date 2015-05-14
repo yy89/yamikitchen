@@ -70,24 +70,24 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public User updateUserIntroduction(User user) {
-        User userdb = userRepository.findOne(user.getId());
-        if(StringUtils.isNotEmpty(user.getHeadPic())){
-            userdb.setHeadPic(user.getHeadPic());
+    public User updateUser(User user) {
+        User oldUser = userRepository.findOne(user.getId());
+        if (StringUtils.isNotEmpty(user.getHeadPic())) {
+            oldUser.setHeadPic(user.getHeadPic());
         }
-        if(StringUtils.isNotEmpty(user.getUsername())){
-            userdb.setUsername(user.getUsername());
+        if (StringUtils.isNotEmpty(user.getUsername())) {
+            oldUser.setUsername(user.getUsername());
         }
-        if(user.getGender()!=null){
-            userdb.setGender(user.getGender());
+        if (user.getGender() != null) {
+            oldUser.setGender(user.getGender());
         }
-        if(StringUtils.isNotEmpty(user.getRegion())){
-            userdb.setRegion(user.getRegion());
+        if (StringUtils.isNotEmpty(user.getRegion())) {
+            oldUser.setRegion(user.getRegion());
         }
-        if(StringUtils.isNotEmpty(user.getDescription())){
-            userdb.setDescription(user.getDescription());
+        if (StringUtils.isNotEmpty(user.getDescription())) {
+            oldUser.setDescription(user.getDescription());
         }
-        userRepository.save(userdb);
-        return userdb;
+        userRepository.save(oldUser);
+        return oldUser;
     }
 }

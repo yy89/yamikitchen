@@ -5,20 +5,21 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import javax.persistence.Transient;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by johnson1 on 4/27/15.
  */
 public class Cart implements Serializable {
     private static final long serialVersionUID = -7529238667745324994L;
+    public static final String ZERO = "0";
     private Long uid;
     private Long merchantId;
     private String merchantName;
-    private Long totalAmount;
+    private Long totalAmount = 0l;
+    private Integer totalQuantity = 0;
+    private Integer deliverMethod = 0;
+    private Integer paymentMethod = 0;
     private List<OrderItem> items = new ArrayList<>();
     @Transient
     private Map<String, String> extra = new HashMap<>();
@@ -60,11 +61,21 @@ public class Cart implements Serializable {
     }
 
     public Long getTotalAmount() {
-        Long sum = 0l;
         for (OrderItem item : getItems()) {
-            sum += item.getAmount();
+            totalAmount += item.getAmount();
         }
-        return sum + deliverPrice();
+        return totalAmount + (deliverMethod == 1 ? 0l : deliverPrice());
+    }
+
+    public Integer getTotalQuantity() {
+        for (OrderItem item : getItems()) {
+            totalQuantity += item.getQuantity();
+        }
+        return totalQuantity;
+    }
+
+    public void setTotalQuantity(Integer totalQuantity) {
+        this.totalQuantity = totalQuantity;
     }
 
     public void setTotalAmount(Long totalAmount) {
@@ -89,6 +100,22 @@ public class Cart implements Serializable {
 
     public void putExtra(String key, String value) {
         extra.put(key, value);
+    }
+
+    public Integer getDeliverMethod() {
+        return deliverMethod;
+    }
+
+    public void setDeliverMethod(Integer deliverMethod) {
+        this.deliverMethod = deliverMethod;
+    }
+
+    public Integer getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(Integer paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     public Long deliverPrice() {

@@ -26,5 +26,4 @@ public class ExternalIntegrationController {
     public Result sendVoiceVerificationCode(@PathVariable String mobilePhone) {
         return Result.successResult(smsService.sendVoiceVerifyCode(mobilePhone));
     }
-
 }
