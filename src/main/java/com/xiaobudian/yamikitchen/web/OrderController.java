@@ -51,4 +51,14 @@ public class OrderController {
     public Result getOrders(@RequestBody Order order, @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getOrders(user.getId()));
     }
+    
+    @RequestMapping(value = "/getUnconfirmedOrders", method = RequestMethod.GET)
+    public Result getUnconfirmedOrders(@AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.getUnconfirmedOrders(user.getId()));
+    }
+    
+    @RequestMapping(value = "/confirmOrder/{orderId}", method = RequestMethod.GET)
+    public Result confirmOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.confirmOrder(user.getId(), orderId));
+    }
 }
