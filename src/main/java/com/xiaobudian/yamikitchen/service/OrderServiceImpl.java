@@ -2,9 +2,7 @@ package com.xiaobudian.yamikitchen.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -33,7 +31,6 @@ import com.xiaobudian.yamikitchen.repository.UserAddressRepository;
 import com.xiaobudian.yamikitchen.util.Constants;
 import com.xiaobudian.yamikitchen.util.DateUtils;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
-import com.xiaobudian.yamikitchen.web.dto.OrderResponse;
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -190,11 +187,7 @@ public class OrderServiceImpl implements OrderService {
     
     @Override
     public Order confirmOrder(Long uid, Long orderId) {
-    	Assert.notNull(uid, "param can't be null : uid");
-    	Assert.notNull(orderId, "param can't be null : orderId");
-    	Order order = orderRepository.getOrderById(orderId);
-		Assert.notNull(order, "Order not longer exist");
-		Assert.isTrue(uid.equals(order.getMerchantId()), "uid mismatching");
+    	Order order = checkRequestUser(uid, orderId);
 		if (Constants.DELIVER_METHOD_0 == order.getDeliverMethod()) {
 			order.setStatus(Constants.ORDER_STATUS_3);
 		} else if (Constants.DELIVER_METHOD_1 == order.getDeliverMethod()) {
@@ -208,6 +201,31 @@ public class OrderServiceImpl implements OrderService {
 			e.printStackTrace();
 		}
     	return order;
+    }
+    
+    @Override
+    public Order chooseDeliverGroup(Long uid, Long orderId, Integer deliverGroup) {
+    	Order order = checkRequestUser(uid, orderId);
+    	order.setDeliverGroup(deliverGroup);
+    	return null;
+    }
+    
+    /**
+     * 验证uid的所属商户是否有权限修改orderId订单
+     * 商户只能修改自己接到的订单，服务端加此验证防止请求被拦截参数被篡改
+     * 
+     * @param uid 被验证的商户uid
+     * @param orderId 商户请求中要修改的订单id
+     * @author Liuminglu
+     * @Date 2015年5月13日 下午3:34:57
+     */
+    private Order checkRequestUser(Long uid, Long orderId) {
+    	Assert.notNull(uid, "param can't be null : uid");
+    	Assert.notNull(orderId, "param can't be null : orderId");
+    	Order order = orderRepository.getOrderById(orderId);
+		Assert.notNull(order, "Order not longer exist");
+		Assert.isTrue(uid.equals(order.getMerchantId()), "uid mismatching");
+		return order;
     }
 
     static final class ItemKey {

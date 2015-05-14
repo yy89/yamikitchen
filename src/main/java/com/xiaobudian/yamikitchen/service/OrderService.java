@@ -53,4 +53,6 @@ public interface OrderService {
      * @Date 2015年5月13日 下午1:28:59
      */
 	public Order confirmOrder(Long uid, Long orderId);
+
+	public Object chooseDeliverGroup(Long id, Long orderId, Integer deliverGroup);
 }

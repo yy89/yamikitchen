@@ -61,4 +61,9 @@ public class OrderController {
     public Result confirmOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.confirmOrder(user.getId(), orderId));
     }
+    
+    @RequestMapping(value = "/orders/{orderId}/{deliverGroup}/chooseDeliverGroup", method = RequestMethod.GET)
+    public Result chooseDeliverGroup(@PathVariable Long orderId, @PathVariable Integer deliverGroup, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.chooseDeliverGroup(user.getId(), orderId, deliverGroup));
+    }
 }
