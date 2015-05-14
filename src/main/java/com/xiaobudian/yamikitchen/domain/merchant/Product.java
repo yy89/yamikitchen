@@ -18,15 +18,16 @@ public class Product implements Serializable {
     private String summary;
     private String pictures;
     private String availableTime;
-    @Column(insertable = false,columnDefinition="int default 1")
+    @Column(insertable = false,columnDefinition="int default 0")
     private Long restCount = 0l;
     private String tags;
-    @Column(insertable = false,columnDefinition="int default 1")
+    @Column(insertable = false,columnDefinition="int default 0")
     private Long soldCount = 0l;
+    @Column(columnDefinition="int default 30")
     private Integer supplyPerDay;
-    @Column(insertable = false,columnDefinition="int default 1")
+    @Column(insertable = false,columnDefinition="int default 0")
     private Long commentCount = 0l;
-    @Column(insertable = false,columnDefinition="int default 1")
+    @Column(insertable = false,columnDefinition="int default 0")
     private Long favoriteCount = 0l;
     private Boolean available = true;
     private Boolean isDelete = false;
