@@ -8,6 +8,7 @@ import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
 import com.xiaobudian.yamikitchen.domain.order.OrderItem;
+import com.xiaobudian.yamikitchen.web.dto.DadaResultDto;
 import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
 
 /**
@@ -49,12 +50,30 @@ public interface OrderService {
     /**
      * 商户确认订单
      * @param uid
-     * @param orderId
+     * @param orderNo
      * @return
      * @author Liuminglu
      * @Date 2015年5月13日 下午1:28:59
      */
-	public Order confirmOrder(Long uid, Long orderId);
+	public Order confirmOrder(Long uid, String orderNo);
 
-	public Object chooseDeliverGroup(Long id, Long orderId, Integer deliverGroup);
+	/**
+	 * 选择配送机构
+	 * @param uid
+	 * @param orderNo  订单编号
+	 * @param deliverGroup 机构：1自己配送  2达达配送
+	 * @return
+	 * @author Liuminglu
+	 * @Date 2015年5月18日 上午11:38:27
+	 */
+	public Object chooseDeliverGroup(Long uid, String orderNo, Integer deliverGroup);
+
+	/**
+	 * 达达接口回调
+	 * @param dadaResultDto
+	 * @return
+	 * @author Liuminglu
+	 * @Date 2015年5月18日 下午2:20:58
+	 */
+	public Order dadaCallBack(DadaResultDto dadaResultDto);
 }

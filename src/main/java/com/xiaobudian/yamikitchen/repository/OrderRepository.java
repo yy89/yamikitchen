@@ -25,7 +25,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("from Order o , OrderItem oi where o.orderNo = oi.orderNo and o.status = 2 and o.merchantId = ?1 and createDate > ?2 order by createDate desc")
     List<OrderDetail> getUnconfirmedOrders(Long uid, Date createDate);
 
-    @Query("from Order where id = ?1")
-    Order getOrderById(Long orderId);
-
+    @Query("from Order where orderNo = ?1")
+    Order getOrderByOrderNo(String orderNo);
+    
 }

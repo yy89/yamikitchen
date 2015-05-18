@@ -44,4 +44,19 @@ public class Constants {
 	 */
 	public static final int ORDER_STATUS_7 = 7;
 	
+	/**
+	 * 达达接口请求返回状态：成功
+	 */
+	public static final String DADA_RESPONSE_STATUS_OK = "ok";
+	/**
+	 * 达达接口请求返回状态：失败
+	 */
+	public static final String DADA_RESPONSE_STATUS_FAIL = "fail";
+	/**
+	 * 达达回调接口 115.28.38.232
+	 */
+	public static final String DADA_CALL_BACK_URL = "http://115.28.38.232:8080/yamikitchen/api/orders/dadaCallBack";
+	
+	
+	
 }

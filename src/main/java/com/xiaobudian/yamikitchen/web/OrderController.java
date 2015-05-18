@@ -6,6 +6,7 @@ import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.User;
 import com.xiaobudian.yamikitchen.service.OrderService;
+import com.xiaobudian.yamikitchen.web.dto.DadaResultDto;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -65,13 +66,19 @@ public class OrderController {
         return Result.successResult(orderService.getUnconfirmedOrders(user.getId(), new Date(createDate)));
     }
 
-    @RequestMapping(value = "/orders/confirmOrder/{orderId}", method = RequestMethod.GET)
-    public Result confirmOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
-        return Result.successResult(orderService.confirmOrder(user.getId(), orderId));
+    @RequestMapping(value = "/orders/confirmOrder/{orderNo}", method = RequestMethod.GET)
+    public Result confirmOrder(@PathVariable String orderNo, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.confirmOrder(user.getId(), orderNo));
     }
 
-    @RequestMapping(value = "/orders/{orderId}/{deliverGroup}/chooseDeliverGroup", method = RequestMethod.GET)
-    public Result chooseDeliverGroup(@PathVariable Long orderId, @PathVariable Integer deliverGroup, @AuthenticationPrincipal User user) {
-        return Result.successResult(orderService.chooseDeliverGroup(user.getId(), orderId, deliverGroup));
+    @RequestMapping(value = "/orders/chooseDeliverGroup/{orderNo}/{deliverGroup}", method = RequestMethod.POST)
+    public Result chooseDeliverGroup(@PathVariable String orderNo, @PathVariable Integer deliverGroup, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.chooseDeliverGroup(user.getId(), orderNo, deliverGroup));
     }
+    
+    @RequestMapping(value = "/orders/dadaCallBack", method = RequestMethod.POST)
+    public Result dadaCallBack(@RequestBody DadaResultDto dadaResultDto) {
+        return Result.successResult(orderService.dadaCallBack(dadaResultDto));
+    }
+    
 }

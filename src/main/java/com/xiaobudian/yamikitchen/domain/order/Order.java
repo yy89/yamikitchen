@@ -22,7 +22,7 @@ public class Order implements Serializable {
     private Date deliverDate;
     private Date outDate;
     @NotNull(message = "order.expectDate.not.empty")
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date expectDate;
     @NotNull(message = "order.paymentMethod.not.empty")
     private Integer paymentMethod;
@@ -60,7 +60,19 @@ public class Order implements Serializable {
     private Double longitude;
     private Double latitude;
     private Integer deliverGroup;
-
+    
+    // 第三方配送机构的订单状态
+    // 达达：1待接单 2待取货 3执行中 4已完成 5已取消
+    private Integer deliverGroupOrderStatus;
+    // 配送员id
+    private Integer diliverymanId;
+    // 配送员姓名
+    private Integer diliverymanName;
+    // 配送员手机
+    private String diliverymanMobile;
+    // 更新时间
+    private Date updateTime;
+    
     public Long getId() {
         return id;
     }
@@ -396,4 +408,45 @@ public class Order implements Serializable {
 	public void setDirectCancelable(boolean directCancelable) {
 		this.directCancelable = directCancelable;
 	}
+
+	public Integer getDeliverGroupOrderStatus() {
+		return deliverGroupOrderStatus;
+	}
+
+	public void setDeliverGroupOrderStatus(Integer deliverGroupOrderStatus) {
+		this.deliverGroupOrderStatus = deliverGroupOrderStatus;
+	}
+
+	public Integer getDiliverymanId() {
+		return diliverymanId;
+	}
+
+	public void setDiliverymanId(Integer diliverymanId) {
+		this.diliverymanId = diliverymanId;
+	}
+
+	public Integer getDiliverymanName() {
+		return diliverymanName;
+	}
+
+	public void setDiliverymanName(Integer diliverymanName) {
+		this.diliverymanName = diliverymanName;
+	}
+
+	public String getDiliverymanMobile() {
+		return diliverymanMobile;
+	}
+
+	public void setDiliverymanMobile(String diliverymanMobile) {
+		this.diliverymanMobile = diliverymanMobile;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
 }
