@@ -223,20 +223,7 @@ public class OrderServiceImpl implements OrderService {
         try {
 			// deliverGroup配送机构：1自己配送  2达达配送
         	if (deliverGroup == 2) {
-        		HttpParams httpParams = httpClientRepository.getHttpParamsById(1L);
-        		if (httpParams == null) {
-        			httpParams = new HttpParams();
-        			setHttpParams(httpParams);
-        		} else if (!tokenIsValid(httpParams.getExpiresIn(), httpParams.getCreateData())) {
-        			setHttpParams(httpParams);
-        		}
-        		
-        		// 调用达达接口，添加订单
-        		DadaResultDto dadaResultDto = httpclientService
-        				.addOrderToDada(order, httpParams.getAccessToken());
-        		if (dadaResultDto == null || !Constants.DADA_RESPONSE_STATUS_OK.equals(dadaResultDto.getStatus())) {
-        			throw new RuntimeException("向达达添加订单出现异常");
-        		}
+        		addOrderToDada(order);
         	}
         	order.setDeliverGroup(deliverGroup);
         	// 订单状态变成外卖配送中
@@ -259,11 +246,46 @@ public class OrderServiceImpl implements OrderService {
     	
     	Order order = orderRepository.getOrderByOrderNo(dadaResultDto.getOrder_id());
     	Assert.notNull(order, "Order not longer exist ： " + dadaResultDto.getOrder_id());
-    	order.setStatus(dadaResultDto.getOrder_status());
+    	order.setDeliverGroupOrderStatus(dadaResultDto.getOrder_status());
     	order.setDiliverymanId(dadaResultDto.getDm_id());
+    	order.setDiliverymanName(dadaResultDto.getDm_name());
     	order.setDiliverymanMobile(dadaResultDto.getDm_mobile());
     	order.setUpdateTime(new Date(dadaResultDto.getUpdate_time()));
     	return orderRepository.save(order);
+    }
+    
+    @Override
+    public Order finishOrder(Long uid, String orderNo) {
+    	Order order = checkRequestUser(uid, orderNo);
+    	order.setStatus(Constants.ORDER_STATUS_5);
+    	order.setComplainable(true);
+    	order.setCommentable(true);
+    	
+    	// TODO 发起结算
+    	return orderRepository.save(order);
+    }
+    
+    /**
+     * 向达达发送订单
+     * @param order
+     * @author Liuminglu
+     * @Date 2015年5月18日 下午3:31:57
+     */
+    private void addOrderToDada(Order order) {
+    	HttpParams httpParams = httpClientRepository.getHttpParamsById(1L);
+		if (httpParams == null) {
+			httpParams = new HttpParams();
+			setHttpParams(httpParams);
+		} else if (!tokenIsValid(httpParams.getExpiresIn(), httpParams.getCreateData())) {
+			setHttpParams(httpParams);
+		}
+		
+		// 调用达达接口，添加订单
+		DadaResultDto dadaResultDto = httpclientService
+				.addOrderToDada(order, httpParams.getAccessToken());
+		if (dadaResultDto == null || !Constants.DADA_RESPONSE_STATUS_OK.equals(dadaResultDto.getStatus())) {
+			throw new RuntimeException("向达达添加订单出现异常");
+		}
     }
     
     /**

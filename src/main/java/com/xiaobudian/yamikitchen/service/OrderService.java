@@ -76,4 +76,14 @@ public interface OrderService {
 	 * @Date 2015年5月18日 下午2:20:58
 	 */
 	public Order dadaCallBack(DadaResultDto dadaResultDto);
+
+	/**
+	 * 订单完成
+	 * @param uid
+	 * @param orderNo
+	 * @return
+	 * @author Liuminglu
+	 * @Date 2015年5月18日 下午3:22:38
+	 */
+	public Order finishOrder(Long uid, String orderNo);
 }

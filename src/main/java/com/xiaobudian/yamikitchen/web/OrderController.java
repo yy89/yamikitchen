@@ -81,4 +81,9 @@ public class OrderController {
         return Result.successResult(orderService.dadaCallBack(dadaResultDto));
     }
     
+    @RequestMapping(value = "/orders/finishOrder/{orderNo}", method = RequestMethod.POST)
+    public Result finishOrder(@PathVariable String orderNo, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.finishOrder(user.getId(), orderNo));
+    }
+    
 }

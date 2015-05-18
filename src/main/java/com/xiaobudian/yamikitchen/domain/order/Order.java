@@ -67,7 +67,7 @@ public class Order implements Serializable {
     // 配送员id
     private Integer diliverymanId;
     // 配送员姓名
-    private Integer diliverymanName;
+    private String diliverymanName;
     // 配送员手机
     private String diliverymanMobile;
     // 更新时间
@@ -425,14 +425,6 @@ public class Order implements Serializable {
 		this.diliverymanId = diliverymanId;
 	}
 
-	public Integer getDiliverymanName() {
-		return diliverymanName;
-	}
-
-	public void setDiliverymanName(Integer diliverymanName) {
-		this.diliverymanName = diliverymanName;
-	}
-
 	public String getDiliverymanMobile() {
 		return diliverymanMobile;
 	}
@@ -447,6 +439,14 @@ public class Order implements Serializable {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public String getDiliverymanName() {
+		return diliverymanName;
+	}
+
+	public void setDiliverymanName(String diliverymanName) {
+		this.diliverymanName = diliverymanName;
 	}
 
 }
