@@ -1,8 +1,13 @@
 package com.xiaobudian.yamikitchen.domain.order;
 
+import com.xiaobudian.yamikitchen.common.Day;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.Date;
 
 /**
@@ -22,7 +27,6 @@ public class Order implements Serializable {
     private Date deliverDate;
     private Date outDate;
     @NotNull(message = "order.expectDate.not.empty")
-    @Temporal(TemporalType.TIMESTAMP)
     private Date expectDate;
     @NotNull(message = "order.paymentMethod.not.empty")
     private Integer paymentMethod;
@@ -47,7 +51,6 @@ public class Order implements Serializable {
     private String name;
     private Integer status = 1;
     private boolean cancelable = true;
-    private boolean directCancelable = true;
     private boolean payable = true;
     private boolean hasPaid = false;
     private boolean complainable = false;
@@ -60,19 +63,8 @@ public class Order implements Serializable {
     private Double longitude;
     private Double latitude;
     private Integer deliverGroup;
-    
-    // 第三方配送机构的订单状态
-    // 达达：1待接单 2待取货 3执行中 4已完成 5已取消
-    private Integer deliverGroupOrderStatus;
-    // 配送员id
-    private Integer diliverymanId;
-    // 配送员姓名
-    private String diliverymanName;
-    // 配送员手机
-    private String diliverymanMobile;
-    // 更新时间
-    private Date updateTime;
-    
+    private boolean directCancelable = false;
+
     public Long getId() {
         return id;
     }
@@ -401,52 +393,27 @@ public class Order implements Serializable {
         this.merchantAddress = merchantAddress;
     }
 
-	public boolean isDirectCancelable() {
-		return directCancelable;
-	}
+    public void confirm() {
+        setStatus(deliverMethod == 0 ? 3 : 6);
+        this.setDirectCancelable(false);
+        this.setAcceptDate(new Date());
+    }
 
-	public void setDirectCancelable(boolean directCancelable) {
-		this.directCancelable = directCancelable;
-	}
+    public boolean isDirectCancelable() {
+        return directCancelable;
+    }
 
-	public Integer getDeliverGroupOrderStatus() {
-		return deliverGroupOrderStatus;
-	}
+    public void setDirectCancelable(boolean directCancelable) {
+        this.directCancelable = directCancelable;
+    }
 
-	public void setDeliverGroupOrderStatus(Integer deliverGroupOrderStatus) {
-		this.deliverGroupOrderStatus = deliverGroupOrderStatus;
-	}
+    @Transient
+    public boolean isToday() {
+        return expectDate != null && Days.daysBetween(DateTime.now(), new DateTime(expectDate)).getDays() == 0;
+    }
 
-	public Integer getDiliverymanId() {
-		return diliverymanId;
-	}
-
-	public void setDiliverymanId(Integer diliverymanId) {
-		this.diliverymanId = diliverymanId;
-	}
-
-	public String getDiliverymanMobile() {
-		return diliverymanMobile;
-	}
-
-	public void setDiliverymanMobile(String diliverymanMobile) {
-		this.diliverymanMobile = diliverymanMobile;
-	}
-
-	public Date getUpdateTime() {
-		return updateTime;
-	}
-
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
-
-	public String getDiliverymanName() {
-		return diliverymanName;
-	}
-
-	public void setDiliverymanName(String diliverymanName) {
-		this.diliverymanName = diliverymanName;
-	}
-
+    @Transient
+    public boolean isTomorrow() {
+        return expectDate != null && Days.daysBetween(DateTime.now(), new DateTime(expectDate)).getDays() == 1;
+    }
 }

@@ -1,6 +1,6 @@
 package com.xiaobudian.yamikitchen.web.dto;
 
-import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.domain.member.User;
 
 /**
  * Created by Johnson on 2015/4/23.

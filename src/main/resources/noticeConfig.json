@@ -1,0 +1,17 @@
+[
+    {
+        "status": 2,
+        "title": "您有新订单啦",
+        "contentTemplate": "您有一笔在#{#order.address}的新订单"
+    },
+    {
+        "status": 3,
+        "title": "厨房已经接单啦",
+        "contentTemplate": "#{#merchant.name}已经确认接收您的订单：#{#order.orderNo}"
+    },
+    {
+        "status": 7,
+        "title": "订单已取消",
+        "contentTemplate": "订单：#{#order.orderNo}已经取消。"
+    }
+]

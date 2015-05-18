@@ -1,9 +1,9 @@
 package com.xiaobudian.yamikitchen.common.auth;
 
 import com.xiaobudian.yamikitchen.common.Keys;
-import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.repository.RedisRepository;
-import com.xiaobudian.yamikitchen.repository.UserRepository;
+import com.xiaobudian.yamikitchen.repository.member.UserRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

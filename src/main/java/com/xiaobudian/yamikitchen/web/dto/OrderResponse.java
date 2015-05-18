@@ -36,16 +36,18 @@ public class OrderResponse {
         public Builder() {
             this.response = new OrderResponse();
         }
-        public  Builder order(Order order){
+
+        public Builder order(Order order) {
             this.response.setOrder(order);
             return this;
         }
-        public Builder orderItems(List<OrderItem> orderItems){
+
+        public Builder orderItems(List<OrderItem> orderItems) {
             this.response.setOrderItems(orderItems);
             return this;
         }
 
-        public OrderResponse build(){
+        public OrderResponse build() {
             return this.response;
         }
     }

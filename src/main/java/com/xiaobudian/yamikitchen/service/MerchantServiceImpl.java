@@ -1,15 +1,19 @@
 package com.xiaobudian.yamikitchen.service;
 
-import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.common.Keys;
+import com.xiaobudian.yamikitchen.common.Util;
+import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Favorite;
 import com.xiaobudian.yamikitchen.domain.merchant.FavoriteResult;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
-import com.xiaobudian.yamikitchen.repository.FavoriteRepository;
-import com.xiaobudian.yamikitchen.repository.MerchantRepository;
-import com.xiaobudian.yamikitchen.repository.ProductRepository;
-import com.xiaobudian.yamikitchen.repository.UserRepository;
+import com.xiaobudian.yamikitchen.repository.*;
+import com.xiaobudian.yamikitchen.repository.member.UserRepository;
+import com.xiaobudian.yamikitchen.repository.merchant.FavoriteRepository;
+import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
+import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +33,8 @@ public class MerchantServiceImpl implements MerchantService {
     private FavoriteRepository favoriteRepository;
     @Inject
     private UserRepository userRepository;
+    @Inject
+    private RedisRepository redisRepository;
 
     @Override
     public List<Merchant> getMerchants(int page, int pageSize, Double longitude, Double latitude) {
@@ -37,13 +43,16 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public Merchant saveMerchant(Merchant merchant) {
+        Long merchantNo = redisRepository.nextLong(Keys.nextMerchantNoKey());
+        if (StringUtils.isEmpty(merchant.getMerchantNo())) merchant.setMerchantNo(String.valueOf(merchantNo));
         return merchantRepository.save(merchant);
     }
 
     @Override
-    public void removeMerchant(long id) {
+    public boolean removeMerchant(long id) {
         merchantRepository.removeById(id);
         productRepository.removeByMerchantId(id);
+        return true;
     }
 
     @Override
@@ -57,8 +66,9 @@ public class MerchantServiceImpl implements MerchantService {
     }
 
     @Override
-    public void removeProduct(long id) {
+    public boolean removeProduct(long id) {
         productRepository.removeById(id);
+        return true;
     }
 
     @Override
@@ -97,10 +107,9 @@ public class MerchantServiceImpl implements MerchantService {
         return merchantRepository.findByUidFavorite(uid, new PageRequest(page, size));
     }
 
-
     @Override
-    public List<Product> gteMainProduct(Long rid) {
-        return productRepository.findByMerchantIdAndMainIsTrue(rid);
+    public List<Product> getMainProducts(Long rid) {
+        return productRepository.findMainProducts(rid);
     }
 
     @Override
@@ -108,158 +117,50 @@ public class MerchantServiceImpl implements MerchantService {
         return merchantRepository.findOne(rid);
     }
 
-    @Override
-    public Merchant getMerchantByProductId(long pid) {
-        Product product = productRepository.findOne(pid);
-        return merchantRepository.findOne(product.getMerchantId());
-    }
 
     @Override
-    public Product getProductBy(long pid) {
+    public Product getProductBy(Long pid) {
         return productRepository.findOne(pid);
     }
 
     @Override
-    public int countMerhcantsByCreator(long uid) {
-        return merchantRepository.countByCreator(uid);
-    }
-
-    @Override
-    public Merchant getMerchantByCreator(long creator) {
+    public Merchant getMerchantByCreator(Long creator) {
         return merchantRepository.findByCreator(creator);
     }
 
     @Override
     public Merchant updateMerchant(Merchant merchant) {
-        Merchant merchantdb = merchantRepository.findOne(merchant.getId());
-        if(StringUtils.isNotEmpty(merchant.getPictures())){
-            merchantdb.setPictures(merchant.getPictures());
-        }
-        if(StringUtils.isNotEmpty(merchant.getName())){
-            merchantdb.setName(merchant.getName());
-        }
-        if(StringUtils.isNotEmpty(merchant.getHeadPic())){
-            merchantdb.setHeadPic(merchant.getHeadPic());
-        }
-        if(merchant.getType()!=null){
-            merchantdb.setType(merchant.getType());
-        }
-        if(StringUtils.isNotEmpty(merchant.getVoiceIntroduction())){
-            merchantdb.setVoiceIntroduction(merchant.getVoiceIntroduction());
-        }
-        if(StringUtils.isNotEmpty(merchant.getAddress())){
-            merchantdb.setAddress(merchant.getAddress());
-        }
-        if(StringUtils.isNotEmpty(merchant.getPhone())){
-            merchantdb.setPhone(merchant.getPhone());
-        }
-        if(StringUtils.isNotEmpty(merchant.getGoodCuisine())){
-            merchantdb.setGoodCuisine(merchant.getGoodCuisine());
-        }
-        if(StringUtils.isNotEmpty(merchant.getBusinessHours())){
-            merchantdb.setBusinessHours(merchant.getBusinessHours());
-        }
-        if(StringUtils.isNotEmpty(merchant.getBusinessDayPerWeek())){
-            merchantdb.setBusinessDayPerWeek(merchant.getBusinessDayPerWeek());
-        }
-        if(merchant.getSupportDelivery()!=null){
-            merchantdb.setSupportDelivery(merchant.getSupportDelivery());
-        }
-        if(merchant.getDeliverFee()!=null){
-            merchantdb.setDeliverFee(merchant.getDeliverFee());
-        }
-        if(StringUtils.isNotEmpty(merchant.getDeliverComment())){
-            merchantdb.setDeliverComment(merchant.getDeliverComment());
-        }
-        if(merchant.getMessHall()!=null){
-            merchantdb.setMessHall(merchant.getMessHall());
-        }
-        if(merchant.getCountOfMessHall()!=null){
-            merchantdb.setCountOfMessHall(merchant.getCountOfMessHall());
-        }
-        if(merchant.getSelfPickup()!=null){
-            merchantdb.setSelfPickup(merchant.getSelfPickup());
-        }
-        if(StringUtils.isNotEmpty(merchant.getDescription())){
-            merchantdb.setDescription(merchant.getDescription());
-        }
-        merchantRepository.save(merchantdb);
-        return merchantdb;
+        Merchant m = merchantRepository.findOne(merchant.getId());
+        BeanUtils.copyProperties(merchant, m, Util.getNullPropertyNames(merchant));
+        return merchantRepository.save(m);
     }
 
     @Override
     public Product updateProduct(Product product) {
-        Product productdb = productRepository.findOne(product.getId());
-        if(StringUtils.isNotEmpty(product.getName())){
-            productdb.setName(product.getName());
-        }
-        if(StringUtils.isNotEmpty(product.getPictures())){
-            productdb.setPictures(product.getPictures());
-        }
-        if(product.getPrice()!=null){
-            productdb.setPrice(product.getPrice());
-        }
-        if(StringUtils.isNotEmpty(product.getTags())){
-            productdb.setTags(product.getTags());
-        }
-        if(StringUtils.isNotEmpty(product.getAvailableTime())){
-            productdb.setAvailableTime(product.getAvailableTime());
-        }
-        if(StringUtils.isNotEmpty(product.getSummary())){
-            productdb.setSummary(product.getSummary());
-        }
-        if(product.getSupplyPerDay()!=null){
-            productdb.setSupplyPerDay(product.getSupplyPerDay());
-        }
-        if(product.getAvailable()!=null){
-            productdb.setAvailable(product.getAvailable());
-        }
-        if(product.getMain()!=null){
-            productdb.setMain(product.getMain());
-        }
-        productRepository.save(productdb);
-        return productdb;
+        Product p = productRepository.findOne(product.getId());
+        BeanUtils.copyProperties(product, p, Util.getNullPropertyNames(product));
+        return productRepository.save(p);
     }
 
     @Override
-    public Merchant openMerchant(long rid) {
+    public Merchant changeMerchantRestStatus(Long rid, boolean isRest) {
         Merchant merchant = merchantRepository.findOne(rid);
-        merchant.setIsRest(false);
+        merchant.setIsRest(isRest);
         return merchantRepository.save(merchant);
     }
 
     @Override
-    public Merchant closeMerchant(long rid) {
-        Merchant merchant = merchantRepository.findOne(rid);
-        merchant.setIsRest(true);
-        return merchantRepository.save(merchant);
-    }
-
-    @Override
-    public Product putOnProduct(long pid) {
+    public Product changeProductAvailability(Long pid, boolean available) {
         Product product = productRepository.findOne(pid);
-        product.setAvailable(true);
+        product.setAvailable(available);
         return productRepository.save(product);
     }
 
     @Override
-    public Product putOffProduct(long pid) {
+    public Product changeProductMain(Long pid, boolean isMain) {
         Product product = productRepository.findOne(pid);
-        product.setAvailable(false);
-        return productRepository.save(product);
-    }
-
-    @Override
-    public Product setProductMain(long id) {
-        Product product = productRepository.findOne(id);
-        product.setMain(true);
-        return productRepository.save(product);
-    }
-
-    @Override
-    public Product setProductUnmain(long id) {
-        Product product = productRepository.findOne(id);
-        product.setMain(false);
+        if (isMain) productRepository.disableMain(product.getMerchantId());
+        product.setMain(isMain);
         return productRepository.save(product);
     }
 }

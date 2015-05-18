@@ -1,6 +1,7 @@
 package com.xiaobudian.yamikitchen.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +12,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -97,6 +98,15 @@ public class AppConfig {
         connectionFactory.setPort(Integer.valueOf(redisPort));
         connectionFactory.setUsePool(true);
         return connectionFactory;
+    }
+
+    @Bean(name = "cartRedisTemplate")
+    public RedisTemplate<String, Cart> cartRedisTemplate() {
+        RedisTemplate<String, Cart> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Cart.class));
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        return redisTemplate;
     }
 
     @Bean

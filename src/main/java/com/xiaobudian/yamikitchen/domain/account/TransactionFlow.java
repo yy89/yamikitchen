@@ -11,19 +11,32 @@ import java.util.Date;
  * Created by Johnson on 2015/4/22.
  */
 @Entity
-public class TransactionFlow  implements Serializable {
+public class TransactionFlow implements Serializable {
     private static final long serialVersionUID = 6863837446350831109L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String orderId;
     private Long merchantId;
+    private Long account;
     private Long uid;
-    private Date operateDate;
+    private Date operateDate = new Date();
     private Double amount;
     private Double currentBalance;
     private Double fee;
     private Integer transactionType;
+
+    public TransactionFlow() {
+    }
+
+    public TransactionFlow(Long account,  String orderId, Long merchantId, Long uid, Double amount, Integer transactionType) {
+        this.orderId = orderId;
+        this.merchantId = merchantId;
+        this.uid = uid;
+        this.amount = amount;
+        this.transactionType = transactionType;
+        this.account = account;
+    }
 
     public Long getId() {
         return id;
@@ -95,5 +108,13 @@ public class TransactionFlow  implements Serializable {
 
     public void setTransactionType(Integer transactionType) {
         this.transactionType = transactionType;
+    }
+
+    public Long getAccount() {
+        return account;
+    }
+
+    public void setAccount(Long account) {
+        this.account = account;
     }
 }

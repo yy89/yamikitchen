@@ -1,18 +1,20 @@
 package com.xiaobudian.yamikitchen.domain.cart;
 
+import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.order.OrderItem;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import javax.persistence.Transient;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by johnson1 on 4/27/15.
  */
 public class Cart implements Serializable {
     private static final long serialVersionUID = -7529238667745324994L;
-    public static final String ZERO = "0";
     private Long uid;
     private Long merchantId;
     private String merchantName;
@@ -20,20 +22,20 @@ public class Cart implements Serializable {
     private Integer totalQuantity = 0;
     private Integer deliverMethod = 0;
     private Integer paymentMethod = 0;
+    private boolean today = true;
     private List<OrderItem> items = new ArrayList<>();
-    @Transient
     private Map<String, String> extra = new HashMap<>();
 
     public Cart() {
     }
 
-    public Cart(Long uid, Long merchantId, String merchantName, Long totalAmount, List<OrderItem> items) {
+    public Cart(Long uid, Merchant merchant, String extraFieldName, String deliverPrice, boolean today) {
         this();
         this.uid = uid;
-        this.merchantId = merchantId;
-        this.merchantName = merchantName;
-        this.totalAmount = totalAmount;
-        this.items = items;
+        this.merchantId = merchant.getId();
+        this.merchantName = merchant.getName();
+        this.today = today;
+        putExtra(extraFieldName, deliverPrice);
     }
 
     public Long getUid() {
@@ -61,6 +63,7 @@ public class Cart implements Serializable {
     }
 
     public Long getTotalAmount() {
+        totalAmount = 0l;
         for (OrderItem item : getItems()) {
             totalAmount += item.getAmount();
         }
@@ -68,6 +71,7 @@ public class Cart implements Serializable {
     }
 
     public Integer getTotalQuantity() {
+        totalQuantity = 0;
         for (OrderItem item : getItems()) {
             totalQuantity += item.getQuantity();
         }
@@ -116,6 +120,34 @@ public class Cart implements Serializable {
 
     public void setPaymentMethod(Integer paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public boolean isToday() {
+        return today;
+    }
+
+    public void setToday(boolean today) {
+        this.today = today;
+    }
+
+    public void addItem(OrderItem orderItem) {
+        for (OrderItem item : getItems()) {
+            if (!item.getProductId().equals(orderItem.getProductId())) continue;
+            item.setQuantity(item.getQuantity() + 1);
+            return;
+        }
+        items.add(orderItem);
+    }
+
+    public void removeItem(Long productId) {
+        for (OrderItem item : getItems()) {
+            if (!item.getProductId().equals(productId)) continue;
+            if (item.getQuantity() > 1) {
+                item.setQuantity(item.getQuantity() - 1);
+                return;
+            }
+            items.remove(item);
+        }
     }
 
     public Long deliverPrice() {

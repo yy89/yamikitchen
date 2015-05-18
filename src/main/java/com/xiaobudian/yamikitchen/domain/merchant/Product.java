@@ -18,22 +18,21 @@ public class Product implements Serializable {
     private String summary;
     private String pictures;
     private String availableTime;
-    @Column(insertable = false,columnDefinition="int default 0")
+    @Column(insertable = false, columnDefinition = "int default 1")
     private Long restCount = 0l;
+    private Long twRestCount = 0l;
     private String tags;
-    @Column(insertable = false,columnDefinition="int default 0")
+    @Column(insertable = false, columnDefinition = "int default 1")
     private Long soldCount = 0l;
-    @Column(columnDefinition="int default 30")
     private Integer supplyPerDay;
-    @Column(insertable = false,columnDefinition="int default 0")
+    @Column(insertable = false, columnDefinition = "int default 1")
     private Long commentCount = 0l;
-    @Column(insertable = false,columnDefinition="int default 0")
+    @Column(insertable = false, columnDefinition = "int default 1")
     private Long favoriteCount = 0l;
     private Boolean available = true;
-    private Boolean isDelete = false;
+    private Boolean removed = false;
     private Boolean main = false;
-    @Column(insertable = false, columnDefinition = "int default 0")
-    private Integer verifyStatus = 0;
+    private boolean soldOut;
 
     public Long getId() {
         return id;
@@ -147,12 +146,12 @@ public class Product implements Serializable {
         this.available = available;
     }
 
-    public Boolean getIsDelete() {
-        return isDelete;
+    public Boolean getRemoved() {
+        return removed;
     }
 
-    public void setIsDelete(Boolean isDelete) {
-        this.isDelete = isDelete;
+    public void setRemoved(Boolean removed) {
+        this.removed = removed;
     }
 
     public Boolean getMain() {
@@ -163,11 +162,15 @@ public class Product implements Serializable {
         this.main = main;
     }
 
-    public Integer getVerifyStatus() {
-        return verifyStatus;
+    public Long getTwRestCount() {
+        return twRestCount;
     }
 
-    public void setVerifyStatus(Integer verifyStatus) {
-        this.verifyStatus = verifyStatus;
+    public void setTwRestCount(Long twRestCount) {
+        this.twRestCount = twRestCount;
+    }
+
+    public boolean isSoldOut(boolean isToday) {
+        return isToday ? restCount < 1 : twRestCount < 1;
     }
 }

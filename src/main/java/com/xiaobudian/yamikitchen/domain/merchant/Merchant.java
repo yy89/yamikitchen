@@ -44,7 +44,7 @@ public class Merchant implements Serializable {
     private String description;
     private String tags;
     @Column(insertable = false, columnDefinition = "bigint default 0")
-    private Long favoriteCount;
+    private Long favoriteCount = 0l;
     @Column(insertable = false, columnDefinition = "bigint default 0")
     private Long commentCount = 0l;
     @Transient
@@ -57,7 +57,7 @@ public class Merchant implements Serializable {
     private Long deliverFee;
     private String deliverComment;
     @Column(insertable = false, columnDefinition = "bit default 0")
-    private Boolean isDelete = false;
+    private Boolean removed = false;
     @Column(insertable = false, columnDefinition = "int default 0")
     private Integer verifyStatus = 0;
 
@@ -317,12 +317,12 @@ public class Merchant implements Serializable {
         this.deliverComment = deliverComment;
     }
 
-    public Boolean getIsDelete() {
-        return isDelete;
+    public Boolean getRemoved() {
+        return removed;
     }
 
-    public void setIsDelete(Boolean isDelete) {
-        this.isDelete = isDelete;
+    public void setRemoved(Boolean removed) {
+        this.removed = removed;
     }
 
     public Integer getVerifyStatus() {
@@ -339,5 +339,10 @@ public class Merchant implements Serializable {
 
     public void setMerchantNo(String merchantNo) {
         this.merchantNo = merchantNo;
+    }
+
+    @Transient
+    public boolean isCreateBy(Long uid) {
+        return uid != null && uid.equals(creator);
     }
 }

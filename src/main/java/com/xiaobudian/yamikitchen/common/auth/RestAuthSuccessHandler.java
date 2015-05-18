@@ -2,7 +2,7 @@ package com.xiaobudian.yamikitchen.common.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xiaobudian.yamikitchen.common.Result;
-import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.web.dto.UserResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;

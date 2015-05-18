@@ -1,10 +1,9 @@
 package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
-import com.xiaobudian.yamikitchen.domain.coupon.CouponRule;
 import com.xiaobudian.yamikitchen.domain.coupon.CouponSummary;
-import com.xiaobudian.yamikitchen.repository.CouponHistoryRepository;
-import com.xiaobudian.yamikitchen.repository.CouponRepository;
+import com.xiaobudian.yamikitchen.repository.coupon.CouponHistoryRepository;
+import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

@@ -1,7 +1,7 @@
 package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
-import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.service.CouponService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
