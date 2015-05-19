@@ -1,6 +1,8 @@
 package com.xiaobudian.yamikitchen.repository;
 
+import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,9 +18,19 @@ import java.util.concurrent.TimeUnit;
 public class RedisRepository {
     @Inject
     private StringRedisTemplate stringRedisTemplate;
+    @Inject
+    private RedisTemplate<String, Cart> cartRedisTemplate;
 
     public void set(String key, String value, Long expireMinutes) {
         stringRedisTemplate.opsForValue().set(key, value, expireMinutes, TimeUnit.MINUTES);
+    }
+
+    public void setCart(String key, Cart value) {
+        cartRedisTemplate.opsForValue().set(key, value);
+    }
+
+    public Cart getCart(String key) {
+        return cartRedisTemplate.opsForValue().get(key);
     }
 
     public void set(String key, String value) {

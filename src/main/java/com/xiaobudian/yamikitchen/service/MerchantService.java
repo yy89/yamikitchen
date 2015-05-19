@@ -3,7 +3,6 @@ package com.xiaobudian.yamikitchen.service;
 import com.xiaobudian.yamikitchen.domain.merchant.FavoriteResult;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
-import com.xiaobudian.yamikitchen.web.dto.MerchantResponse;
 
 import java.util.List;
 
@@ -15,13 +14,13 @@ public interface MerchantService {
 
     public Merchant saveMerchant(Merchant merchant);
 
-    public void removeMerchant(long id);
+    public boolean removeMerchant(long id);
 
     public List<Product> getProductsBy(Long rid, Integer page, Integer size);
 
     public Product saveProduct(Product product);
 
-    public void removeProduct(long id);
+    public boolean removeProduct(long id);
 
     public FavoriteResult addFavorite(Long rid, Long uid);
 
@@ -31,32 +30,21 @@ public interface MerchantService {
 
     public List<Merchant> getFavorites(Long uid, Integer pageFrom, Integer pageSize);
 
-    public List<Product> gteMainProduct(Long rid);
+    public List<Product> getMainProducts(Long rid);
 
     public Merchant getMerchantBy(Long rid);
 
-    public Merchant getMerchantByProductId(long pid);
+    public Product getProductBy(Long pid);
 
-    public Product getProductBy(long pid);
-
-    public int countMerhcantsByCreator(long uid);
-
-    public Merchant getMerchantByCreator(long creator);
+    public Merchant getMerchantByCreator(Long creator);
 
     public Merchant updateMerchant(Merchant merchant);
 
     public Product updateProduct(Product product);
 
-    public Merchant openMerchant(long rid);
+    public Merchant changeMerchantRestStatus(Long rid, boolean isRest);
 
-    public Merchant closeMerchant(long rid);
+    public Product changeProductAvailability(Long pid, boolean available);
 
-    public Product putOnProduct(long pid);
-
-    public Product putOffProduct(long id);
-
-    public Product setProductMain(long id);
-
-    public Product setProductUnmain(long id);
-
+    public Product changeProductMain(Long pid, boolean isMain);
 }

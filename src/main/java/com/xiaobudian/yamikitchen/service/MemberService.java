@@ -1,6 +1,6 @@
 package com.xiaobudian.yamikitchen.service;
 
-import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 
 import java.util.List;

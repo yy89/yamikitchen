@@ -1,7 +1,7 @@
 package com.xiaobudian.yamikitchen.domain.cart;
 
-import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
+import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 
 /**
  * Created by johnson1 on 5/4/15.

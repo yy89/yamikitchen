@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER).and()
-                .authorizeRequests().antMatchers("/api/register", "/api/voice/**", "/api/sms/**", "/api/changePwd", "/api/merchants**").permitAll()
+                .authorizeRequests().antMatchers("/api/register", "/api/payment/callback", "/api/voice/**", "/api/sms/**", "/api/changePwd", "/api/merchants**").permitAll()
                 .and().authorizeRequests().antMatchers("/api/*").authenticated()
                 .and()
                 .formLogin()

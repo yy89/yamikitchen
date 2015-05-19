@@ -1,4 +1,4 @@
-package com.xiaobudian.yamikitchen.repository;
+package com.xiaobudian.yamikitchen.repository.coupon;
 
 import com.xiaobudian.yamikitchen.domain.coupon.CouponSummary;
 import org.springframework.data.jpa.repository.JpaRepository;

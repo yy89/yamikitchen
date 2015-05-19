@@ -1,7 +1,7 @@
 package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
-import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 import com.xiaobudian.yamikitchen.service.MemberService;
 import com.xiaobudian.yamikitchen.service.SmsService;

@@ -1,6 +1,6 @@
 package com.xiaobudian.yamikitchen.web.dto;
 
-import com.xiaobudian.yamikitchen.domain.User;
+import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
 

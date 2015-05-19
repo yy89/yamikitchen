@@ -1,6 +1,5 @@
 package com.xiaobudian.yamikitchen.config;
 
-import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;

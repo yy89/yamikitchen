@@ -1,42 +1,45 @@
 package com.xiaobudian.yamikitchen.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 
+import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
-import com.xiaobudian.yamikitchen.domain.merchant.Product;
+import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
+import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
+import com.xiaobudian.yamikitchen.domain.order.AsyncPostHandler;
 import com.xiaobudian.yamikitchen.domain.order.Order;
+import com.xiaobudian.yamikitchen.domain.order.OrderBuilder;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
 import com.xiaobudian.yamikitchen.domain.order.OrderItem;
-import com.xiaobudian.yamikitchen.repository.CouponRepository;
-import com.xiaobudian.yamikitchen.repository.MerchantRepository;
-import com.xiaobudian.yamikitchen.repository.OrderItemRepository;
-import com.xiaobudian.yamikitchen.repository.OrderRepository;
-import com.xiaobudian.yamikitchen.repository.ProductRepository;
+import com.xiaobudian.yamikitchen.domain.order.OrderNoGenerator;
+import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
 import com.xiaobudian.yamikitchen.repository.RedisRepository;
-import com.xiaobudian.yamikitchen.repository.UserAddressRepository;
-import com.xiaobudian.yamikitchen.util.Constants;
-import com.xiaobudian.yamikitchen.util.DateUtils;
-import com.xiaobudian.yamikitchen.web.dto.OrderRequest;
+import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
+import com.xiaobudian.yamikitchen.repository.member.UserAddressRepository;
+import com.xiaobudian.yamikitchen.repository.member.UserRepository;
+import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
+import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
+import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
+import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
+import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
 
 /**
  * Created by johnson1 on 4/28/15.
  */
 @Service(value = "orderService")
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl implements OrderService, ApplicationEventPublisherAware {
     @Value(value = "${extra.field.name}")
     private String extraFieldName;
     @Value(value = "${extra.deliver.price}")
@@ -55,65 +58,43 @@ public class OrderServiceImpl implements OrderService {
     private UserAddressRepository userAddressRepository;
     @Inject
     private CouponRepository couponRepository;
+    @Inject
+    private OrderNoGenerator oderNoGenerator;
+    @Inject
+    private UserRepository userRepository;
+    @Inject
+    AsyncPostHandler asyncPostHandler;
+    @Inject
+    DadaService dadaService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
-    private List<Integer> handingStatus = new ArrayList<Integer>(){
-        {add(2);}//�ȴ�ȷ��
-        {add(3);}//�ȴ�����
-    };
-
-    private List<Integer> solvedStatus = new ArrayList<Integer>(){
-        {add(5);}// ������ɴ�����
-        {add(6);}// �������������
-    };
 
     @Override
-    public Cart addProductInCart(Long uid, Long rid, Long productId) {
-        final String key = Keys.cartKey(uid);
-        for (String itemKey : redisRepository.members(key)) {
-            ItemKey k = ItemKey.valueOf(itemKey);
-            if (k.product.equals(productId)) {
-                redisRepository.removeForZSet(key, itemKey);
-                redisRepository.addForZSet(key, Keys.cartItemKey(rid, productId, k.quality + 1));
-                return getCart(uid);
-            }
-        }
-        redisRepository.addForZSet(key, Keys.cartItemKey(rid, productId, 1));
+    public Cart addProductInCart(Long uid, Long rid, Long productId, boolean isToday) {
+        Cart cart = getCart(uid);
+        if (cart == null) cart = new Cart(uid, merchantRepository.findOne(rid), extraFieldName, deliverPrice, isToday);
+        cart.addItem(new OrderItem(productRepository.findOne(productId), 1));
+        redisRepository.setCart(Keys.uidCartKey(uid), cart);
         return getCart(uid);
     }
 
     @Override
     public Cart removeProductInCart(Long uid, Long rid, Long productId) {
-        final String key = Keys.cartKey(uid);
-        for (String itemKey : redisRepository.members(Keys.cartKey(uid))) {
-            ItemKey k = ItemKey.valueOf(itemKey);
-            if (k.getProduct().equals(productId)) {
-                redisRepository.removeForZSet(key, itemKey);
-                if (k.getQuality() > 1)
-                    redisRepository.addForZSet(key, Keys.cartItemKey(rid, k.getProduct(), k.getQuality() - 1));
-            }
-        }
+        Cart cart = getCart(uid);
+        cart.removeItem(productId);
+        redisRepository.setCart(Keys.uidCartKey(uid), cart);
         return getCart(uid);
     }
 
     @Override
     public Cart getCart(Long uid) {
-        final String key = Keys.cartKey(uid);
-        Set<String> itemKeys = redisRepository.members(key);
-        if (CollectionUtils.isEmpty(itemKeys)) return null;
-        List<OrderItem> items = new ArrayList<>();
-        Cart cart = new Cart();
-        cart.setUid(uid);
-        for (String itemKey : itemKeys) {
-            ItemKey k = ItemKey.valueOf(itemKey);
-            Product product = productRepository.findOne(k.getProduct());
-            OrderItem orderItem = new OrderItem(product, k.getQuality());
-            cart.setMerchantId(k.getRid());
-            items.add(orderItem);
-        }
-        cart.setItems(items);
-        cart.setMerchantName(merchantRepository.findOne(cart.getMerchantId()).getName());
-        cart.putExtra(extraFieldName, deliverPrice);
-        return cart;
+        return redisRepository.getCart(Keys.uidCartKey(uid));
+    }
+
+    @Override
+    public boolean removeCart(Long uid) {
+        redisRepository.removeKey(Keys.uidCartKey(uid));
+        return true;
     }
 
     @Override
@@ -122,45 +103,40 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean removeCart(Long uid) {
-        final String key = Keys.cartKey(uid);
-        redisRepository.removeKey(key);
-        return true;
+    public List<OrderDetail> getTodayPendingOrders(Long rid, int page, int pageSize) {
+        PageRequest pr = new PageRequest(page, pageSize);
+        return orderRepository.findOrdersWithDetail(rid, OrderStatus.PROCESSING, Day.TODAY.startOfDay(), Day.TODAY.endOfDay(), pr);
     }
 
     @Override
-    public List<Order> getTodayPandingOrdersBy(int page, int pageSize, long rid) {
-        Date todayStart = DateUtils.getTodayStart();
-        Date todayEnd = DateUtils.getTodayStart();
-        Sort sort = new Sort(Sort.Direction.ASC, "status").and(new Sort(Sort.Direction.DESC, "createDate"));
-        PageRequest pageRequest = new PageRequest(page,pageSize,sort);
-        return orderRepository.findByMerchantIdAndStatusInAndExpectDateBetween(rid,handingStatus,todayStart,todayEnd,pageRequest);
-    }
-
-    @Override
-    public List<Order> getTodayCompletedOrdersBy(int page, int pageSize, long rid) {
-        Date todayStart = DateUtils.getTodayStart();
-        Date todayEnd = DateUtils.getTodayStart();
-        Sort sort = new Sort(Sort.Direction.DESC, "createDate");
-        PageRequest pageRequest = new PageRequest(page,pageSize,sort);
-        return orderRepository.findByMerchantIdAndStatusInAndExpectDateBetween(rid,solvedStatus,todayStart,todayEnd,pageRequest);
-    }
-
-    @Override
-    public Order initOrder(OrderRequest orderRequest) {
-        Order order = new Order();
-        order.setStatus(0);
-        order.setCouponId(orderRequest.getCouponId());
-        order.setFirstDeal(true);
-        order.setHasPaid(false);
-        order.setPaymentMethod(orderRequest.getPaymentMethod());
-        order.setDeliverMethod(orderRequest.getDeliverMethod());
-        return orderRepository.save(order);
+    public List<OrderDetail> getTodayCompletedOrders(Long rid, int page, int pageSize) {
+        PageRequest pr = new PageRequest(page, pageSize);
+        return orderRepository.findOrdersWithDetail(rid, OrderStatus.SOLVED, Day.TODAY.startOfDay(), Day.TODAY.endOfDay(), pr);
     }
 
     @Override
     public Order createOrder(Order order) {
-        return orderRepository.save(order);
+        Cart cart = getCart(order.getUid());
+        if (cart == null) return null;
+        Merchant merchant = merchantRepository.findOne(cart.getMerchantId());
+        Order newOrder = new OrderBuilder(order).cart(cart).merchant(merchant)
+                .address(userAddressRepository.findOne(order.getAddressId()))
+                .user(userRepository.findOne(order.getUid())).distance(merchant)
+                .orderNo(oderNoGenerator.getOrderNo(order.getMerchantNo())).build();
+        newOrder = orderRepository.save(newOrder);
+        List<OrderItem> items = saveOrderItems(cart, newOrder.getOrderNo());
+        if (newOrder.getPaymentMethod() == 1)
+            asyncPostHandler.handle(newOrder, items);
+        removeCart(newOrder.getUid());
+        applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, newOrder)));
+        return newOrder;
+    }
+
+    private List<OrderItem> saveOrderItems(Cart cart, String orderNo) {
+        for (OrderItem item : cart.getItems()) {
+            item.setOrderNo(orderNo);
+        }
+        return orderItemRepository.save(cart.getItems());
     }
 
     @Override
@@ -181,85 +157,75 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDetail> getUnconfirmedOrders(Long uid, Date createDate) {
-        Assert.notNull(uid, "param can't be null : uid");
-        if (createDate == null) {
-            return orderRepository.getUnconfirmedOrders(uid);
-        } else {
-            return orderRepository.getUnconfirmedOrders(uid, createDate);
-        }
+        return createDate == null ? orderRepository.findUnconfirmedOrders(uid) : orderRepository.findUnconfirmedOrders(uid, createDate);
     }
 
     @Override
-    public Order confirmOrder(Long uid, Long orderId) {
-        Order order = checkRequestUser(uid, orderId);
-        if (Constants.DELIVER_METHOD_0 == order.getDeliverMethod()) {
-            order.setStatus(Constants.ORDER_STATUS_3);
-        } else if (Constants.DELIVER_METHOD_1 == order.getDeliverMethod()) {
-            order.setStatus(Constants.ORDER_STATUS_6);
-        }
-        order.setDirectCancelable(false);
-        order.setAcceptDate(new Date());
-        try {
-            orderRepository.save(order);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return order;
+    public Order confirmOrder(Order order) {
+        order.confirm();
+        Order newOrder = orderRepository.save(order);
+        Merchant merchant = merchantRepository.findOne(order.getMerchantId());
+        applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, newOrder)));
+        return newOrder;
     }
 
     @Override
-    public Order chooseDeliverGroup(Long uid, Long orderId, Integer deliverGroup) {
-        Order order = checkRequestUser(uid, orderId);
+    public OrderDetail getOrdersBy(String orderNo) {
+        Order order = orderRepository.findByOrderNo(orderNo);
+        List<OrderItem> items = orderItemRepository.findByOrderNo(orderNo);
+        return new OrderDetail(order, items);
+    }
+
+    @Override
+    public List<Order> getOrdersForLastMonth(Long uid) {
+        Date previousMonth = DateTime.now().plusMonths(-1).toDate();
+        return orderRepository.findByUidAndCreateDateAfter(uid, previousMonth);
+    }
+
+    @Override
+    public List<Order> getInProgressOrders(Long uid) {
+        return orderRepository.findByUidAndStatusIn(uid, OrderStatus.IN_PROGRESS);
+    }
+
+    @Override
+    public List<Order> getWaitForCommentOrders(Long uid) {
+        return orderRepository.findByUidAndStatusAndCommentableTrue(uid, OrderStatus.COMPLETED.getIndex());
+    }
+
+    @Override
+    public Cart changeDeliverMethodOfCart(Long uid, Integer deliverMethod) {
+        Cart cart = getCart(uid);
+        cart.setDeliverMethod(deliverMethod);
+        redisRepository.setCart(Keys.uidCartKey(uid), cart);
+        return getCart(uid);
+    }
+
+    @Override
+    public Cart changePaymentMethodOfCart(Long uid, Integer paymentMethod) {
+        Cart cart = getCart(uid);
+        cart.setDeliverMethod(paymentMethod);
+        redisRepository.setCart(Keys.uidCartKey(uid), cart);
+        return getCart(uid);
+    }
+
+    @Override
+    public Order getOrder(Long orderId) {
+        return orderRepository.findOne(orderId);
+    }
+
+    @Override
+    public Order chooseDeliverGroup(Order order, Integer deliverGroup) {
         order.setDeliverGroup(deliverGroup);
-        return null;
+        if (deliverGroup == 2) {
+        	dadaService.addOrderToDada(order);
+        }
+        order.setStatus(4);
+        order.setOutDate(new Date());
+        return orderRepository.save(order);
     }
 
-    /**
-     * 验证uid的所属商户是否有权限修改orderId订单
-     * 商户只能修改自己接到的订单，服务端加此验证防止请求被拦截参数被篡改
-     *
-     * @param uid 被验证的商户uid
-     * @param orderId 商户请求中要修改的订单id
-     * @author Liuminglu
-     * @Date 2015年5月13日 下午3:34:57
-     */
-    private Order checkRequestUser(Long uid, Long orderId) {
-        Assert.notNull(uid, "param can't be null : uid");
-        Assert.notNull(orderId, "param can't be null : orderId");
-        Order order = orderRepository.getOrderById(orderId);
-        Assert.notNull(order, "Order not longer exist");
-        Assert.isTrue(uid.equals(order.getMerchantId()), "uid mismatching");
-        return order;
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
-
-    static final class ItemKey {
-        private static final String DELIMITER = ":";
-        private Long rid;
-        private Long product;
-        private Integer quality;
-
-        public ItemKey(Long rid, Long product, Integer quality) {
-            this.rid = rid;
-            this.product = product;
-            this.quality = quality;
-        }
-
-        public Long getRid() {
-            return rid;
-        }
-
-        public Long getProduct() {
-            return product;
-        }
-
-        public Integer getQuality() {
-            return quality;
-        }
-
-        public static ItemKey valueOf(String s) {
-            String[] ps = s.split(DELIMITER);
-            return new ItemKey(Long.valueOf(ps[1]), Long.valueOf(ps[3]), Integer.valueOf(ps[5]));
-        }
-    }
-
 }

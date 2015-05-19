@@ -1,7 +1,6 @@
 package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
-import com.xiaobudian.yamikitchen.domain.coupon.CouponRule;
 import com.xiaobudian.yamikitchen.domain.coupon.CouponSummary;
 
 import java.util.List;

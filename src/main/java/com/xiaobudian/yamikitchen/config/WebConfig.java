@@ -64,6 +64,6 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Bean(name = "mapper")
     public ObjectMapper mapper() {
-        return  new ObjectMapper();
+        return new ObjectMapper();
     }
 }

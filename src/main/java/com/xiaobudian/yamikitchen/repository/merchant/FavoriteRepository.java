@@ -1,4 +1,4 @@
-package com.xiaobudian.yamikitchen.repository;
+package com.xiaobudian.yamikitchen.repository.merchant;
 
 import com.xiaobudian.yamikitchen.domain.merchant.Favorite;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -11,7 +11,7 @@ import java.util.Date;
  * Created by Johnson on 2015/4/22.
  */
 @Entity
-public class Comment  implements Serializable {
+public class Comment implements Serializable {
     private static final long serialVersionUID = -6999094968335332646L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,7 @@ public class Comment  implements Serializable {
     private Long productId;
     private String productName;
     private Date createDate;
+    private boolean removed = false;
 
     public Long getId() {
         return id;
@@ -122,5 +123,13 @@ public class Comment  implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public boolean isRemoved() {
+        return removed;
+    }
+
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
     }
 }
