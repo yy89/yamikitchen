@@ -15,7 +15,7 @@ public class DadaConstans {
     /**
      * 达达回调接口 115.28.38.232
      */
-    public static final String DADA_CALL_BACK_URL = "http://115.28.38.232:8081/yamikitchen/api/orders/dadaCallBack";
+    public static final String DADA_CALL_BACK_URL = "http://115.28.38.232:8081/yamikitchen/api/thirdParty/dadaCallBack";
     
     // 达达签名算法字符串
     public static final String DADA = "dada";
