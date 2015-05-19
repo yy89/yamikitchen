@@ -150,7 +150,7 @@ public class DadaServiceImpl implements DadaService {
     }
 
     private boolean tokenIsValid(Long expiresIn, Date createData) {
-        Long timestamp = createData.getTime() + expiresIn;
+        Long timestamp = createData.getTime() + (expiresIn * 1000);
         Date date = new Date(timestamp);
         return date.after(new Date());
     }
