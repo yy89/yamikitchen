@@ -1,14 +1,18 @@
 package com.xiaobudian.yamikitchen.domain.order;
 
-import com.xiaobudian.yamikitchen.common.Day;
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.Date;
 
 /**
  * Created by Johnson on 2015/4/22.
@@ -64,6 +68,18 @@ public class Order implements Serializable {
     private Double latitude;
     private Integer deliverGroup;
     private boolean directCancelable = false;
+    
+    // 第三方配送机构的订单状态
+    // 达达：1待接单 2待取货 3执行中 4已完成 5已取消
+    private Integer deliverGroupOrderStatus;
+    // 配送员id
+    private Integer diliverymanId;
+    // 配送员姓名
+    private String diliverymanName;
+    // 配送员手机
+    private String diliverymanMobile;
+    // 更新时间
+    private Date updateTime;
 
     public Long getId() {
         return id;
@@ -416,4 +432,44 @@ public class Order implements Serializable {
     public boolean isTomorrow() {
         return expectDate != null && Days.daysBetween(DateTime.now(), new DateTime(expectDate)).getDays() == 1;
     }
+
+	public Integer getDeliverGroupOrderStatus() {
+		return deliverGroupOrderStatus;
+	}
+
+	public void setDeliverGroupOrderStatus(Integer deliverGroupOrderStatus) {
+		this.deliverGroupOrderStatus = deliverGroupOrderStatus;
+	}
+
+	public Integer getDiliverymanId() {
+		return diliverymanId;
+	}
+
+	public void setDiliverymanId(Integer diliverymanId) {
+		this.diliverymanId = diliverymanId;
+	}
+
+	public String getDiliverymanName() {
+		return diliverymanName;
+	}
+
+	public void setDiliverymanName(String diliverymanName) {
+		this.diliverymanName = diliverymanName;
+	}
+
+	public String getDiliverymanMobile() {
+		return diliverymanMobile;
+	}
+
+	public void setDiliverymanMobile(String diliverymanMobile) {
+		this.diliverymanMobile = diliverymanMobile;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
 }

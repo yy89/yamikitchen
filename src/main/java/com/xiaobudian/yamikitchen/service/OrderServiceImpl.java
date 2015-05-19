@@ -1,20 +1,10 @@
 package com.xiaobudian.yamikitchen.service;
 
-import com.xiaobudian.yamikitchen.common.Day;
-import com.xiaobudian.yamikitchen.common.Keys;
-import com.xiaobudian.yamikitchen.domain.cart.Cart;
-import com.xiaobudian.yamikitchen.domain.cart.Settlement;
-import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
-import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
-import com.xiaobudian.yamikitchen.domain.order.*;
-import com.xiaobudian.yamikitchen.repository.*;
-import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
-import com.xiaobudian.yamikitchen.repository.member.UserAddressRepository;
-import com.xiaobudian.yamikitchen.repository.member.UserRepository;
-import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
-import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
-import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
-import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
+import java.util.Date;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,9 +12,28 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
-import java.util.Date;
-import java.util.List;
+import com.xiaobudian.yamikitchen.common.Day;
+import com.xiaobudian.yamikitchen.common.Keys;
+import com.xiaobudian.yamikitchen.domain.cart.Cart;
+import com.xiaobudian.yamikitchen.domain.cart.Settlement;
+import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
+import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
+import com.xiaobudian.yamikitchen.domain.order.AsyncPostHandler;
+import com.xiaobudian.yamikitchen.domain.order.Order;
+import com.xiaobudian.yamikitchen.domain.order.OrderBuilder;
+import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
+import com.xiaobudian.yamikitchen.domain.order.OrderItem;
+import com.xiaobudian.yamikitchen.domain.order.OrderNoGenerator;
+import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
+import com.xiaobudian.yamikitchen.repository.RedisRepository;
+import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
+import com.xiaobudian.yamikitchen.repository.member.UserAddressRepository;
+import com.xiaobudian.yamikitchen.repository.member.UserRepository;
+import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
+import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
+import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
+import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
+import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -55,6 +64,8 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     private UserRepository userRepository;
     @Inject
     AsyncPostHandler asyncPostHandler;
+    @Inject
+    DadaService dadaService;
     private ApplicationEventPublisher applicationEventPublisher;
 
 
@@ -205,6 +216,11 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Override
     public Order chooseDeliverGroup(Order order, Integer deliverGroup) {
         order.setDeliverGroup(deliverGroup);
+        if (deliverGroup == 2) {
+        	dadaService.addOrderToDada(order);
+        }
+        order.setStatus(4);
+        order.setOutDate(new Date());
         return orderRepository.save(order);
     }
 
