@@ -449,11 +449,18 @@ public class Order implements Serializable {
         this.setDirectCancelable(false);
         this.setAcceptDate(new Date());
     }
+
     public void pay() {
         this.setPayable(false);
         this.setHasPaid(true);
         this.setStatus(2);
     }
+
+    public void deliver() {
+        this.setStatus(4);
+        this.setOutDate(new Date());
+    }
+
 
     public boolean isDirectCancelable() {
         return directCancelable;
@@ -477,11 +484,16 @@ public class Order implements Serializable {
         return deliverGroup == 0 ? 0 : deliverPrice + (price - deliverPrice) * sharingScale;
     }
 
+
     public double settlementAmountOfCompany(double sharingScale) {
         return price - settlementAmountOfMerchant(sharingScale);
     }
 
     public double priceAsDouble() {
-       return  Math.round(price / 100.00d);
+        return Math.round(price / 100.00d);
+    }
+
+    public boolean deliverByDaDa() {
+        return deliverGroup != null && deliverGroup == 2;
     }
 }

@@ -89,10 +89,6 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         return true;
     }
 
-    @Override
-    public List<OrderItem> getItemsInOrder(String orderNo) {
-        return orderItemRepository.findByOrderNo(orderNo);
-    }
 
     @Override
     public List<OrderDetail> getTodayPendingOrders(Long rid, int page, int pageSize) {
@@ -208,11 +204,8 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Override
     public Order chooseDeliverGroup(Order order, Integer deliverGroup) {
         order.setDeliverGroup(deliverGroup);
-        if (deliverGroup == 2) {
-            dadaService.addOrderToDada(order);
-        }
-        order.setStatus(4);
-        order.setOutDate(new Date());
+        if (order.deliverByDaDa()) dadaService.addOrderToDada(order);
+        order.deliver();
         return orderRepository.save(order);
     }
 
