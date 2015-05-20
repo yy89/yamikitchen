@@ -55,11 +55,10 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Inject
     private UserRepository userRepository;
     @Inject
-    OrderPostHandler orderPostHandler;
+    private OrderPostHandler orderPostHandler;
     private ApplicationEventPublisher applicationEventPublisher;
     @Inject
     private DadaService dadaService;
-
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId, boolean isToday) {

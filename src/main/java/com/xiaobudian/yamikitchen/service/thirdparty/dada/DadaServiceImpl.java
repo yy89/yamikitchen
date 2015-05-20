@@ -114,7 +114,7 @@ public class DadaServiceImpl implements DadaService {
         if (thirdGroup == null) {
         	thirdGroup = new ThirdParty();
         	saveThirdGroup(thirdGroup);
-        } else if (!tokenIsValid(thirdGroup.getExpiresIn(), thirdGroup.getCreateData())) {
+        } else if (!tokenIsValid(thirdGroup.getExpiresIn(), thirdGroup.getCreateDate())) {
         	saveThirdGroup(thirdGroup);
         }
         // 调用达达接口，添加订单
@@ -144,7 +144,7 @@ public class DadaServiceImpl implements DadaService {
         thirdGroup.setAccessToken(dadaDto.getResult().getAccess_token());
         thirdGroup.setExpiresIn(dadaDto.getResult().getExpires_in());
         thirdGroup.setRefreshToken(dadaDto.getResult().getRefresh_token());
-        thirdGroup.setCreateData(new Date());
+        thirdGroup.setCreateDate(new Date());
         thirdGroup.setThirdGroup(DadaConstans.DADA);
         httpClientRepository.save(thirdGroup);
     }

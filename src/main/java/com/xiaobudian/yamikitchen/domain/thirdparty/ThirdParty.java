@@ -29,7 +29,7 @@ public class ThirdParty {
     private String refreshToken;
     
     // 创建时间
-    private Date createData;
+    private Date createDate;
     
     // 第三方机构
     private String thirdGroup;
@@ -66,12 +66,12 @@ public class ThirdParty {
 		this.refreshToken = refreshToken;
 	}
 
-	public Date getCreateData() {
-		return createData;
+	public Date getCreateDate() {
+		return createDate;
 	}
 
-	public void setCreateData(Date createData) {
-		this.createData = createData;
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 	public String getThirdGroup() {
