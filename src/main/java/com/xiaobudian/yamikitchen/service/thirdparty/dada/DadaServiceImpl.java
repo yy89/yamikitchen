@@ -90,11 +90,11 @@ public class DadaServiceImpl implements DadaService {
 		requestMap.put("supplier_name", order.getMerchantName());
 		
 		Merchant merchant = merchantService.getMerchantByCreator(order.getMerchantId());
-		requestMap.put("supplier_address", merchant == null ? "丫米厨房" : merchant.getAddress());
+		requestMap.put("supplier_address", merchant.getAddress());
 		requestMap.put("supplier_phone", String.valueOf(order.getMerchantPhone()));
 		requestMap.put("supplier_tel", null);
-		requestMap.put("supplier_lat", String.valueOf(merchant == null ? null : merchant.getLatitude()));
-		requestMap.put("supplier_lng", String.valueOf(merchant == null ? null : merchant.getLongitude()));
+		requestMap.put("supplier_lat", String.valueOf(merchant.getLatitude()));
+		requestMap.put("supplier_lng", String.valueOf(merchant.getLongitude()));
 		requestMap.put("invoice_title", null);
 		requestMap.put("receiver_name", order.getNickName());
 		requestMap.put("receiver_address", order.getAddress());
@@ -131,7 +131,7 @@ public class DadaServiceImpl implements DadaService {
         Assert.notNull(dadaDto.getOrder_status(), "dadaResultDto.order_status can't be null");
         
         Order order = orderRepository.findByOrderNo(dadaDto.getOrder_id());
-        Assert.notNull(order, "Order not longer exist ： " + dadaDto.getOrder_id());
+        Assert.notNull(order, "Order not longer exist : " + dadaDto.getOrder_id());
         order.setStatus(dadaDto.getOrder_status());
         order.setDiliverymanId(dadaDto.getDm_id());
         order.setDiliverymanMobile(dadaDto.getDm_mobile());

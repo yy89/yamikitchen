@@ -48,6 +48,20 @@ public class MerchantController {
         return Result.successResult(responses);
     }
 
+    @RequestMapping(value = "/merchants/products", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getMyProducts(@RequestParam("page") Integer page,
+                                @RequestParam("size") Integer size,
+                                @AuthenticationPrincipal User user) {
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        if (merchant == null) throw new RuntimeException("user.merchant.not.create");
+        MerchantResponse response = new MerchantResponse.Builder()
+                .merchant(merchant)
+                .user(user)
+                .products(merchantService.getProductsBy(merchant.getId(), page, size)).build();
+        return Result.successResult(response);
+    }
+
     @RequestMapping(value = "/merchants/{rid}/products", method = RequestMethod.GET)
     @ResponseBody
     public Result getProductsOfMerchant(@PathVariable Long rid, @RequestParam("page") Integer page,

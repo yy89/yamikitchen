@@ -7,7 +7,8 @@ import com.xiaobudian.yamikitchen.domain.merchant.Favorite;
 import com.xiaobudian.yamikitchen.domain.merchant.FavoriteResult;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
-import com.xiaobudian.yamikitchen.repository.*;
+import com.xiaobudian.yamikitchen.repository.RedisRepository;
+import com.xiaobudian.yamikitchen.repository.account.AccountRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.FavoriteRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
@@ -35,6 +36,8 @@ public class MerchantServiceImpl implements MerchantService {
     private UserRepository userRepository;
     @Inject
     private RedisRepository redisRepository;
+    @Inject
+    private AccountRepository accountRepository;
 
     @Override
     public List<Merchant> getMerchants(int page, int pageSize, Double longitude, Double latitude) {
@@ -45,7 +48,9 @@ public class MerchantServiceImpl implements MerchantService {
     public Merchant saveMerchant(Merchant merchant) {
         Long merchantNo = redisRepository.nextLong(Keys.nextMerchantNoKey());
         if (StringUtils.isEmpty(merchant.getMerchantNo())) merchant.setMerchantNo(String.valueOf(merchantNo));
-        return merchantRepository.save(merchant);
+        Merchant result = merchantRepository.save(merchant);
+        accountRepository.save(result.createAccounts());
+        return result;
     }
 
     @Override

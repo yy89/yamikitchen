@@ -15,7 +15,7 @@ public class DadaDto {
     // 订单取消原因,其他状态下默认值为空字符串
     private String cancel_reason;
     // 达达配送员id
-    private int dm_id;
+    private Integer dm_id;
     // 达达配送员姓名
     private String dm_name;
     // 达达配送员手机号
@@ -102,12 +102,6 @@ public class DadaDto {
 	public void setCancel_reason(String cancel_reason) {
 		this.cancel_reason = cancel_reason;
 	}
-	public int getDm_id() {
-		return dm_id;
-	}
-	public void setDm_id(int dm_id) {
-		this.dm_id = dm_id;
-	}
 	public String getDm_name() {
 		return dm_name;
 	}
@@ -125,6 +119,12 @@ public class DadaDto {
 	}
 	public void setUpdate_time(Integer update_time) {
 		this.update_time = update_time;
+	}
+	public Integer getDm_id() {
+		return dm_id;
+	}
+	public void setDm_id(Integer dm_id) {
+		this.dm_id = dm_id;
 	}
 
 }

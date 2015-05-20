@@ -1,8 +1,8 @@
 package com.xiaobudian.yamikitchen.domain.order;
 
 import com.xiaobudian.yamikitchen.common.Util;
-import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
+import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 
