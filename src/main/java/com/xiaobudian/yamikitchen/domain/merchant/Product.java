@@ -35,7 +35,7 @@ public class Product implements Serializable {
     private Boolean main = false;
     private boolean soldOut;
     private Date createDate;
-    private Date updateDate;
+    private Date lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -193,11 +193,11 @@ public class Product implements Serializable {
         this.createDate = createDate;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

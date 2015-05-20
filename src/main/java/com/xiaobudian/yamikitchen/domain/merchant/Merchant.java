@@ -68,7 +68,7 @@ public class Merchant implements Serializable {
     private double turnover = 0.00d;
     private double sharing = 0;
     private Date createDate;
-    private Date updateDate;
+    private Date lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -388,11 +388,11 @@ public class Merchant implements Serializable {
         this.createDate = createDate;
     }
 
-    public Date getUpdateDate() {
-        return updateDate;
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }
