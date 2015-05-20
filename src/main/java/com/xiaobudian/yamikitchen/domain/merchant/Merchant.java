@@ -7,6 +7,7 @@ import com.xiaobudian.yamikitchen.domain.account.AccountType;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,6 +67,8 @@ public class Merchant implements Serializable {
     private Integer verifyStatus = 0;
     private double turnover = 0.00d;
     private double sharing = 0;
+    private Date createDate;
+    private Date updateDate;
 
     public Long getId() {
         return id;
@@ -375,5 +378,21 @@ public class Merchant implements Serializable {
 
     public void setSharing(double sharing) {
         this.sharing = sharing;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }
