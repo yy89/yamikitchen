@@ -50,8 +50,9 @@ public class MerchantController {
 
     @RequestMapping(value = "/merchants/products", method = RequestMethod.GET)
     @ResponseBody
-    public Result getProductsOfMerchant(@RequestParam("page") Integer page,
-                                        @RequestParam("size") Integer size, @AuthenticationPrincipal User user) {
+    public Result getMyProducts(@RequestParam("page") Integer page,
+                                @RequestParam("size") Integer size,
+                                @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (merchant == null) throw new RuntimeException("user.merchant.not.create");
         MerchantResponse response = new MerchantResponse.Builder()
