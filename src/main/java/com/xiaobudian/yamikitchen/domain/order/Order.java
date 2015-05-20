@@ -30,7 +30,6 @@ public class Order implements Serializable {
     private Date createDate = new Date();
     private Date deliverDate;
     private Date outDate;
-    @NotNull(message = "order.expectDate.not.empty")
     private Date expectDate;
     @NotNull(message = "order.paymentMethod.not.empty")
     private Integer paymentMethod;
