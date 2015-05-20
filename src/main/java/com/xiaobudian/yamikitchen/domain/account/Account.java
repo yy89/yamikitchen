@@ -10,16 +10,31 @@ import java.util.Date;
 @Entity
 public class Account implements Serializable {
     private static final long serialVersionUID = 1613210083709671526L;
+    public static final String ACCOUNT_NO_PATTERN = "%d-%d-%d";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long uid;
-    private Double balance;
-    private Double availableBalance;
+    private String accountNo;
+    private Long merchantId;
+    private Double balance = 0.00d;
+    private Double availableBalance = 0.00d;
     @Enumerated(EnumType.ORDINAL)
     private AccountType type;
+    private Double cashLimit;
+    private Integer methodOfCashFee;
     private int status = 1;
     private Date createDate = new Date();
+
+    public Account() {
+
+    }
+
+    public Account(Long uid, String accountNo, AccountType type) {
+        this.uid = uid;
+        this.accountNo = accountNo;
+        this.type = type;
+    }
 
     public Long getId() {
         return id;
@@ -75,5 +90,37 @@ public class Account implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public Double getCashLimit() {
+        return cashLimit;
+    }
+
+    public void setCashLimit(Double cashLimit) {
+        this.cashLimit = cashLimit;
+    }
+
+    public Integer getMethodOfCashFee() {
+        return methodOfCashFee;
+    }
+
+    public Long getMerchantId() {
+        return merchantId;
+    }
+
+    public void setMerchantId(Long merchantId) {
+        this.merchantId = merchantId;
+    }
+
+    public void setMethodOfCashFee(Integer methodOfCashFee) {
+        this.methodOfCashFee = methodOfCashFee;
     }
 }
