@@ -190,7 +190,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Override
     public Cart changePaymentMethodOfCart(Long uid, Integer paymentMethod) {
         Cart cart = getCart(uid);
-        cart.setDeliverMethod(paymentMethod);
+        cart.setPaymentMethod(paymentMethod);
         redisRepository.setCart(Keys.uidCartKey(uid), cart);
         return getCart(uid);
     }

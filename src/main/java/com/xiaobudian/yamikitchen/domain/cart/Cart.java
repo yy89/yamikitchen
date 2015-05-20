@@ -3,6 +3,7 @@ package com.xiaobudian.yamikitchen.domain.cart;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.order.OrderItem;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -147,11 +148,12 @@ public class Cart implements Serializable {
                 return;
             }
             items.remove(item);
+            return;
         }
     }
 
     public Long deliverPrice() {
         String priceString = extra.get(new ArrayList<>(extra.keySet()).get(0));
-        return NumberUtils.createLong(priceString);
+        return CollectionUtils.isEmpty(items) ? 0l : NumberUtils.createLong(priceString);
     }
 }
