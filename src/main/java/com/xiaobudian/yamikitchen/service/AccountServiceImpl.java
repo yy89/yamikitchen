@@ -4,18 +4,23 @@ import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.account.*;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
-import com.xiaobudian.yamikitchen.domain.order.OrderPostHandler;
+import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
+import com.xiaobudian.yamikitchen.domain.order.OrderPostHandler;
+import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
 import com.xiaobudian.yamikitchen.repository.account.AccountRepository;
 import com.xiaobudian.yamikitchen.repository.account.AlipayHistoryRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionFlowRepository;
+import com.xiaobudian.yamikitchen.repository.account.TransactionTypeRepository;
 import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -26,7 +31,7 @@ import java.util.List;
  * Created by Johnson on 2015/5/15.
  */
 @Service(value = "accountService")
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl implements AccountService, ApplicationEventPublisherAware {
     @Value(value = "${alipay.partner}")
     private String partner;
     @Value(value = "${alipay.seller}")
@@ -49,23 +54,26 @@ public class AccountServiceImpl implements AccountService {
     private MerchantRepository merchantRepository;
     @Inject
     private BankCardRepository bankCardRepository;
+    @Inject
+    private TransactionHandler transactionHandler;
+    @Inject
+    private TransactionTypeRepository transactionTypeRepository;
+    private ApplicationEventPublisher applicationEventPublisher;
+
 
     public void writePaymentHistory(AlipayHistory history) {
         AlipayHistory his = alipayHistoryRepository.save(history);
-        payOrder(his.getTrade_no());
-
-//        Long merchantId = orderDetail.getOrder().getMerchantId();
-//        Long uid = merchantRepository.getOne(merchantId).getCreator();
-//        Account account = accountRepository.findByUidAndType(uid, AccountType.WAIT_CONFIRM);
-//        TransactionFlow flow = new TransactionFlow(account.getId(), his.getOut_trade_no(), merchantId, uid, NumberUtils.createDouble(his.getPrice()), 0);
-//        writeTransactionFlow(flow);
+        Order order = payOrder(his.getTrade_no());
+        transactionHandler.handle(order, transactionTypeRepository.findByCode(1001));
+        Merchant merchant = merchantRepository.findOne(order.getMerchantId());
+        applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));
     }
 
-    private void payOrder(String orderNo) {
+    private Order payOrder(String orderNo) {
         OrderDetail detail = orderRepository.findByOrderNoWithDetail(orderNo);
         detail.getOrder().pay();
-        orderRepository.save(detail.getOrder());
         orderPostHandler.handle(detail);
+        return orderRepository.save(detail.getOrder());
     }
 
     @Override
@@ -103,5 +111,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<TransactionFlow> getTransactionFlowsBy(Long uid) {
         return transactionFlowRepository.findByUid(uid);
+    }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 }
