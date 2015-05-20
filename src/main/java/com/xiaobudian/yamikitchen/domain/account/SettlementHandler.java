@@ -70,7 +70,7 @@ public class SettlementHandler {
     }
 
     public TransactionFlow createTransactionFlow(Order order, Account account, double amount) {
-        return new TransactionFlow(account.getId(), order.getOrderNo(), order.getMerchantId(), account.getUid(), amount, 0);
+        return new TransactionFlow(account.getAccountNo(), order.getOrderNo(), order.getMerchantId(), account.getUid(), amount, 0);
     }
 
     public PlatformTransactionFlow createPlatformTransactionFlow(Order order, PlatformAccount account, double amount) {

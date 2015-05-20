@@ -15,6 +15,7 @@ import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
+import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
