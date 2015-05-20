@@ -486,7 +486,7 @@ public class Order implements Serializable {
 
 
     public double settlementAmountOfCompany(double sharingScale) {
-        return price - settlementAmountOfMerchant(sharingScale);
+        return priceAsDouble() - settlementAmountOfMerchant(sharingScale);
     }
 
     public double priceAsDouble() {
