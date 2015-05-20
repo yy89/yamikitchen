@@ -30,10 +30,11 @@ public class TransactionHandler {
 
     public void handle(Order order, Double amount, TransactionType type) {
         Account account = getAccount(order, type);
-        TransactionFlow flow = new TransactionFlow(account.getAccountNo(), order.getOrderNo(), order.getMerchantId(),
-                account.getUid(), order.priceAsDouble(), type.getCode());
         account.setAvailableBalance(account.getAvailableBalance() + amount);
         account.setBalance(account.getBalance() + amount);
+        accountRepository.save(account);
+        TransactionFlow flow = new TransactionFlow(account.getAccountNo(), order.getOrderNo(), order.getMerchantId(),
+                account.getUid(), order.priceAsDouble(), type.getCode());
         transactionFlowRepository.save(flow);
     }
 

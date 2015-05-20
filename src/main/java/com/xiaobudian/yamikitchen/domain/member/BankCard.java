@@ -1,5 +1,7 @@
 package com.xiaobudian.yamikitchen.domain.member;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +14,7 @@ import java.io.Serializable;
 @Entity
 public class BankCard implements Serializable {
     private static final long serialVersionUID = 6889381147278000435L;
+    private static final String FOUR_START = "****";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,7 +58,8 @@ public class BankCard implements Serializable {
     }
 
     public String getCardNo() {
-        return cardNo;
+        String searchString = cardNo.substring(cardNo.length() - 3, cardNo.length());
+        return StringUtils.replace(cardNo, searchString, FOUR_START);
     }
 
     public void setCardNo(String cardNo) {
