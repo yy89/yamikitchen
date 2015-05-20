@@ -1,18 +1,13 @@
 package com.xiaobudian.yamikitchen.domain.order;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-
+import org.apache.commons.lang3.math.NumberUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by Johnson on 2015/4/22.
@@ -50,6 +45,7 @@ public class Order implements Serializable {
     private Integer deliverMethod;
     private Integer paymentTimeLimit = 15;
     private String address;
+    @NotNull(message = "order.addressId.not.empty")
     private Long addressId;
     private String name;
     private Integer status = 1;
@@ -67,7 +63,7 @@ public class Order implements Serializable {
     private Double latitude;
     private Integer deliverGroup;
     private boolean directCancelable = false;
-    
+
     // 第三方配送机构的订单状态
     // 达达：1待接单 2待取货 3执行中 4已完成 5已取消
     private Integer deliverGroupOrderStatus;
@@ -408,10 +404,55 @@ public class Order implements Serializable {
         this.merchantAddress = merchantAddress;
     }
 
+    public Integer getDeliverGroupOrderStatus() {
+        return deliverGroupOrderStatus;
+    }
+
+    public void setDeliverGroupOrderStatus(Integer deliverGroupOrderStatus) {
+        this.deliverGroupOrderStatus = deliverGroupOrderStatus;
+    }
+
+    public Integer getDiliverymanId() {
+        return diliverymanId;
+    }
+
+    public void setDiliverymanId(Integer diliverymanId) {
+        this.diliverymanId = diliverymanId;
+    }
+
+    public String getDiliverymanName() {
+        return diliverymanName;
+    }
+
+    public void setDiliverymanName(String diliverymanName) {
+        this.diliverymanName = diliverymanName;
+    }
+
+    public String getDiliverymanMobile() {
+        return diliverymanMobile;
+    }
+
+    public void setDiliverymanMobile(String diliverymanMobile) {
+        this.diliverymanMobile = diliverymanMobile;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     public void confirm() {
         setStatus(deliverMethod == 0 ? 3 : 6);
         this.setDirectCancelable(false);
         this.setAcceptDate(new Date());
+    }
+    public void pay() {
+        this.setPayable(false);
+        this.setHasPaid(true);
+        this.setStatus(2);
     }
 
     public boolean isDirectCancelable() {
@@ -432,43 +473,15 @@ public class Order implements Serializable {
         return expectDate != null && Days.daysBetween(DateTime.now(), new DateTime(expectDate)).getDays() == 1;
     }
 
-	public Integer getDeliverGroupOrderStatus() {
-		return deliverGroupOrderStatus;
-	}
+    public double settlementAmountOfMerchant(double sharingScale) {
+        return deliverGroup == 0 ? 0 : deliverPrice + (price - deliverPrice) * sharingScale;
+    }
 
-	public void setDeliverGroupOrderStatus(Integer deliverGroupOrderStatus) {
-		this.deliverGroupOrderStatus = deliverGroupOrderStatus;
-	}
+    public double settlementAmountOfCompany(double sharingScale) {
+        return price - settlementAmountOfMerchant(sharingScale);
+    }
 
-	public Integer getDiliverymanId() {
-		return diliverymanId;
-	}
-
-	public void setDiliverymanId(Integer diliverymanId) {
-		this.diliverymanId = diliverymanId;
-	}
-
-	public String getDiliverymanName() {
-		return diliverymanName;
-	}
-
-	public void setDiliverymanName(String diliverymanName) {
-		this.diliverymanName = diliverymanName;
-	}
-
-	public String getDiliverymanMobile() {
-		return diliverymanMobile;
-	}
-
-	public void setDiliverymanMobile(String diliverymanMobile) {
-		this.diliverymanMobile = diliverymanMobile;
-	}
-
-	public Date getUpdateTime() {
-		return updateTime;
-	}
-
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
+    public double priceAsDouble() {
+       return  Math.round(price / 100.00d);
+    }
 }

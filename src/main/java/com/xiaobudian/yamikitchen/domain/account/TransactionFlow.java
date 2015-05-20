@@ -16,9 +16,9 @@ public class TransactionFlow implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String orderId;
+    private String orderNo;
     private Long merchantId;
-    private Long account;
+    private String accountNo;
     private Long uid;
     private Date operateDate = new Date();
     private Double amount;
@@ -29,13 +29,14 @@ public class TransactionFlow implements Serializable {
     public TransactionFlow() {
     }
 
-    public TransactionFlow(Long account,  String orderId, Long merchantId, Long uid, Double amount, Integer transactionType) {
-        this.orderId = orderId;
+    public TransactionFlow(String accountNo, String orderNo, Long merchantId, Long uid, Double amount, Integer transactionType) {
+        this.orderNo = orderNo;
         this.merchantId = merchantId;
         this.uid = uid;
         this.amount = amount;
+        this.currentBalance += amount;
         this.transactionType = transactionType;
-        this.account = account;
+        this.accountNo = accountNo;
     }
 
     public Long getId() {
@@ -46,12 +47,12 @@ public class TransactionFlow implements Serializable {
         this.id = id;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public String getOrderNo() {
+        return orderNo;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 
     public Long getMerchantId() {
@@ -110,11 +111,11 @@ public class TransactionFlow implements Serializable {
         this.transactionType = transactionType;
     }
 
-    public Long getAccount() {
-        return account;
+    public String getAccountNo() {
+        return accountNo;
     }
 
-    public void setAccount(Long account) {
-        this.account = account;
+    public void setAccountNo(String accountNo) {
+        this.accountNo = accountNo;
     }
 }
