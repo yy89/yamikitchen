@@ -15,6 +15,7 @@ import com.xiaobudian.yamikitchen.repository.account.TransactionFlowRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionTypeRepository;
 import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
+import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,22 +59,24 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     private TransactionHandler transactionHandler;
     @Inject
     private TransactionTypeRepository transactionTypeRepository;
+    @Inject
+    private OrderItemRepository orderItemRepository;
     private ApplicationEventPublisher applicationEventPublisher;
 
 
     public void writePaymentHistory(AlipayHistory history) {
         AlipayHistory his = alipayHistoryRepository.save(history);
-        Order order = payOrder(his.getTrade_no());
+        Order order = payOrder(his.getOut_trade_no());
         transactionHandler.handle(order, transactionTypeRepository.findByCode(1001));
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));
     }
 
     private Order payOrder(String orderNo) {
-        OrderDetail detail = orderRepository.findByOrderNoWithDetail(orderNo);
-        detail.getOrder().pay();
-        orderPostHandler.handle(detail);
-        return orderRepository.save(detail.getOrder());
+        Order order = orderRepository.findByOrderNo(orderNo);
+        order.pay();
+        orderPostHandler.handle(new OrderDetail(order, orderItemRepository.findByOrderNo(orderNo)));
+        return orderRepository.save(order);
     }
 
     @Override

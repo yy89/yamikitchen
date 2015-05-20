@@ -31,7 +31,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     public Order findByOrderNo(String orderNo);
 
-    @Query("from Order o , OrderItem oi where o.orderNo = oi.orderNo and o.orderNo =?1")
+    @Query("select o, oi from Order o , OrderItem oi where o.orderNo = oi.orderNo and o.orderNo = ?1")
     public OrderDetail findByOrderNoWithDetail(String orderNo);
 
     @Query("select o from Order o where o.uid=?1 and o.createDate >=?2 order by o.createDate desc")

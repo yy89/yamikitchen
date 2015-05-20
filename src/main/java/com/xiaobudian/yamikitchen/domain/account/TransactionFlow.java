@@ -22,8 +22,8 @@ public class TransactionFlow implements Serializable {
     private Long uid;
     private Date operateDate = new Date();
     private Double amount;
-    private Double currentBalance;
-    private Double fee;
+    private Double currentBalance = 0.00d;
+    private Double fee = 0.00d;
     private Integer transactionType;
 
     public TransactionFlow() {
