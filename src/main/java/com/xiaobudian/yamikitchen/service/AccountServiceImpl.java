@@ -101,7 +101,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<TransactionFlow> getTransactionFlowsBy(Long accountId) {
-        return transactionFlowRepository.findByAccount(accountId);
+    public List<TransactionFlow> getTransactionFlowsBy(Long uid) {
+        return transactionFlowRepository.findByUid(uid);
     }
 }
