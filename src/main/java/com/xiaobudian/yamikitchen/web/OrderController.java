@@ -92,7 +92,9 @@ public class OrderController {
     public Result getOrdersByCondition(@PathVariable Integer status,
                                        @PathVariable boolean isToday,
                                        @AuthenticationPrincipal User user) {
-        return Result.successResult(orderService.getOrdersByCondition(user.getId(), status, isToday, null));
+    	Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+    	if (merchant == null) throw new RuntimeException("user.merchant.not.create");
+        return Result.successResult(orderService.getOrdersByCondition(merchant.getId(), status, isToday, null));
     }
 
     @RequestMapping(value = "/orders/status/{status}/today/{isToday}/{lastOrderCreateDate}", method = RequestMethod.GET)
@@ -100,7 +102,9 @@ public class OrderController {
                                                    @PathVariable boolean isToday,
                                                    @PathVariable Long lastOrderCreateDate,
                                                    @AuthenticationPrincipal User user) {
-        return Result.successResult(orderService.getOrdersByCondition(user.getId(), status, isToday, new Date(lastOrderCreateDate)));
+    	Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+    	if (merchant == null) throw new RuntimeException("user.merchant.not.create");
+        return Result.successResult(orderService.getOrdersByCondition(merchant.getId(), status, isToday, new Date(lastOrderCreateDate)));
     }
 
     @RequestMapping(value = "/orders/{orderId}/confirm", method = RequestMethod.GET)
