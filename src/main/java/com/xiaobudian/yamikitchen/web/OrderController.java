@@ -9,6 +9,7 @@ import com.xiaobudian.yamikitchen.domain.merchant.Product;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.service.OrderService;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.CollectionUtils;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+
 import java.util.Date;
 import java.util.List;
 
@@ -118,9 +120,9 @@ public class OrderController {
 
     @RequestMapping(value = "/orders/{orderId}/deliverGroup/{deliverGroup}", method = RequestMethod.GET)
     public Result chooseDeliverGroup(@PathVariable Long orderId, @PathVariable Integer deliverGroup, @AuthenticationPrincipal User user) {
-        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         Order order = orderService.getOrder(orderId);
         if (order == null) throw new RuntimeException("order.does.not.exist");
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
         return Result.successResult(orderService.chooseDeliverGroup(order, deliverGroup));
     }
@@ -149,6 +151,7 @@ public class OrderController {
     public Result finishOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
         Order order = orderService.getOrder(orderId);
         if (order == null) throw new RuntimeException("order.does.not.exist");
+        if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty"); 
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
         return Result.successResult(orderService.finishOrder(order));

@@ -165,9 +165,9 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         }
 
         Map<String, List<OrderItem>> returnOrderItemMap = new HashMap<String, List<OrderItem>>();
-        // ��Ϊsql�Ľ���ǽ������ӣ�����order���ظ�����mapȥ��
+        // 锟斤拷为sql锟侥斤拷锟斤拷墙锟斤拷锟斤拷锟斤拷樱锟斤拷锟斤拷锟給rder锟斤拷锟截革拷锟斤拷锟斤拷map去锟斤拷
         Map<String, Order> returnOrderMap = new HashMap<String, Order>();
-        // ��Ϊsql�Ľ���Ѿ��ź�������list���գ���map�����˳��
+        // 锟斤拷为sql锟侥斤拷锟斤拷丫锟斤拷藕锟斤拷锟斤拷锟斤拷锟絣ist锟斤拷锟秸ｏ拷锟斤拷map锟斤拷锟斤拷锟剿筹拷锟�
         List<Order> returnOrders = new ArrayList<Order>();
         for (Iterator<OrderDetail> iter = orderDetails.iterator(); iter.hasNext(); ) {
             Object orderDetailObject = iter.next();
@@ -294,7 +294,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
 
     @Override
     public Order finishOrder(Order order) {
-        order.confirm();
+        order.finish();
         settlement(order);
         return orderRepository.save(order);
     }
