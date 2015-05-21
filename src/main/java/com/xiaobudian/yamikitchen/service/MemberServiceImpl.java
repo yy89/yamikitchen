@@ -10,12 +10,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
  * Created by Johnson on 2015/4/23.
  */
 @Service(value = "memberService")
+@Transactional
 public class MemberServiceImpl implements MemberService {
     @Inject
     private PasswordEncoder passwordEncoder;

@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.text.MessageFormat;
 import java.util.List;
 
@@ -31,6 +32,7 @@ import java.util.List;
  * Created by Johnson on 2015/5/15.
  */
 @Service(value = "accountService")
+@Transactional
 public class AccountServiceImpl implements AccountService, ApplicationEventPublisherAware {
     @Value(value = "${alipay.partner}")
     private String partner;
@@ -67,8 +69,7 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
 
     public void writePaymentHistory(AlipayHistory history) {
         AlipayHistory his = alipayHistoryRepository.save(history);
-        Order order = payOrder("1000015-20150520-3");
-        settlementHandler.settlement(order);
+        Order order = payOrder(his.getOut_trade_no());
         transactionHandler.handle(order, transactionTypeRepository.findByCode(1001));
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));

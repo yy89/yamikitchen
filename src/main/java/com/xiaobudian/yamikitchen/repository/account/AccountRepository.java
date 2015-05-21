@@ -11,7 +11,7 @@ import java.util.List;
  * Created by Johnson on 2015/5/17.
  */
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    @Query("from Account a where a.uid =?1 order by a.type")
+    @Query("from Account a where a.uid =?1 order by a.type asc")
     public List<Account> findByUid(Long uid);
 
     public Account findByUidAndType(Long uid, AccountType type);
