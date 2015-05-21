@@ -1,6 +1,8 @@
 package com.xiaobudian.yamikitchen.web;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +22,10 @@ public class ThirdPartyCallBackController {
 	DadaService dadaService;
 	
     @RequestMapping(value = "/thirdParty/dadaCallBack", method = RequestMethod.POST)
-    public Result dadaCallBack(@RequestBody DadaDto dadaDto) {
-        return Result.successResult(dadaService.dadaCallBack(dadaDto));
+    public Result dadaCallBack(@RequestBody DadaDto dadaDto, HttpServletRequest request, HttpServletResponse response) {
+        System.out.println(request.getParameter("order_id"));
+        System.out.println("---------------------------------------------------");
+    	return Result.successResult(dadaService.dadaCallBack(dadaDto));
     }
 
 }

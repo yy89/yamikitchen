@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.service;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,9 +18,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+=======
+>>>>>>> beb33d5ece81d88ab5a781a0880b1be53bfe597f
 import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.common.Keys;
-import com.xiaobudian.yamikitchen.domain.account.SettlementHandler;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
@@ -34,11 +36,20 @@ import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
+<<<<<<< HEAD
 import com.xiaobudian.yamikitchen.web.dto.OrderDetailResponse;
+=======
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.Date;
 import java.util.List;
+>>>>>>> beb33d5ece81d88ab5a781a0880b1be53bfe597f
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -72,8 +83,6 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     private ApplicationEventPublisher applicationEventPublisher;
     @Inject
     private DadaService dadaService;
-    @Inject
-    private SettlementHandler settlementHandler;
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId, boolean isToday) {
@@ -176,9 +185,9 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         }
         
         Map<String, List<OrderItem>> returnOrderItemMap = new HashMap<String, List<OrderItem>>();
-        // ÒòÎªsqlµÄ½á¹ûÊÇ½»²æÁ¬½Ó£¬Ö÷±íorder»áÖØ¸´£¬ÓÃmapÈ¥ÖØ
+        // å› ä¸ºsqlçš„ç»“æœæ˜¯äº¤å‰è¿æ¥ï¼Œä¸»è¡¨orderä¼šé‡å¤ï¼Œç”¨mapå»é‡
         Map<String, Order> returnOrderMap = new HashMap<String, Order>();
-        // ÒòÎªsqlµÄ½á¹ûÒÑ¾­ÅÅºÃĞò£¬ËùÓĞlist½ÓÊÕ£¬ÓÃmap»á´òËãË³Ğò
+        // å› ä¸ºsqlçš„ç»“æœå·²ç»æ’å¥½åºï¼Œæ‰€æœ‰listæ¥æ”¶ï¼Œç”¨mapä¼šæ‰“ç®—é¡ºåº
         List<Order> returnOrders = new ArrayList<Order>();
     	for (Iterator<OrderDetail> iter = orderDetails.iterator(); iter.hasNext();) {
     		Object orderDetailObject = iter.next();
@@ -242,11 +251,6 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     }
 
     @Override
-    public void settlement(Order order) {
-        settlementHandler.settlement(order);
-    }
-
-    @Override
     public OrderDetail getOrdersBy(String orderNo) {
         Order order = orderRepository.findByOrderNo(orderNo);
         List<OrderItem> items = orderItemRepository.findByOrderNo(orderNo);
@@ -307,7 +311,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     public Order finishOrder(Order order) {
     	order.confirm();
     	
-        // TODO ·¢Æğ½áËã
+        // TODO å‘èµ·ç»“ç®—
 
         return orderRepository.save(order);
     }

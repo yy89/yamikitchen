@@ -1,13 +1,14 @@
 package com.xiaobudian.yamikitchen.service;
 
+import java.util.Date;
+import java.util.List;
+
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
 import com.xiaobudian.yamikitchen.domain.order.OrderItem;
-
-import java.util.Date;
-import java.util.List;
+import com.xiaobudian.yamikitchen.web.dto.OrderDetailResponse;
 
 /**
  * Created by johnson1 on 4/27/15.
@@ -31,7 +32,7 @@ public interface OrderService {
 
     public Settlement getSettlement(Long uid);
 
-    public List<OrderDetail> getUnconfirmedOrders(Long uid, Date createDate);
+    public OrderDetailResponse getOrdersByCondition(Long uid, Integer status, boolean isToday, Date lastOrderCreateDate);
 
     public Order confirmOrder(Order order);
 
@@ -52,6 +53,8 @@ public interface OrderService {
     public Order getOrder(Long orderId);
 
     public Order chooseDeliverGroup(Order order, Integer deliverGroup);
+
+	public Order finishOrder(Order order);
 
 }
 
