@@ -283,7 +283,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     public Order chooseDeliverGroup(Order order, Integer deliverGroup) {
         order.setDeliverGroup(deliverGroup);
         if (order.deliverByDaDa()) dadaService.addOrderToDada(order);
-        order.deliver();
+        order.setStatus(3);
         return orderRepository.save(order);
     }
 
@@ -298,10 +298,10 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         settlement(order);
         return orderRepository.save(order);
     }
-
+    
     public Order cancelOrder(Order order) {
 
         return null;
     }
-
+    
 }
