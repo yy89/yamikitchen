@@ -10,6 +10,9 @@ public class OrderDetail {
     private Order order;
     private List<OrderItem> items = new ArrayList<>();
 
+    public OrderDetail() {
+    }
+
     public OrderDetail(Order order, List<OrderItem> items) {
         this.order = order;
         this.items = items;

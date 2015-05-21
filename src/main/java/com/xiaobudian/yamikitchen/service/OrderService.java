@@ -20,8 +20,6 @@ public interface OrderService {
 
     public Cart getCart(Long id);
 
-    public List<OrderItem> getItemsInOrder(String orderNo);
-
     public boolean removeCart(Long id);
 
     public List<OrderDetail> getTodayPendingOrders(Long rid, int page, int pageSize);

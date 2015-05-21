@@ -1,9 +1,14 @@
 package com.xiaobudian.yamikitchen.domain.merchant;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.xiaobudian.yamikitchen.domain.account.Account;
+import com.xiaobudian.yamikitchen.domain.account.AccountType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Johnson on 2015/4/22.
@@ -60,6 +65,10 @@ public class Merchant implements Serializable {
     private Boolean removed = false;
     @Column(insertable = false, columnDefinition = "int default 0")
     private Integer verifyStatus = 0;
+    private double turnover = 0.00d;
+    private double sharing = 0;
+    private Date createDate;
+    private Date lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -344,5 +353,46 @@ public class Merchant implements Serializable {
     @Transient
     public boolean isCreateBy(Long uid) {
         return uid != null && uid.equals(creator);
+    }
+
+    public List<Account> createAccounts() {
+        List<Account> result = new ArrayList<>();
+        for (AccountType accountType : AccountType.values()) {
+            final String accountNo = String.format(Account.ACCOUNT_NO_PATTERN, creator, id, accountType.ordinal());
+            result.add(new Account(getCreator(), accountNo, accountType));
+        }
+        return result;
+    }
+
+    public double getTurnover() {
+        return turnover;
+    }
+
+    public void setTurnover(double turnover) {
+        this.turnover = turnover;
+    }
+
+    public double getSharing() {
+        return sharing;
+    }
+
+    public void setSharing(double sharing) {
+        this.sharing = sharing;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

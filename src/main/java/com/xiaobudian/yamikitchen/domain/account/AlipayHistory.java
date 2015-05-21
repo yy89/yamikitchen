@@ -5,7 +5,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by Johnson on 2015/5/15.
@@ -16,7 +15,7 @@ public class AlipayHistory implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date notify_time;
+    private String notify_time;
     private String notify_type;
     private String notify_id;
     private String sign_type;
@@ -27,19 +26,16 @@ public class AlipayHistory implements Serializable {
     private String trade_no;
     private String trade_status;
     private String buyer_id;
-    private String seller_id;
-    private String seller_email;
-    private String body;
     private String buyer_email;
-    private Double total_fee;
-    private Integer quantity;
-    private Double price;
-    private Date gmt_create;
-    private Date gmt_payment;
+    private String total_fee;
+    private String quantity;
+    private String price;
+    private String gmt_create;
+    private String gmt_payment;
     private String use_coupon;
     private String refund_status;
     private String discount;
-    private Date refund_date;
+    private String refund_date;
     private String is_total_fee_adjust;
 
     public AlipayHistory() {
@@ -53,11 +49,11 @@ public class AlipayHistory implements Serializable {
         this.id = id;
     }
 
-    public Date getNotify_time() {
+    public String getNotify_time() {
         return notify_time;
     }
 
-    public void setNotify_time(Date notify_time) {
+    public void setNotify_time(String notify_time) {
         this.notify_time = notify_time;
     }
 
@@ -149,43 +145,43 @@ public class AlipayHistory implements Serializable {
         this.buyer_email = buyer_email;
     }
 
-    public Double getTotal_fee() {
+    public String getTotal_fee() {
         return total_fee;
     }
 
-    public void setTotal_fee(Double total_fee) {
+    public void setTotal_fee(String total_fee) {
         this.total_fee = total_fee;
     }
 
-    public Integer getQuantity() {
+    public String getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
 
-    public Double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public Date getGmt_create() {
+    public String getGmt_create() {
         return gmt_create;
     }
 
-    public void setGmt_create(Date gmt_create) {
+    public void setGmt_create(String gmt_create) {
         this.gmt_create = gmt_create;
     }
 
-    public Date getGmt_payment() {
+    public String getGmt_payment() {
         return gmt_payment;
     }
 
-    public void setGmt_payment(Date gmt_payment) {
+    public void setGmt_payment(String gmt_payment) {
         this.gmt_payment = gmt_payment;
     }
 
@@ -213,11 +209,11 @@ public class AlipayHistory implements Serializable {
         this.discount = discount;
     }
 
-    public Date getRefund_date() {
+    public String getRefund_date() {
         return refund_date;
     }
 
-    public void setRefund_date(Date refund_date) {
+    public void setRefund_date(String refund_date) {
         this.refund_date = refund_date;
     }
 
@@ -227,29 +223,5 @@ public class AlipayHistory implements Serializable {
 
     public void setIs_total_fee_adjust(String is_total_fee_adjust) {
         this.is_total_fee_adjust = is_total_fee_adjust;
-    }
-
-    public String getSeller_id() {
-        return seller_id;
-    }
-
-    public void setSeller_id(String seller_id) {
-        this.seller_id = seller_id;
-    }
-
-    public String getSeller_email() {
-        return seller_email;
-    }
-
-    public void setSeller_email(String seller_email) {
-        this.seller_email = seller_email;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
     }
 }

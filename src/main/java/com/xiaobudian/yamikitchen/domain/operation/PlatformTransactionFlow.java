@@ -1,4 +1,4 @@
-package com.xiaobudian.yamikitchen.domain.account;
+package com.xiaobudian.yamikitchen.domain.operation;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,36 +8,31 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Created by Johnson on 2015/4/22.
+ * Created by johnson1 on 5/19/15.
  */
 @Entity
-public class TransactionFlow implements Serializable {
-    private static final long serialVersionUID = 6863837446350831109L;
+public class PlatformTransactionFlow implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String orderNo;
+    private String orderId;
     private Long merchantId;
-    private String accountNo;
-    private Long uid;
+    private Long account;
     private Date operateDate = new Date();
     private Double amount;
-    private Double currentBalance = 0.00d;
-    private Double fee = 0.00d;
+    private Double currentBalance;
+    private Double fee;
     private Integer transactionType;
+    private Long source;
 
-    public TransactionFlow() {
-    }
-
-    public TransactionFlow(String accountNo, String orderNo, Long merchantId, Long uid, Double amount, Integer transactionType) {
-        this.orderNo = orderNo;
+    public PlatformTransactionFlow(String orderId, Long merchantId, Long account, Double amount) {
+        this.orderId = orderId;
         this.merchantId = merchantId;
-        this.uid = uid;
+        this.account = account;
         this.amount = amount;
         this.currentBalance += amount;
-        this.transactionType = transactionType;
-        this.accountNo = accountNo;
     }
+
 
     public Long getId() {
         return id;
@@ -47,12 +42,12 @@ public class TransactionFlow implements Serializable {
         this.id = id;
     }
 
-    public String getOrderNo() {
-        return orderNo;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public Long getMerchantId() {
@@ -63,12 +58,12 @@ public class TransactionFlow implements Serializable {
         this.merchantId = merchantId;
     }
 
-    public Long getUid() {
-        return uid;
+    public Long getAccount() {
+        return account;
     }
 
-    public void setUid(Long uid) {
-        this.uid = uid;
+    public void setAccount(Long account) {
+        this.account = account;
     }
 
     public Date getOperateDate() {
@@ -111,11 +106,11 @@ public class TransactionFlow implements Serializable {
         this.transactionType = transactionType;
     }
 
-    public String getAccountNo() {
-        return accountNo;
+    public Long getSource() {
+        return source;
     }
 
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
+    public void setSource(Long source) {
+        this.source = source;
     }
 }

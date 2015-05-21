@@ -2,6 +2,7 @@ package com.xiaobudian.yamikitchen.domain.merchant;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by Johnson on 2015/4/22.
@@ -33,6 +34,8 @@ public class Product implements Serializable {
     private Boolean removed = false;
     private Boolean main = false;
     private boolean soldOut;
+    private Date createDate;
+    private Date lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -172,5 +175,29 @@ public class Product implements Serializable {
 
     public boolean isSoldOut(boolean isToday) {
         return isToday ? restCount < 1 : twRestCount < 1;
+    }
+
+    public boolean isSoldOut() {
+        return soldOut;
+    }
+
+    public void setSoldOut(boolean soldOut) {
+        this.soldOut = soldOut;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

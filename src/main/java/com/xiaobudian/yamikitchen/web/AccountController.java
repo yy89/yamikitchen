@@ -1,6 +1,7 @@
 package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
+import com.xiaobudian.yamikitchen.domain.account.Account;
 import com.xiaobudian.yamikitchen.domain.account.AlipayHistory;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.order.Order;
@@ -10,23 +11,21 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Johnson on 2015/5/14.
  */
 @RestController
 public class AccountController {
-    private static final String SUCCESS = "success";
+    private static final String SUCCESS = "SUCCESS";
     @Inject
     private AccountService accountService;
     @Inject
     private OrderRepository orderRepository;
 
     @RequestMapping(value = "/payment/callback", method = RequestMethod.POST)
-    public String payment(AlipayHistory history, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String payment(AlipayHistory history) {
         accountService.writePaymentHistory(history);
         return SUCCESS;
     }
@@ -49,4 +48,12 @@ public class AccountController {
     public Result getTransactionFlows(@PathVariable Long accountId, @AuthenticationPrincipal User authenticationUser) {
         return Result.successResult(accountService.getTransactionFlowsBy(accountId));
     }
+
+
+    @RequestMapping(value = "/account/summary", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getAccountSummary(@AuthenticationPrincipal User user) {
+        return Result.successResult(accountService.getAccountSummary(user.getId()));
+    }
+
 }
