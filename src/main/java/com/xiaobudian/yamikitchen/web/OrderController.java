@@ -1,20 +1,5 @@
 package com.xiaobudian.yamikitchen.web;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.CartValidator;
@@ -28,6 +13,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by johnson1 on 4/27/15.
@@ -99,17 +89,17 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/orders/status/{status}/today/{isToday}", method = RequestMethod.GET)
-    public Result getOrdersByCondition(@PathVariable Integer status, 
-    								@PathVariable boolean isToday, 
-    								@AuthenticationPrincipal User user) {
+    public Result getOrdersByCondition(@PathVariable Integer status,
+                                       @PathVariable boolean isToday,
+                                       @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getOrdersByCondition(user.getId(), status, isToday, null));
     }
-    
+
     @RequestMapping(value = "/orders/status/{status}/today/{isToday}/{lastOrderCreateDate}", method = RequestMethod.GET)
-    public Result getOrdersByConditionAndTimestamp(@PathVariable Integer status, 
-						    		@PathVariable boolean isToday,
-						    		@PathVariable Long lastOrderCreateDate, 
-    								@AuthenticationPrincipal User user) {
+    public Result getOrdersByConditionAndTimestamp(@PathVariable Integer status,
+                                                   @PathVariable boolean isToday,
+                                                   @PathVariable Long lastOrderCreateDate,
+                                                   @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getOrdersByCondition(user.getId(), status, isToday, new Date(lastOrderCreateDate)));
     }
 
@@ -150,17 +140,13 @@ public class OrderController {
     public Result getWaitForCommentOrders(@AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getWaitForCommentOrders(user.getId()));
     }
-    
+
     @RequestMapping(value = "/orders/{orderId}/finish", method = RequestMethod.POST)
     public Result finishOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
-    	Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         Order order = orderService.getOrder(orderId);
         if (order == null) throw new RuntimeException("order.does.not.exist");
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
         return Result.successResult(orderService.finishOrder(order));
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new Date().getTime());
     }
 }

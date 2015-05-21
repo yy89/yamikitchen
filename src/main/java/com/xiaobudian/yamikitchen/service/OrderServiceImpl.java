@@ -1,22 +1,5 @@
 package com.xiaobudian.yamikitchen.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.domain.account.SettlementHandler;
@@ -35,10 +18,16 @@ import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
 import com.xiaobudian.yamikitchen.web.dto.OrderDetailResponse;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -158,80 +147,80 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     }
 
     @SuppressWarnings("deprecation")
-	@Override
+    @Override
     public OrderDetailResponse getOrdersByCondition(Long uid, Integer status, boolean isToday, Date lastOrderCreateDate) {
-    	OrderDetailResponse orderDetailResponse = new OrderDetailResponse();
-    	List<OrderDetail> orderDetails = new ArrayList<OrderDetail>();
-    	if (status == 0) {
-    		orderDetails = orderRepository.findOnhandOrders(uid);
-    	} else if (status == 2) {
-    		orderDetails = orderRepository.findUnconfirmedOrders(uid);
-    	} else if (status == 3) {
-    		orderDetails = orderRepository.findWaitDeliverOrders(uid);
-    	} else if (status == 5) {
-    		orderDetails = orderRepository.findFinishedAndCanceledOrders(uid);
-    	}
-        if (CollectionUtils.isEmpty(orderDetails)) {
-        	return orderDetailResponse;
+        OrderDetailResponse orderDetailResponse = new OrderDetailResponse();
+        List<OrderDetail> orderDetails = new ArrayList<OrderDetail>();
+        if (status == 0) {
+            orderDetails = orderRepository.findOnhandOrders(uid);
+        } else if (status == 2) {
+            orderDetails = orderRepository.findUnconfirmedOrders(uid);
+        } else if (status == 3) {
+            orderDetails = orderRepository.findWaitDeliverOrders(uid);
+        } else if (status == 5) {
+            orderDetails = orderRepository.findFinishedAndCanceledOrders(uid);
         }
-        
+        if (CollectionUtils.isEmpty(orderDetails)) {
+            return orderDetailResponse;
+        }
+
         Map<String, List<OrderItem>> returnOrderItemMap = new HashMap<String, List<OrderItem>>();
-        // ÒòÎªsqlµÄ½á¹ûÊÇ½»²æÁ¬½Ó£¬Ö÷±íorder»áÖØ¸´£¬ÓÃmapÈ¥ÖØ
+        // ï¿½ï¿½Îªsqlï¿½Ä½ï¿½ï¿½ï¿½Ç½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½orderï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½mapÈ¥ï¿½ï¿½
         Map<String, Order> returnOrderMap = new HashMap<String, Order>();
-        // ÒòÎªsqlµÄ½á¹ûÒÑ¾­ÅÅºÃÐò£¬ËùÓÐlist½ÓÊÕ£¬ÓÃmap»á´òËãË³Ðò
+        // ï¿½ï¿½Îªsqlï¿½Ä½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½Åºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½listï¿½ï¿½ï¿½Õ£ï¿½ï¿½ï¿½mapï¿½ï¿½ï¿½ï¿½ï¿½Ë³ï¿½ï¿½
         List<Order> returnOrders = new ArrayList<Order>();
-    	for (Iterator<OrderDetail> iter = orderDetails.iterator(); iter.hasNext();) {
-    		Object orderDetailObject = iter.next();
-    		Object[][] orderDetailObjects = {(Object[]) orderDetailObject};
-    		Order order = (Order) orderDetailObjects[0][0];
-    		Date today = new Date();
-    		today.setHours(23);
-    		today.setMinutes(59);
-    		today.setSeconds(59);
-    		if (isToday) {
-    			if (order.getExpectDate().after(today)) {
-    				iter.remove();
-    				continue;
-    			}
-    		} else {
-    			if (order.getExpectDate().before(today)) {
-    				iter.remove();
-    				continue;
-    			}
-    		}
-    		
-    		OrderItem orderItem = (OrderItem) orderDetailObjects[0][1];
-    		List<OrderItem> orderItems = returnOrderItemMap.get(order.getOrderNo());
-    		if (CollectionUtils.isEmpty(orderItems)) {
-    			orderItems = new ArrayList<OrderItem>();
-    			orderItems.add(orderItem);
-    			returnOrderItemMap.put(order.getOrderNo(), orderItems);
-    		} else {
-    			orderItems.add(orderItem);
-    		}
-    		if (returnOrderMap.get(order.getOrderNo()) == null) {
-    			returnOrderMap.put(order.getOrderNo(), order);
-    			returnOrders.add(order);
-    		}
-    		
-    		if (lastOrderCreateDate == null || orderDetailResponse.isHaveNewOrder()) {
-    			continue;
-    		} else {
-    			if (order.getCreateDate().after(lastOrderCreateDate)) {
-    				orderDetailResponse.setHaveNewOrder(true);
-    			}
-    		}
-    	}
-    	
-    	List<OrderDetail> returnOrderDetails = new ArrayList<OrderDetail>();
-    	for (Order order : returnOrders) {
-    		OrderDetail orderDetail = new OrderDetail(order, returnOrderItemMap.get(order.getOrderNo()));
-    		returnOrderDetails.add(orderDetail);
-    	}
-    	orderDetailResponse.setOrderDetails(returnOrderDetails);
+        for (Iterator<OrderDetail> iter = orderDetails.iterator(); iter.hasNext(); ) {
+            Object orderDetailObject = iter.next();
+            Object[][] orderDetailObjects = {(Object[]) orderDetailObject};
+            Order order = (Order) orderDetailObjects[0][0];
+            Date today = new Date();
+            today.setHours(23);
+            today.setMinutes(59);
+            today.setSeconds(59);
+            if (isToday) {
+                if (order.getExpectDate().after(today)) {
+                    iter.remove();
+                    continue;
+                }
+            } else {
+                if (order.getExpectDate().before(today)) {
+                    iter.remove();
+                    continue;
+                }
+            }
+
+            OrderItem orderItem = (OrderItem) orderDetailObjects[0][1];
+            List<OrderItem> orderItems = returnOrderItemMap.get(order.getOrderNo());
+            if (CollectionUtils.isEmpty(orderItems)) {
+                orderItems = new ArrayList<OrderItem>();
+                orderItems.add(orderItem);
+                returnOrderItemMap.put(order.getOrderNo(), orderItems);
+            } else {
+                orderItems.add(orderItem);
+            }
+            if (returnOrderMap.get(order.getOrderNo()) == null) {
+                returnOrderMap.put(order.getOrderNo(), order);
+                returnOrders.add(order);
+            }
+
+            if (lastOrderCreateDate == null || orderDetailResponse.isHaveNewOrder()) {
+                continue;
+            } else {
+                if (order.getCreateDate().after(lastOrderCreateDate)) {
+                    orderDetailResponse.setHaveNewOrder(true);
+                }
+            }
+        }
+
+        List<OrderDetail> returnOrderDetails = new ArrayList<OrderDetail>();
+        for (Order order : returnOrders) {
+            OrderDetail orderDetail = new OrderDetail(order, returnOrderItemMap.get(order.getOrderNo()));
+            returnOrderDetails.add(orderDetail);
+        }
+        orderDetailResponse.setOrderDetails(returnOrderDetails);
         return orderDetailResponse;
     }
-    
+
     @Override
     public Order confirmOrder(Order order) {
         order.confirm();
@@ -302,19 +291,17 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
-    
+
     @Override
     public Order finishOrder(Order order) {
-    	order.confirm();
-    	
-        // TODO ·¢Æð½áËã
-
+        order.confirm();
+        settlement(order);
         return orderRepository.save(order);
     }
-    
+
     public Order cancelOrder(Order order) {
-    	
-    	return null;
+
+        return null;
     }
-    
+
 }
