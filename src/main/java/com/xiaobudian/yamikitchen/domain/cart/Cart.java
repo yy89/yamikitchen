@@ -68,7 +68,8 @@ public class Cart implements Serializable {
         for (OrderItem item : getItems()) {
             totalAmount += item.getAmount();
         }
-        return totalAmount + (deliverMethod == 1 ? 0l : deliverPrice());
+        totalAmount += (deliverMethod == 1 ? 0l : deliverPrice());
+        return totalAmount;
     }
 
     public Integer getTotalQuantity() {

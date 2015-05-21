@@ -359,7 +359,7 @@ public class Merchant implements Serializable {
         List<Account> result = new ArrayList<>();
         for (AccountType accountType : AccountType.values()) {
             final String accountNo = String.format(Account.ACCOUNT_NO_PATTERN, creator, id, accountType.ordinal());
-            result.add(new Account(getCreator(), accountNo, accountType));
+            result.add(new Account(id, getCreator(), accountNo, accountType));
         }
         return result;
     }

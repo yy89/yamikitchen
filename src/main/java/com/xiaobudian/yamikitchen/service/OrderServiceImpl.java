@@ -2,6 +2,7 @@ package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.common.Keys;
+import com.xiaobudian.yamikitchen.domain.account.SettlementHandler;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
@@ -59,6 +60,8 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     private ApplicationEventPublisher applicationEventPublisher;
     @Inject
     private DadaService dadaService;
+    @Inject
+    private SettlementHandler settlementHandler;
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId, boolean isToday) {
@@ -154,6 +157,11 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, newOrder)));
         return newOrder;
+    }
+
+    @Override
+    public void settlement(Order order) {
+        settlementHandler.settlement(order);
     }
 
     @Override

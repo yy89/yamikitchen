@@ -35,6 +35,8 @@ public interface OrderService {
 
     public Order confirmOrder(Order order);
 
+    public void settlement(Order order);
+
     public OrderDetail getOrdersBy(String orderNo);
 
     public List<Order> getOrdersForLastMonth(Long uid);

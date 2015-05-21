@@ -480,18 +480,20 @@ public class Order implements Serializable {
     }
 
     public double settlementAmountOfMerchant(double sharingScale) {
-        return deliverGroup == 0 ? 0 : deliverPrice + (price - deliverPrice) * sharingScale;
+        return deliverGroup == 0 ? 0 : (price - deliverPrice - (price - deliverPrice) * sharingScale / 100.00) / 100.00;
     }
 
-
     public double settlementAmountOfCompany(double sharingScale) {
-        return priceAsDouble() - settlementAmountOfMerchant(sharingScale);
+        return (price - deliverPrice) * sharingScale / 10000.00;
     }
 
     public double priceAsDouble() {
-        return Math.round(price / 100.00d);
+        return price / 100.00;
     }
 
+    public double deliverPriceAsDouble() {
+        return deliverPrice / 100.00;
+    }
     public boolean deliverByDaDa() {
         return deliverGroup != null && deliverGroup == 2;
     }

@@ -1,11 +1,15 @@
 package com.xiaobudian.yamikitchen.domain.account;
 
+import com.xiaobudian.yamikitchen.domain.operation.PlatformAccount;
+import com.xiaobudian.yamikitchen.domain.operation.PlatformTransactionFlow;
 import com.xiaobudian.yamikitchen.domain.order.Order;
+import com.xiaobudian.yamikitchen.repository.PlatformAccountRepository;
+import com.xiaobudian.yamikitchen.repository.PlatformTransactionFlowRepository;
 import com.xiaobudian.yamikitchen.repository.account.AccountRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionFlowRepository;
 import org.springframework.stereotype.Component;
-import sun.beans.editors.DoubleEditor;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.List;
 
@@ -18,6 +22,17 @@ public class TransactionHandler {
     private AccountRepository accountRepository;
     @Inject
     private TransactionFlowRepository transactionFlowRepository;
+    @Inject
+    private PlatformAccountRepository platformAccountRepository;
+    @Inject
+    private PlatformTransactionFlowRepository platformTransactionFlowRepository;
+
+    private PlatformAccount platformAccount;
+
+    @PostConstruct
+    public void init() {
+        platformAccount = platformAccountRepository.findOne(1l);
+    }
 
     private Account getAccount(Order order, TransactionType type) {
         List<Account> accounts = accountRepository.findByMerchantId(order.getMerchantId());
@@ -42,5 +57,12 @@ public class TransactionHandler {
         TransactionFlow flow = new TransactionFlow(account.getAccountNo(), null, account.getMerchantId(),
                 account.getUid(), amount, type.getCode());
         transactionFlowRepository.save(flow);
+    }
+
+    public void handleWithinPlatform(Order order, double amt, TransactionType type) {
+        platformAccount.setBalance(platformAccount.getBalance() + amt);
+        platformAccount.setAvailableBalance(platformAccount.getAvailableBalance() + amt);
+        platformAccountRepository.save(platformAccount);
+        platformTransactionFlowRepository.save(new PlatformTransactionFlow(platformAccount.getAccountNo(), order.getOrderNo(), order.getMerchantId(), null, amt, type.getCode()));
     }
 }

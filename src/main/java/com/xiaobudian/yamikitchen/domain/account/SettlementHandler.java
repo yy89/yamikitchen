@@ -28,37 +28,30 @@ public class SettlementHandler {
     @Inject
     private MerchantRepository merchantRepository;
     @Inject
-    private PlatformAccountRepository platformAccountRepository;
-
-    @Inject
-    private PlatformTransactionFlowRepository platformTransactionFlowRepository;
-    @Inject
     private TransactionHandler transactionHandler;
     @Inject
     private TransactionTypeRepository transactionTypeRepository;
 
-    private PlatformAccount getPlatformAccount() {
-        return platformAccountRepository.findOne(1l);
-    }
-
-    private double settlementAmount(Order order) {
+    private double getShare(Order order) {
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
-        double share = merchant.getSharing() + serviceCharge;
-        return order.settlementAmountOfMerchant(share);
+        return merchant.getSharing() + serviceCharge;
     }
 
     public void settlement(Order order) {
-        final double amt = settlementAmount(order);
-        transactionHandler.handle(order, amt, transactionTypeRepository.findByCode(1002));
-        transactionHandler.handle(order, amt, transactionTypeRepository.findByCode(2002));
-
-        PlatformAccount platformAccount = getPlatformAccount();
-        platformAccount.setBalance(platformAccount.getBalance() + order.priceAsDouble() - amt);
-        platformTransactionFlowRepository.save(createPlatformTransactionFlow(order, platformAccount, order.priceAsDouble() - amt));
-
-    }
-
-    public PlatformTransactionFlow createPlatformTransactionFlow(Order order, PlatformAccount account, double amount) {
-        return new PlatformTransactionFlow(order.getOrderNo(), order.getMerchantId(), account.getId(), amount);
+        double share = getShare(order);
+        double amtMerchant = order.settlementAmountOfMerchant(share);
+        double amtCompany = order.settlementAmountOfCompany(share);
+        double deliverPrice = order.deliverPriceAsDouble();
+        transactionHandler.handle(order, amtMerchant, transactionTypeRepository.findByCode(1002));
+        transactionHandler.handle(order, amtMerchant * (-1), transactionTypeRepository.findByCode(2002));
+        transactionHandler.handle(order, amtCompany * (-1), transactionTypeRepository.findByCode(2007));
+        transactionHandler.handleWithinPlatform(order, amtCompany, transactionTypeRepository.findByCode(1007));
+        if (order.deliverByDaDa()) {
+            transactionHandler.handleWithinPlatform(order, order.deliverPriceAsDouble(), transactionTypeRepository.findByCode(1008));
+            transactionHandler.handle(order, deliverPrice * (-1), transactionTypeRepository.findByCode(2008));
+        } else {
+            transactionHandler.handle(order, deliverPrice, transactionTypeRepository.findByCode(2009));
+            transactionHandler.handle(order, deliverPrice * (-1), transactionTypeRepository.findByCode(2009));
+        }
     }
 }

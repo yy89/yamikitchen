@@ -30,10 +30,11 @@ public class Account implements Serializable {
 
     }
 
-    public Account(Long uid, String accountNo, AccountType type) {
+    public Account(Long merchantId, Long uid, String accountNo, AccountType type) {
         this.uid = uid;
         this.accountNo = accountNo;
         this.type = type;
+        this.merchantId = merchantId;
     }
 
     public Long getId() {

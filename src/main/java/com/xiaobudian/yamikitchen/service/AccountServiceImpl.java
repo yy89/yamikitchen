@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -62,11 +61,14 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     @Inject
     private OrderItemRepository orderItemRepository;
     private ApplicationEventPublisher applicationEventPublisher;
+    @Inject
+    private SettlementHandler settlementHandler;
 
 
     public void writePaymentHistory(AlipayHistory history) {
         AlipayHistory his = alipayHistoryRepository.save(history);
-        Order order = payOrder(his.getOut_trade_no());
+        Order order = payOrder("1000015-20150520-3");
+        settlementHandler.settlement(order);
         transactionHandler.handle(order, transactionTypeRepository.findByCode(1001));
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));

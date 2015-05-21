@@ -1,7 +1,6 @@
 package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
-import com.xiaobudian.yamikitchen.domain.account.Account;
 import com.xiaobudian.yamikitchen.domain.account.AlipayHistory;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.order.Order;
@@ -11,7 +10,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Created by Johnson on 2015/5/14.
@@ -49,11 +47,9 @@ public class AccountController {
         return Result.successResult(accountService.getTransactionFlowsBy(accountId));
     }
 
-
     @RequestMapping(value = "/account/summary", method = RequestMethod.GET)
     @ResponseBody
     public Result getAccountSummary(@AuthenticationPrincipal User user) {
         return Result.successResult(accountService.getAccountSummary(user.getId()));
     }
-
 }
