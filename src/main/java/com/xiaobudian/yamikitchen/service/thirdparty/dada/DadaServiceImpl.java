@@ -132,10 +132,14 @@ public class DadaServiceImpl implements DadaService {
         
         Order order = orderRepository.findByOrderNo(dadaDto.getOrder_id());
         Assert.notNull(order, "Order not longer exist : " + dadaDto.getOrder_id());
-        order.setStatus(dadaDto.getOrder_status());
+        order.setDeliverGroupOrderStatus(dadaDto.getStatus());
         order.setDiliverymanId(dadaDto.getDm_id());
+        order.setDiliverymanName(dadaDto.getDm_name());
         order.setDiliverymanMobile(dadaDto.getDm_mobile());
         order.setUpdateTime(new Date(dadaDto.getUpdate_time()));
+        if (dadaDto.getStatus() == 3) {
+        	order.setStatus(4);
+        }
         return orderRepository.save(order);
     }
 
@@ -179,5 +183,19 @@ public class DadaServiceImpl implements DadaService {
 		}
 		return null;
 	}
+	
+	public static void main(String[] args) {
+        DadaServiceImpl impl = new DadaServiceImpl();
+        String token = "9b8cc46f3aa0eec29b8cc46f3aa0eec2";
+        Date currentDate = new Date();
+        Long timestamp = currentDate.getTime();
+        String signature = impl.getSignature(currentDate, token);
+        String orderId = "100006-20150512-2";
+        String interfaceUrl = "/v1_0/fetchOrder/";
+//        String interfaceUrl = "/v1_0/acceptOrder/";
+        String url = "http://public.ga.dev.imdada.cn"+interfaceUrl+"?token="
+                + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
+        System.out.println(url);
+    }
 	
 }
