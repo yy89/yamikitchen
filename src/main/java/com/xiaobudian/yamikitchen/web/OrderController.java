@@ -1,25 +1,29 @@
 package com.xiaobudian.yamikitchen.web;
 
+import java.util.Date;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.CartValidator;
+import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
-import com.xiaobudian.yamikitchen.domain.member.*;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.service.OrderService;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by johnson1 on 4/27/15.
@@ -90,14 +94,19 @@ public class OrderController {
         return Result.successResult(orderService.getOrders(user.getId()));
     }
 
-    @RequestMapping(value = "/orders/unconfirmed", method = RequestMethod.GET)
-    public Result getUnconfirmedOrders(@AuthenticationPrincipal User user) {
-        return Result.successResult(orderService.getUnconfirmedOrders(user.getId(), null));
+    @RequestMapping(value = "/orders/status/{status}/today/{isToday}", method = RequestMethod.GET)
+    public Result getOrdersByCondition(@PathVariable Integer status, 
+    								@PathVariable boolean isToday, 
+    								@AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.getOrdersByCondition(user.getId(), status, isToday, null));
     }
-
-    @RequestMapping(value = "/orders/unconfirmed/{createDate}", method = RequestMethod.GET)
-    public Result getUnconfirmedOrdersByCreateDate(@PathVariable Date createDate, @AuthenticationPrincipal User user) {
-        return Result.successResult(orderService.getUnconfirmedOrders(user.getId(), createDate));
+    
+    @RequestMapping(value = "/orders/status/{status}/today/{isToday}/{lastOrderCreateDate}", method = RequestMethod.GET)
+    public Result getOrdersByConditionAndTimestamp(@PathVariable Integer status, 
+						    		@PathVariable boolean isToday,
+						    		@PathVariable Long lastOrderCreateDate, 
+    								@AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.getOrdersByCondition(user.getId(), status, isToday, new Date(lastOrderCreateDate)));
     }
 
     @RequestMapping(value = "/orders/{orderId}/confirm", method = RequestMethod.GET)
@@ -136,6 +145,15 @@ public class OrderController {
     @RequestMapping(value = "/orders/waitForComment", method = RequestMethod.GET)
     public Result getWaitForCommentOrders(@AuthenticationPrincipal User user) {
         return Result.successResult(orderService.getWaitForCommentOrders(user.getId()));
+    }
+    
+    @RequestMapping(value = "/orders/{orderId}/finish", method = RequestMethod.POST)
+    public Result finishOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
+    	Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        Order order = orderService.getOrder(orderId);
+        if (order == null) throw new RuntimeException("order.does.not.exist");
+        if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
+        return Result.successResult(orderService.finishOrder(order));
     }
 
     public static void main(String[] args) {

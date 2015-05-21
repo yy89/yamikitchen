@@ -1,7 +1,11 @@
 package com.xiaobudian.yamikitchen.service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -11,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.common.Keys;
@@ -34,6 +39,7 @@ import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
+import com.xiaobudian.yamikitchen.web.dto.OrderDetailResponse;
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -155,11 +161,81 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         return settlement;
     }
 
-    @Override
-    public List<OrderDetail> getUnconfirmedOrders(Long uid, Date createDate) {
-        return createDate == null ? orderRepository.findUnconfirmedOrders(uid) : orderRepository.findUnconfirmedOrders(uid, createDate);
+    @SuppressWarnings("deprecation")
+	@Override
+    public OrderDetailResponse getOrdersByCondition(Long uid, Integer status, boolean isToday, Date lastOrderCreateDate) {
+    	OrderDetailResponse orderDetailResponse = new OrderDetailResponse();
+    	List<OrderDetail> orderDetails = new ArrayList<OrderDetail>();
+    	if (status == 0) {
+    		orderDetails = orderRepository.findOnhandOrders(uid);
+    	} else if (status == 2) {
+    		orderDetails = orderRepository.findUnconfirmedOrders(uid);
+    	} else if (status == 3) {
+    		orderDetails = orderRepository.findWaitDeliverOrders(uid);
+    	} else if (status == 5) {
+    		orderDetails = orderRepository.findFinishedAndCanceledOrders(uid);
+    	}
+        if (CollectionUtils.isEmpty(orderDetails)) {
+        	return orderDetailResponse;
+        }
+        
+        Map<String, List<OrderItem>> returnOrderItemMap = new HashMap<String, List<OrderItem>>();
+        // 因为sql的结果是交叉连接，主表order会重复，用map去重
+        Map<String, Order> returnOrderMap = new HashMap<String, Order>();
+        // 因为sql的结果已经排好序，所有list接收，用map会打算顺序
+        List<Order> returnOrders = new ArrayList<Order>();
+    	for (Iterator<OrderDetail> iter = orderDetails.iterator(); iter.hasNext();) {
+    		Object orderDetailObject = iter.next();
+    		Object[][] orderDetailObjects = {(Object[]) orderDetailObject};
+    		Order order = (Order) orderDetailObjects[0][0];
+    		Date today = new Date();
+    		today.setHours(23);
+    		today.setMinutes(59);
+    		today.setSeconds(59);
+    		if (isToday) {
+    			if (order.getExpectDate().after(today)) {
+    				iter.remove();
+    				continue;
+    			}
+    		} else {
+    			if (order.getExpectDate().before(today)) {
+    				iter.remove();
+    				continue;
+    			}
+    		}
+    		
+    		OrderItem orderItem = (OrderItem) orderDetailObjects[0][1];
+    		List<OrderItem> orderItems = returnOrderItemMap.get(order.getOrderNo());
+    		if (CollectionUtils.isEmpty(orderItems)) {
+    			orderItems = new ArrayList<OrderItem>();
+    			orderItems.add(orderItem);
+    			returnOrderItemMap.put(order.getOrderNo(), orderItems);
+    		} else {
+    			orderItems.add(orderItem);
+    		}
+    		if (returnOrderMap.get(order.getOrderNo()) == null) {
+    			returnOrderMap.put(order.getOrderNo(), order);
+    			returnOrders.add(order);
+    		}
+    		
+    		if (lastOrderCreateDate == null || orderDetailResponse.isHaveNewOrder()) {
+    			continue;
+    		} else {
+    			if (order.getCreateDate().after(lastOrderCreateDate)) {
+    				orderDetailResponse.setHaveNewOrder(true);
+    			}
+    		}
+    	}
+    	
+    	List<OrderDetail> returnOrderDetails = new ArrayList<OrderDetail>();
+    	for (Order order : returnOrders) {
+    		OrderDetail orderDetail = new OrderDetail(order, returnOrderItemMap.get(order.getOrderNo()));
+    		returnOrderDetails.add(orderDetail);
+    	}
+    	orderDetailResponse.setOrderDetails(returnOrderDetails);
+        return orderDetailResponse;
     }
-
+    
     @Override
     public Order confirmOrder(Order order) {
         order.confirm();
@@ -228,4 +304,19 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
+    
+    @Override
+    public Order finishOrder(Order order) {
+    	order.confirm();
+    	
+        // TODO 发起结算
+
+        return orderRepository.save(order);
+    }
+    
+    public Order cancelOrder(Order order) {
+    	
+    	return null;
+    }
+    
 }
