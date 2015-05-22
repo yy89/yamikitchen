@@ -67,8 +67,10 @@ public class Merchant implements Serializable {
     private Integer verifyStatus = 0;
     private double turnover = 0.00d;
     private double sharing = 0;
+    @Column(insertable = false, columnDefinition = "bit default 0")
+    private Boolean isAutoOpen = false;//是否允许自由开店
     private Date createDate;
-    private Date lastModifiedDate;
+    private Date lastModifiedDate = new Date();
 
     public Long getId() {
         return id;
@@ -359,7 +361,7 @@ public class Merchant implements Serializable {
         List<Account> result = new ArrayList<>();
         for (AccountType accountType : AccountType.values()) {
             final String accountNo = String.format(Account.ACCOUNT_NO_PATTERN, creator, id, accountType.ordinal());
-            result.add(new Account(id, getCreator(), accountNo, accountType));
+            result.add(new Account(getCreator(), accountNo, accountType));
         }
         return result;
     }
@@ -394,5 +396,13 @@ public class Merchant implements Serializable {
 
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public Boolean getIsAutoOpen() {
+        return isAutoOpen;
+    }
+
+    public void setIsAutoOpen(Boolean isAutoOpen) {
+        this.isAutoOpen = isAutoOpen;
     }
 }
