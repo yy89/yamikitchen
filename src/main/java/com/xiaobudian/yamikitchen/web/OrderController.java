@@ -166,4 +166,19 @@ public class OrderController {
         if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
         return Result.successResult(orderService.finishOrder(order));
     }
+    
+    @RequestMapping(value = "/orders/{orderId}/cancel/merchant/{isMerchant}", method = RequestMethod.POST)
+    public Result cancelOrder(@PathVariable Long orderId, @PathVariable boolean isMerchant, @AuthenticationPrincipal User user) {
+        Order order = orderService.getOrder(orderId);
+        if (order == null) throw new RuntimeException("order.does.not.exist");
+        if (isMerchant) {
+        	Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        	if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
+        	if (!order.isCancelable()) throw new RuntimeException("order.cancel.unauthorized");
+        } else {
+        	if (!order.getId().equals(user.getId())) throw new RuntimeException("order.unauthorized");
+        	if (!order.isDirectCancelable()) throw new RuntimeException("order.cancel.unauthorized");
+        }
+        return Result.successResult(orderService.cancelOrder(order, user.getId()));
+    }
 }

@@ -456,6 +456,7 @@ public class Order implements Serializable {
     }
     
     public void cancel() {
+    	setStatus(7);
     	setDirectCancelable(false);
     	setCancelable(false);
     	setRefundable(false);
