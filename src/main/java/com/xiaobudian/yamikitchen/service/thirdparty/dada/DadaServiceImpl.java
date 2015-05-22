@@ -51,7 +51,7 @@ public class DadaServiceImpl implements DadaService {
 	}
 	
 	@Override
-	public DadaDto getAccessToken(String grantCode) {
+	public DadaDto createAccessToken(String grantCode) {
 		Assert.notNull(grantCode, "params can't be null : grantCode");
 		String requestUrl = DadaConstans.getAccessTokenUrl(grantCode);
 		String resultJson = httpClientService.httpGet(requestUrl);
@@ -59,13 +59,97 @@ public class DadaServiceImpl implements DadaService {
 	}
 	
 	@Override
-	public DadaDto getAccessToken() {
-		return getAccessToken(getGrantCode());
+	public DadaDto createAccessToken() {
+		return createAccessToken(getGrantCode());
 	}
 	
 	@Override
-	public DadaDto addOrderToDada(Order order, String token) {
-		String requestUrl = DadaConstans.addOrderToDadaUrl();
+	public String getAccessToken() {
+		ThirdParty thirdGroup = httpClientRepository.findOne(1L);
+        if (thirdGroup == null) {
+        	thirdGroup = new ThirdParty();
+        	saveThirdGroup(thirdGroup);
+        } else if (!tokenIsValid(thirdGroup.getExpiresIn(), thirdGroup.getCreateDate())) {
+        	saveThirdGroup(thirdGroup);
+        }
+        return thirdGroup.getAccessToken();
+	}
+	
+	@Override
+	public void addOrderToDada(Order order) {
+        String token = getAccessToken();
+        DadaDto dadaDto = addOrder(order, token);
+        if (dadaDto == null || !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
+            throw new RuntimeException("Add order to DADA error, errorCode：" + dadaDto.getErrorCode());
+        }
+    }
+	
+	@Override
+	public void cancelOrder(Order order) {
+		String token = getAccessToken();
+		DadaDto dadaDto = cancelOrder(order, token);
+		if (dadaDto == null || !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
+            throw new RuntimeException("cancel order to DADA error, errorCode：" + dadaDto.getErrorCode());
+        }
+	}
+	
+	@Override
+    public Order dadaCallBack(DadaDto dadaDto) {
+        Assert.notNull(dadaDto, "dadaResultDto can't be null");
+        Assert.notNull(dadaDto.getOrder_id(), "dadaResultDto.order_id can't be null");
+        Assert.notNull(dadaDto.getOrder_status(), "dadaResultDto.order_status can't be null");
+        
+        Order order = orderRepository.findByOrderNo(dadaDto.getOrder_id());
+        Assert.notNull(order, "Order not longer exist : " + dadaDto.getOrder_id());
+        order.setDeliverGroupOrderStatus(dadaDto.getStatus());
+        order.setDiliverymanId(dadaDto.getDm_id());
+        order.setDiliverymanName(dadaDto.getDm_name());
+        order.setDiliverymanMobile(dadaDto.getDm_mobile());
+        order.setUpdateTime(new Date(dadaDto.getUpdate_time()));
+        if (dadaDto.getStatus() == 3) {
+        	order.deliver();
+        }
+        return orderRepository.save(order);
+    }
+	
+    private void saveThirdGroup(ThirdParty thirdGroup) {
+        DadaDto dadaDto = createAccessToken();
+        thirdGroup.setAccessToken(dadaDto.getResult().getAccess_token());
+        thirdGroup.setExpiresIn(dadaDto.getResult().getExpires_in());
+        thirdGroup.setRefreshToken(dadaDto.getResult().getRefresh_token());
+        thirdGroup.setCreateDate(new Date());
+        thirdGroup.setThirdGroup(DadaConstans.DADA);
+        httpClientRepository.save(thirdGroup);
+    }
+
+    private boolean tokenIsValid(Long expiresIn, Date createData) {
+        Long timestamp = createData.getTime() + (expiresIn * 1000);
+        Date date = new Date(timestamp);
+        return date.after(new Date());
+    }
+
+	private String getSignature(Date currentDate, String token) {
+		String timestamp = String.valueOf(new Date().getTime());
+		List<String> list = new ArrayList<String>();
+		list.add(token);
+		list.add(timestamp);
+		list.add(DadaConstans.DADA);
+		Collections.sort(list);
+		String signString = list.toString();
+		signString = signString.replace(" ", "").replace(",", "").replace("[", "").replace("]", "");
+		return MD5Util.md5(signString);
+	}
+	
+	private DadaDto cancelOrder(Order order, String token) {
+		Date currentDate = new Date();
+		String signature = getSignature(currentDate, token);
+		String requestUrl = DadaConstans.cancelOrderToDadaUrl(
+				token, currentDate.getTime(), signature, order.getOrderNo(), null);
+		String resultJson = httpClientService.httpGet(requestUrl);
+		return fromJson(resultJson);
+	}
+	
+	private DadaDto addOrder(Order order, String token) {
 		Map<String, String> requestMap = new HashMap<String, String>();
 		requestMap.put("token", token);
 		Date currentDate = new Date();
@@ -104,71 +188,8 @@ public class DadaServiceImpl implements DadaService {
 		requestMap.put("receiver_lng", String.valueOf(order.getLongitude()));
 		requestMap.put("callback", DadaConstans.DADA_CALL_BACK_URL);
 		
-		String resultJson = httpClientService.httpPost(requestUrl, requestMap);
+		String resultJson = httpClientService.httpPost(DadaConstans.addOrderToDadaUrl(), requestMap);
 		return fromJson(resultJson);
-	}
-	
-	@Override
-	public void addOrderToDada(Order order) {
-        ThirdParty thirdGroup = httpClientRepository.findOne(1L);
-        if (thirdGroup == null) {
-        	thirdGroup = new ThirdParty();
-        	saveThirdGroup(thirdGroup);
-        } else if (!tokenIsValid(thirdGroup.getExpiresIn(), thirdGroup.getCreateDate())) {
-        	saveThirdGroup(thirdGroup);
-        }
-        // 调用达达接口，添加订单
-        DadaDto dadaDto = addOrderToDada(order, thirdGroup.getAccessToken());
-        if (dadaDto == null || !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
-            throw new RuntimeException("向达达添加订单出现异常");
-        }
-    }
-	
-	@Override
-    public Order dadaCallBack(DadaDto dadaDto) {
-        Assert.notNull(dadaDto, "dadaResultDto can't be null");
-        Assert.notNull(dadaDto.getOrder_id(), "dadaResultDto.order_id can't be null");
-        Assert.notNull(dadaDto.getOrder_status(), "dadaResultDto.order_status can't be null");
-        
-        Order order = orderRepository.findByOrderNo(dadaDto.getOrder_id());
-        Assert.notNull(order, "Order not longer exist : " + dadaDto.getOrder_id());
-        order.setDeliverGroupOrderStatus(dadaDto.getStatus());
-        order.setDiliverymanId(dadaDto.getDm_id());
-        order.setDiliverymanName(dadaDto.getDm_name());
-        order.setDiliverymanMobile(dadaDto.getDm_mobile());
-        order.setUpdateTime(new Date(dadaDto.getUpdate_time()));
-        if (dadaDto.getStatus() == 3) {
-        	order.setStatus(4);
-        }
-        return orderRepository.save(order);
-    }
-
-    private void saveThirdGroup(ThirdParty thirdGroup) {
-        DadaDto dadaDto = getAccessToken();
-        thirdGroup.setAccessToken(dadaDto.getResult().getAccess_token());
-        thirdGroup.setExpiresIn(dadaDto.getResult().getExpires_in());
-        thirdGroup.setRefreshToken(dadaDto.getResult().getRefresh_token());
-        thirdGroup.setCreateDate(new Date());
-        thirdGroup.setThirdGroup(DadaConstans.DADA);
-        httpClientRepository.save(thirdGroup);
-    }
-
-    private boolean tokenIsValid(Long expiresIn, Date createData) {
-        Long timestamp = createData.getTime() + (expiresIn * 1000);
-        Date date = new Date(timestamp);
-        return date.after(new Date());
-    }
-
-	private String getSignature(Date currentDate, String token) {
-		String timestamp = String.valueOf(new Date().getTime());
-		List<String> list = new ArrayList<String>();
-		list.add(token);
-		list.add(timestamp);
-		list.add(DadaConstans.DADA);
-		Collections.sort(list);
-		String signString = list.toString();
-		signString = signString.replace(" ", "").replace(",", "").replace("[", "").replace("]", "");
-		return MD5Util.md5(signString);
 	}
 	
 	private DadaDto fromJson(String json) {

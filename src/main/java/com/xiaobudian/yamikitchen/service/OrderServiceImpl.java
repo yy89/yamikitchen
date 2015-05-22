@@ -299,6 +299,12 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         return orderRepository.save(order);
     }
     
+    @Override
+    public Order beganDeliver(Order order) {
+    	order.deliver();
+    	return orderRepository.save(order);
+    }
+    
     public Order cancelOrder(Order order) {
 
         return null;

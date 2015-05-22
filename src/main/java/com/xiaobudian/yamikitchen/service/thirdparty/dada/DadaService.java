@@ -10,15 +10,16 @@ public interface DadaService {
 	
 	String getGrantCode();
 
-	DadaDto getAccessToken(String grantCode);
+	DadaDto createAccessToken(String grantCode);
 
-	DadaDto getAccessToken();
-
-	DadaDto addOrderToDada(Order order, String token);
+	DadaDto createAccessToken();
 
 	void addOrderToDada(Order order);
 	
     Order dadaCallBack(DadaDto dadaDto);
 
+    String getAccessToken();
+
+	void cancelOrder(Order order);
 	
 }
