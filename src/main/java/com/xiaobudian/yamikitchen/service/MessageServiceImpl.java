@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Set;
  * Created by Johnson on 2015/5/12.
  */
 @Service(value = "messageService")
+@Transactional
 public class MessageServiceImpl implements MessageService, ApplicationListener<NoticeEvent> {
     @Inject
     private NoticeRepository noticeRepository;

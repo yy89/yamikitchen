@@ -27,12 +27,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.*;
 
 /**
  * Created by johnson1 on 4/28/15.
  */
 @Service(value = "orderService")
+@Transactional
 public class OrderServiceImpl implements OrderService, ApplicationEventPublisherAware {
     @Value(value = "${extra.field.name}")
     private String extraFieldName;
