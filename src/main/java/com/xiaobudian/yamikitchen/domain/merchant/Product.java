@@ -35,7 +35,7 @@ public class Product implements Serializable {
     private Boolean main = false;
     private boolean soldOut;
     private Date createDate;
-    private Date lastModifiedDate = new Date();
+    private Date lastModifiedDate;
 
     public Long getId() {
         return id;

@@ -282,9 +282,9 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     }
 
     @Override
-    public Order chooseDeliverGroup(Order order, Integer deliverGroup) {
+    public Order chooseDeliverGroup(Order order, Integer deliverGroup, Merchant merchant) {
         order.setDeliverGroup(deliverGroup);
-        if (order.deliverByDaDa()) dadaService.addOrderToDada(order);
+        if (order.deliverByDaDa()) dadaService.addOrderToDada(order, merchant);
         order.setStatus(3);
         return orderRepository.save(order);
     }
@@ -297,23 +297,24 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Override
     public Order finishOrder(Order order) {
         order.finish();
-        settlement(order);
-        return orderRepository.save(order);
+        Order newOrder = orderRepository.save(order);
+        settlement(newOrder);
+        return newOrder;
     }
-    
+
     @Override
     public Order beganDeliver(Order order) {
-    	order.deliver();
-    	return orderRepository.save(order);
-    }
-    
-    @Override
-    public Order cancelOrder(Order order, Long uid) {
-    	order.cancel();
-    	if (order.isHasPaid()) {
-    		// TODO 订单退款结算
-    	}
+        order.deliver();
         return orderRepository.save(order);
     }
-    
+
+    @Override
+    public Order cancelOrder(Order order, Long uid) {
+        order.cancel();
+        if (order.isHasPaid()) {
+            // TODO 订单退款结算
+        }
+        return orderRepository.save(order);
+    }
+
 }

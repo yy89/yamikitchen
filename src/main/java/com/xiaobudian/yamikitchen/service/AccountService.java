@@ -6,7 +6,9 @@ import com.xiaobudian.yamikitchen.domain.account.AlipayHistory;
 import com.xiaobudian.yamikitchen.domain.account.TransactionFlow;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.operation.PlatformAccount;
+import com.xiaobudian.yamikitchen.domain.operation.PlatformTransactionFlow;
 import com.xiaobudian.yamikitchen.domain.order.Order;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.List;
 
@@ -28,6 +30,10 @@ public interface AccountService {
 
     public TransactionFlow writeTransactionFlow(TransactionFlow flow);
 
-    public List<TransactionFlow> getTransactionFlowsBy(Long accountId);
+    public List<TransactionFlow> getTransactionFlowsBy(String orderNo);
+
+    public List<PlatformTransactionFlow> getTransactionFlowsOfPlatform();
+
+    public List<TransactionFlow> getTransactionFlows(Long uid);
 
 }

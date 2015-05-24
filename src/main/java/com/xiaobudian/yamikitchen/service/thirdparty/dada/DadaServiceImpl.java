@@ -19,7 +19,6 @@ import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.thirdparty.ThirdParty;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import com.xiaobudian.yamikitchen.repository.thirdgroup.ThirdPartyRepository;
-import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.service.thirdparty.HttpClientService;
 import com.xiaobudian.yamikitchen.thirdparty.util.DadaConstans;
 import com.xiaobudian.yamikitchen.thirdparty.util.MD5Util;
@@ -31,14 +30,12 @@ import com.xiaobudian.yamikitchen.web.dto.thirdparty.DadaDto;
 @Service(value = "dadaService")
 public class DadaServiceImpl implements DadaService {
 	@Inject
-	private MerchantService merchantService;
-	@Inject
 	private HttpClientService httpClientService;
 	@Inject
 	private ThirdPartyRepository httpClientRepository;
 	@Inject
 	private OrderRepository orderRepository;
-	
+
 	@Override
 	public String getGrantCode() {
 		String requestUrl = DadaConstans.getGrantCodeUrl();
@@ -49,7 +46,7 @@ public class DadaServiceImpl implements DadaService {
 		}
 		return dadaDto.getResult().getGrant_code();
 	}
-	
+
 	@Override
 	public DadaDto createAccessToken(String grantCode) {
 		Assert.notNull(grantCode, "params can't be null : grantCode");
@@ -57,12 +54,12 @@ public class DadaServiceImpl implements DadaService {
 		String resultJson = httpClientService.httpGet(requestUrl);
 		return fromJson(resultJson);
 	}
-	
+
 	@Override
 	public DadaDto createAccessToken() {
 		return createAccessToken(getGrantCode());
 	}
-	
+
 	@Override
 	public String getAccessToken() {
 		ThirdParty thirdGroup = httpClientRepository.findOne(1L);
@@ -74,44 +71,44 @@ public class DadaServiceImpl implements DadaService {
         }
         return thirdGroup.getAccessToken();
 	}
-	
+
 	@Override
-	public void addOrderToDada(Order order) {
+	public void addOrderToDada(Order order, Merchant merchant) {
         String token = getAccessToken();
-        DadaDto dadaDto = addOrder(order, token);
+        DadaDto dadaDto = addOrder(order, token, merchant);
         if (dadaDto == null || !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
-            throw new RuntimeException("Add order to DADA error, errorCode：" + dadaDto.getErrorCode());
+            throw new RuntimeException("Add order to DADA error, errorCode:" + dadaDto.getErrorCode());
         }
     }
-	
+
 	@Override
 	public void cancelOrder(Order order) {
 		String token = getAccessToken();
 		DadaDto dadaDto = cancelOrder(order, token);
 		if (dadaDto == null || !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
-            throw new RuntimeException("cancel order to DADA error, errorCode：" + dadaDto.getErrorCode());
+            throw new RuntimeException("cancel order to DADA error, errorCode:" + dadaDto.getErrorCode());
         }
 	}
-	
+
 	@Override
     public Order dadaCallBack(DadaDto dadaDto) {
         Assert.notNull(dadaDto, "dadaResultDto can't be null");
         Assert.notNull(dadaDto.getOrder_id(), "dadaResultDto.order_id can't be null");
         Assert.notNull(dadaDto.getOrder_status(), "dadaResultDto.order_status can't be null");
-        
+
         Order order = orderRepository.findByOrderNo(dadaDto.getOrder_id());
         Assert.notNull(order, "Order not longer exist : " + dadaDto.getOrder_id());
-        order.setDeliverGroupOrderStatus(dadaDto.getStatus());
+        order.setDeliverGroupOrderStatus(dadaDto.getOrder_status());
         order.setDiliverymanId(dadaDto.getDm_id());
         order.setDiliverymanName(dadaDto.getDm_name());
         order.setDiliverymanMobile(dadaDto.getDm_mobile());
         order.setUpdateTime(new Date(dadaDto.getUpdate_time()));
-        if (dadaDto.getStatus() == 3) {
+        if (dadaDto.getOrder_status() == 3) {
         	order.deliver();
         }
         return orderRepository.save(order);
     }
-	
+
     private void saveThirdGroup(ThirdParty thirdGroup) {
         DadaDto dadaDto = createAccessToken();
         thirdGroup.setAccessToken(dadaDto.getResult().getAccess_token());
@@ -139,7 +136,7 @@ public class DadaServiceImpl implements DadaService {
 		signString = signString.replace(" ", "").replace(",", "").replace("[", "").replace("]", "");
 		return MD5Util.md5(signString);
 	}
-	
+
 	private DadaDto cancelOrder(Order order, String token) {
 		Date currentDate = new Date();
 		String signature = getSignature(currentDate, token);
@@ -148,8 +145,8 @@ public class DadaServiceImpl implements DadaService {
 		String resultJson = httpClientService.httpGet(requestUrl);
 		return fromJson(resultJson);
 	}
-	
-	private DadaDto addOrder(Order order, String token) {
+
+	private DadaDto addOrder(Order order, String token, Merchant merchant) {
 		Map<String, String> requestMap = new HashMap<String, String>();
 		requestMap.put("token", token);
 		Date currentDate = new Date();
@@ -162,7 +159,7 @@ public class DadaServiceImpl implements DadaService {
 		requestMap.put("fetch_from_receiver_fee", "0");
 		requestMap.put("deliver_fee", "0");
 		requestMap.put("create_time", String.valueOf(order.getCreateDate().getTime()));
-		requestMap.put("info", order.getRemark());
+		requestMap.put("info", StringUtils.isBlank(order.getRemark()) ? "订单备注" : order.getRemark());
 		requestMap.put("cargo_type", "1");
 		requestMap.put("cargo_weight", "1");
 		requestMap.put("cargo_price", String.valueOf(order.getPrice()));
@@ -172,8 +169,7 @@ public class DadaServiceImpl implements DadaService {
 		requestMap.put("expected_finish_time", String.valueOf(order.getDeliverDate()));
 		requestMap.put("supplier_id", String.valueOf(order.getMerchantId()));
 		requestMap.put("supplier_name", order.getMerchantName());
-		
-		Merchant merchant = merchantService.getMerchantByCreator(order.getMerchantId());
+
 		requestMap.put("supplier_address", merchant.getAddress());
 		requestMap.put("supplier_phone", String.valueOf(order.getMerchantPhone()));
 		requestMap.put("supplier_tel", null);
@@ -187,11 +183,11 @@ public class DadaServiceImpl implements DadaService {
 		requestMap.put("receiver_lat", String.valueOf(order.getLatitude()));
 		requestMap.put("receiver_lng", String.valueOf(order.getLongitude()));
 		requestMap.put("callback", DadaConstans.DADA_CALL_BACK_URL);
-		
+
 		String resultJson = httpClientService.httpPost(DadaConstans.addOrderToDadaUrl(), requestMap);
 		return fromJson(resultJson);
 	}
-	
+
 	private DadaDto fromJson(String json) {
 		if (StringUtils.isBlank(json)) {
 			return null;
@@ -204,7 +200,7 @@ public class DadaServiceImpl implements DadaService {
 		}
 		return null;
 	}
-	
+
 	public static void main(String[] args) {
         DadaServiceImpl impl = new DadaServiceImpl();
         String token = "9b8cc46f3aa0eec29b8cc46f3aa0eec2";
@@ -218,5 +214,5 @@ public class DadaServiceImpl implements DadaService {
                 + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
         System.out.println(url);
     }
-	
+
 }

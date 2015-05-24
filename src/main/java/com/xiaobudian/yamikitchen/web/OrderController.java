@@ -124,7 +124,7 @@ public class OrderController {
         if (order == null) throw new RuntimeException("order.does.not.exist");
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
-        return Result.successResult(orderService.chooseDeliverGroup(order, deliverGroup));
+        return Result.successResult(orderService.chooseDeliverGroup(order, deliverGroup, merchant));
     }
 
     @RequestMapping(value = "/orders/{orderNo}", method = RequestMethod.GET)
@@ -151,12 +151,12 @@ public class OrderController {
     public Result beganDeliver(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
     	Order order = orderService.getOrder(orderId);
     	if (order == null) throw new RuntimeException("order.does.not.exist");
-    	if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty"); 
+    	if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty");
     	Merchant merchant = merchantService.getMerchantByCreator(user.getId());
     	if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
     	return Result.successResult(orderService.beganDeliver(order));
     }
-    
+
     @RequestMapping(value = "/orders/{orderId}/finish", method = RequestMethod.POST)
     public Result finishOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
         Order order = orderService.getOrder(orderId);
@@ -166,7 +166,7 @@ public class OrderController {
         if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
         return Result.successResult(orderService.finishOrder(order));
     }
-    
+
     @RequestMapping(value = "/orders/{orderId}/cancel/merchant/{isMerchant}", method = RequestMethod.POST)
     public Result cancelOrder(@PathVariable Long orderId, @PathVariable boolean isMerchant, @AuthenticationPrincipal User user) {
         Order order = orderService.getOrder(orderId);

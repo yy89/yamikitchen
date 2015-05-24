@@ -41,17 +41,31 @@ public class AccountController {
         return Result.successResult(accountService.getAccounts(authenticationUser.getId()));
     }
 
-    @RequestMapping(value = "/accounts/{accountId}/transactionFlows", method = RequestMethod.GET)
-    @ResponseBody
-    public Result getTransactionFlows(@PathVariable Long accountId, @AuthenticationPrincipal User authenticationUser) {
-        return Result.successResult(accountService.getTransactionFlowsBy(accountId));
-    }
 
     @RequestMapping(value = "/account/summary", method = RequestMethod.GET)
     @ResponseBody
     public Result getAccountSummary(@AuthenticationPrincipal User user) {
         return Result.successResult(accountService.getAccountSummary(user.getId()));
     }
+
+    @RequestMapping(value = "/platform/transactionFlows", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getFlowsOfPlatform(@AuthenticationPrincipal User user) {
+        return Result.successResult(accountService.getTransactionFlowsOfPlatform());
+    }
+
+    @RequestMapping(value = "/transactionFlows", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getTransactionFlows(@AuthenticationPrincipal User user) {
+        return Result.successResult(accountService.getTransactionFlows(user.getId()));
+    }
+
+    @RequestMapping(value = "/orders/{orderNo}/transactionFlows", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getFlowsOfPlatform(@PathVariable String orderNo, @AuthenticationPrincipal User user) {
+        return Result.successResult(accountService.getTransactionFlowsBy(orderNo));
+    }
+
 
     @RequestMapping(value = "/platform/account/summary", method = RequestMethod.GET)
     @ResponseBody

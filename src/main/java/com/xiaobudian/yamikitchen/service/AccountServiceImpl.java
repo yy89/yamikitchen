@@ -6,11 +6,13 @@ import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
 import com.xiaobudian.yamikitchen.domain.operation.PlatformAccount;
+import com.xiaobudian.yamikitchen.domain.operation.PlatformTransactionFlow;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
 import com.xiaobudian.yamikitchen.domain.order.OrderPostHandler;
 import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
 import com.xiaobudian.yamikitchen.repository.PlatformAccountRepository;
+import com.xiaobudian.yamikitchen.repository.PlatformTransactionFlowRepository;
 import com.xiaobudian.yamikitchen.repository.account.AccountRepository;
 import com.xiaobudian.yamikitchen.repository.account.AlipayHistoryRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionFlowRepository;
@@ -30,6 +32,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,22 +76,25 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     private ProductRepository productRepository;
     @Inject
     private PlatformAccountRepository platformAccountRepository;
-
+    @Inject
+    private PlatformTransactionFlowRepository platformTransactionFlowRepository;
+    private  List<String> inQueueList = new ArrayList<>();
 
     public void writePaymentHistory(AlipayHistory history) {
-        AlipayHistory his = alipayHistoryRepository.save(history);
-        Order order = payOrder(his.getOut_trade_no());
-        transactionHandler.handle(order, 1001);
-        settlementCenter.settle(order);
+        if (inQueueList.indexOf(history.getOut_trade_no()) > -1) return;
+        inQueueList.add(history.getOut_trade_no());
+        Order order = orderRepository.findByOrderNo(history.getOut_trade_no());
+        if (order.isHasPaid()) return;
+        alipayHistoryRepository.save(history);
+        transactionHandler.handle(payOrder(order), 1001);
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
         merchant.updateTurnOver(order);
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));
     }
 
-    private Order payOrder(String orderNo) {
-        Order order = orderRepository.findByOrderNo(orderNo);
+    private Order payOrder(Order order) {
         order.pay();
-        orderPostHandler.handle(new OrderDetail(order, orderItemRepository.findByOrderNo(orderNo)));
+        orderPostHandler.handle(new OrderDetail(order, orderItemRepository.findByOrderNo(order.getOrderNo())));
         return orderRepository.save(order);
     }
 
@@ -130,7 +136,17 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     }
 
     @Override
-    public List<TransactionFlow> getTransactionFlowsBy(Long uid) {
+    public List<TransactionFlow> getTransactionFlowsBy(String orderNo) {
+        return transactionFlowRepository.findByOrderNo(orderNo);
+    }
+
+    @Override
+    public List<PlatformTransactionFlow> getTransactionFlowsOfPlatform() {
+        return platformTransactionFlowRepository.findAll();
+    }
+
+    @Override
+    public List<TransactionFlow> getTransactionFlows(Long uid) {
         return transactionFlowRepository.findByUid(uid);
     }
 

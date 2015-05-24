@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
+import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
 import com.xiaobudian.yamikitchen.domain.order.OrderItem;
@@ -52,7 +53,7 @@ public interface OrderService {
 
     public Order getOrder(Long orderId);
 
-    public Order chooseDeliverGroup(Order order, Integer deliverGroup);
+    public Order chooseDeliverGroup(Order order, Integer deliverGroup, Merchant merchant);
 
 	public Order finishOrder(Order order);
 

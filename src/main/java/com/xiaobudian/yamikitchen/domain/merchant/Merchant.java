@@ -412,4 +412,8 @@ public class Merchant implements Serializable {
     public void setIsAutoOpen(Boolean isAutoOpen) {
         this.isAutoOpen = isAutoOpen;
     }
+
+    public void updateTurnOver(Order order) {
+        this.turnover += order.getPrice() / 100.00d;
+    }
 }

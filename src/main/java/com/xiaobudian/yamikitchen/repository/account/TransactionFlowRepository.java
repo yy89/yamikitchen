@@ -11,5 +11,9 @@ import java.util.List;
  */
 public interface TransactionFlowRepository extends JpaRepository<TransactionFlow, Long> {
     @Query("select tf from TransactionFlow tf where tf.uid=?1 order by operateDate desc")
-    List<TransactionFlow> findByUid(Long uid);
+    public List<TransactionFlow> findByUid(Long uid);
+
+    @Query("select tf from TransactionFlow tf where tf.orderNo=?1 order by operateDate desc")
+    public List<TransactionFlow> findByOrderNo(String orderNo);
+
 }

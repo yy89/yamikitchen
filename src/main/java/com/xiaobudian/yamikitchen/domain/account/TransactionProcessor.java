@@ -20,7 +20,7 @@ import java.util.Map;
  * Created by Johnson on 2015/5/20.
  */
 @Component(value = "transactionHandler")
-public class TransactionHandler {
+public class TransactionProcessor {
     @Inject
     private AccountRepository accountRepository;
     @Inject
@@ -47,14 +47,19 @@ public class TransactionHandler {
         return accounts.get(TRANS_ACT_TYPE_MAP.get(transactionCode));
     }
 
+    private boolean isDebit(int transactionCode) {
+        return transactionCode > 2000;
+    }
+
     public void handle(Order order, int transactionCode) {
         handle(order, order.priceAsDouble(), transactionCode);
     }
 
     public void handle(Order order, Double amount, int transactionCode) {
         Account account = getAccount(order, transactionCode);
-        account.setAvailableBalance(account.getAvailableBalance() + amount);
-        account.setBalance(account.getBalance() + amount);
+        final Double amt = isDebit(transactionCode) ? 0 - amount : amount;
+        account.setAvailableBalance(account.getAvailableBalance() + amt);
+        account.setBalance(account.getBalance() + amt);
         accountRepository.save(account);
         transactionFlowRepository.save(new TransactionFlow(account, order, amount, transactionCode));
     }
@@ -63,7 +68,8 @@ public class TransactionHandler {
         transactionFlowRepository.save(new TransactionFlow(account, amount, transactionCode));
     }
 
-    public void handleWithinPlatform(Order order, double amt, int transactionCode) {
+    public void handleWithinPlatform(Order order, double amount, int transactionCode) {
+        final Double amt = isDebit(transactionCode) ? 0 - amount : amount;
         platformAccount.setBalance(platformAccount.getBalance() + amt);
         platformAccount.setAvailableBalance(platformAccount.getAvailableBalance() + amt);
         platformAccountRepository.save(platformAccount);

@@ -448,18 +448,18 @@ public class Order implements Serializable {
         this.setDirectCancelable(false);
         this.setAcceptDate(new Date());
     }
-    
+
     public void finish() {
         setStatus(5);
         setComplainable(true);
         setCommentable(true);
     }
-    
+
     public void cancel() {
     	setStatus(7);
-    	setDirectCancelable(false);
-    	setCancelable(false);
-    	setRefundable(false);
+        setDirectCancelable(false);
+        setCancelable(false);
+        setRefundable(false);
     }
 
     public void pay() {
