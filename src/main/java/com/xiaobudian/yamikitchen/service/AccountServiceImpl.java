@@ -64,7 +64,7 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     @Inject
     private BankCardRepository bankCardRepository;
     @Inject
-    private TransactionHandler transactionHandler;
+    private TransactionProcessor transactionProcessor;
     @Inject
     private TransactionTypeRepository transactionTypeRepository;
     @Inject
@@ -78,7 +78,7 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     private PlatformAccountRepository platformAccountRepository;
     @Inject
     private PlatformTransactionFlowRepository platformTransactionFlowRepository;
-    private  List<String> inQueueList = new ArrayList<>();
+    private List<String> inQueueList = new ArrayList<>();
 
     public void writePaymentHistory(AlipayHistory history) {
         if (inQueueList.indexOf(history.getOut_trade_no()) > -1) return;
@@ -86,7 +86,7 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
         Order order = orderRepository.findByOrderNo(history.getOut_trade_no());
         if (order.isHasPaid()) return;
         alipayHistoryRepository.save(history);
-        transactionHandler.handle(payOrder(order), 1001);
+        transactionProcessor.process(payOrder(order), 1001);
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
         merchant.updateTurnOver(order);
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));

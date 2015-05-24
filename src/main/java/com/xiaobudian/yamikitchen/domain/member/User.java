@@ -2,7 +2,6 @@ package com.xiaobudian.yamikitchen.domain.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.xiaobudian.yamikitchen.domain.coupon.CouponAccount;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

@@ -5,7 +5,6 @@ import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Created by Johnson on 2015/5/15.

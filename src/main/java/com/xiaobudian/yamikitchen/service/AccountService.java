@@ -8,7 +8,6 @@ import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.operation.PlatformAccount;
 import com.xiaobudian.yamikitchen.domain.operation.PlatformTransactionFlow;
 import com.xiaobudian.yamikitchen.domain.order.Order;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.List;
 

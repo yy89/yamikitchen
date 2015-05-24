@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 
 /**

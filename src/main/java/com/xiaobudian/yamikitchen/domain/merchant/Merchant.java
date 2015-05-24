@@ -71,7 +71,7 @@ public class Merchant implements Serializable {
     @JsonIgnore
     private double sharing = 0;
     @Column(insertable = false, columnDefinition = "bit default 0")
-    private Boolean isAutoOpen = false;//�Ƿ��������ɿ���
+    private Boolean isAutoOpen = false;
     private Date createDate;
     private Date lastModifiedDate = new Date();
 
@@ -411,9 +411,5 @@ public class Merchant implements Serializable {
 
     public void setIsAutoOpen(Boolean isAutoOpen) {
         this.isAutoOpen = isAutoOpen;
-    }
-
-    public void updateTurnOver(Order order) {
-        this.turnover += order.getPrice() / 100.00d;
     }
 }

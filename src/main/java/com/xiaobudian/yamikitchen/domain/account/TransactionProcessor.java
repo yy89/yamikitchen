@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Created by Johnson on 2015/5/20.
  */
-@Component(value = "transactionHandler")
+@Component(value = "transactionProcessor")
 public class TransactionProcessor {
     @Inject
     private AccountRepository accountRepository;
@@ -51,11 +51,11 @@ public class TransactionProcessor {
         return transactionCode > 2000;
     }
 
-    public void handle(Order order, int transactionCode) {
-        handle(order, order.priceAsDouble(), transactionCode);
+    public void process(Order order, int transactionCode) {
+        process(order, order.priceAsDouble(), transactionCode);
     }
 
-    public void handle(Order order, Double amount, int transactionCode) {
+    public void process(Order order, Double amount, int transactionCode) {
         Account account = getAccount(order, transactionCode);
         final Double amt = isDebit(transactionCode) ? 0 - amount : amount;
         account.setAvailableBalance(account.getAvailableBalance() + amt);
@@ -64,11 +64,11 @@ public class TransactionProcessor {
         transactionFlowRepository.save(new TransactionFlow(account, order, amount, transactionCode));
     }
 
-    public void handle(Account account, Double amount, int transactionCode) {
+    public void process(Account account, Double amount, int transactionCode) {
         transactionFlowRepository.save(new TransactionFlow(account, amount, transactionCode));
     }
 
-    public void handleWithinPlatform(Order order, double amount, int transactionCode) {
+    public void processByPlatform(Order order, double amount, int transactionCode) {
         final Double amt = isDebit(transactionCode) ? 0 - amount : amount;
         platformAccount.setBalance(platformAccount.getBalance() + amt);
         platformAccount.setAvailableBalance(platformAccount.getAvailableBalance() + amt);

@@ -22,7 +22,7 @@ public class SettlementCenter {
     @Inject
     private MerchantRepository merchantRepository;
     @Inject
-    private TransactionHandler transactionHandler;
+    private TransactionProcessor transactionProcessor;
     @Inject
     private TransactionTypeRepository transactionTypeRepository;
 
@@ -38,20 +38,20 @@ public class SettlementCenter {
 
     private void settleShare(Order order) {
         double scale = getShareScale(order.getMerchantId());
-        transactionHandler.handle(order, order.shareOfMerchant(scale), 1002);
-        transactionHandler.handle(order, 0 - order.shareOfMerchant(scale), 2002);
-        transactionHandler.handle(order, 0 - order.shareOfPlatform(scale), 2007);
-        transactionHandler.handleWithinPlatform(order, order.shareOfPlatform(scale), 1007);
+        transactionProcessor.process(order, order.shareOfMerchant(scale), 1002);
+        transactionProcessor.process(order, order.shareOfMerchant(scale), 2002);
+        transactionProcessor.processByPlatform(order, order.shareOfPlatform(scale), 1007);
+        transactionProcessor.process(order, order.shareOfPlatform(scale), 2007);
     }
 
     private void settleDeliverPrice(Order order) {
         double deliverPrice = order.deliverPriceAsDouble();
         if (order.deliverByDaDa()) {
-            transactionHandler.handleWithinPlatform(order, deliverPrice, 1008);
-            transactionHandler.handle(order, 0 - deliverPrice, 2008);
+            transactionProcessor.processByPlatform(order, deliverPrice, 1008);
+            transactionProcessor.process(order, deliverPrice, 2008);
         } else {
-            transactionHandler.handle(order, deliverPrice, 1009);
-            transactionHandler.handle(order, 0 - deliverPrice, 2009);
+            transactionProcessor.process(order, deliverPrice, 1009);
+            transactionProcessor.process(order, deliverPrice, 2009);
         }
     }
 }

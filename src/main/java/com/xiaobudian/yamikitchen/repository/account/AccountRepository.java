@@ -15,6 +15,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     public List<Account> findByUid(Long uid);
 
     public Account findByUidAndType(Long uid, AccountType type);
+
     @Query("from Account a where a.merchantId =?1 order by a.type")
     public List<Account> findByMerchantId(Long merchantId);
 }
