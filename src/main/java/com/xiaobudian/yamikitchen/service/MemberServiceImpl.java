@@ -1,6 +1,7 @@
 package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.LocalizedMessageSource;
+import com.xiaobudian.yamikitchen.domain.member.RegistrationPostHandler;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 import com.xiaobudian.yamikitchen.repository.member.UserAddressRepository;
@@ -27,6 +28,8 @@ public class MemberServiceImpl implements MemberService {
     private LocalizedMessageSource localizedMessageSource;
     @Inject
     private UserAddressRepository userAddressRepository;
+    @Inject
+    private RegistrationPostHandler registrationPostHandler;
 
     @Override
     public User register(User user) {
@@ -35,7 +38,10 @@ public class MemberServiceImpl implements MemberService {
             user.setNickName(nickNamePrefix + StringUtils.substring(user.getUsername(), user.getUsername().length() - 4));
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        user.setBindingPhone(user.getUsername());
+        User newUser = userRepository.save(user);
+        registrationPostHandler.handle(newUser);
+        return newUser;
     }
 
     @Override

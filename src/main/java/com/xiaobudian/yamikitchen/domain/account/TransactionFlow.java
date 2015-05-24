@@ -1,5 +1,7 @@
 package com.xiaobudian.yamikitchen.domain.account;
 
+import com.xiaobudian.yamikitchen.domain.order.Order;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,9 +36,17 @@ public class TransactionFlow implements Serializable {
         this.merchantId = merchantId;
         this.uid = uid;
         this.amount = amount;
-        this.currentBalance += amount;
         this.transactionType = transactionType;
         this.accountNo = accountNo;
+    }
+
+    public TransactionFlow(Account account, Order order, double amount, Integer transactionCode) {
+        this(account.getAccountNo(), order.getOrderNo(), order.getMerchantId(), account.getUid(), amount, transactionCode);
+        this.currentBalance = account.getBalance();
+    }
+
+    public TransactionFlow(Account account, double amount, Integer transactionCode) {
+        this(account, null, amount, transactionCode);
     }
 
     public Long getId() {

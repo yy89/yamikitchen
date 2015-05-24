@@ -448,18 +448,18 @@ public class Order implements Serializable {
         this.setDirectCancelable(false);
         this.setAcceptDate(new Date());
     }
-    
+
     public void finish() {
         setStatus(5);
         setComplainable(true);
         setCommentable(true);
     }
-    
+
     public void cancel() {
     	setStatus(7);
-    	setDirectCancelable(false);
-    	setCancelable(false);
-    	setRefundable(false);
+        setDirectCancelable(false);
+        setCancelable(false);
+        setRefundable(false);
     }
 
     public void pay() {
@@ -492,12 +492,16 @@ public class Order implements Serializable {
         return expectDate != null && Days.daysBetween(DateTime.now(), new DateTime(expectDate)).getDays() == 1;
     }
 
-    public double settlementAmountOfMerchant(double sharingScale) {
-        return deliverGroup == 0 ? 0 : (price - deliverPrice - (price - deliverPrice) * sharingScale / 100.00) / 100.00;
+    private double netPrice() {
+        return (price - deliverPrice) / 100.00;
     }
 
-    public double settlementAmountOfCompany(double sharingScale) {
-        return (price - deliverPrice) * sharingScale / 10000.00;
+    public double shareOfMerchant(double sharingScale) {
+        return deliverGroup == 0 ? 0 : netPrice() - shareOfPlatform(sharingScale);
+    }
+
+    public double shareOfPlatform(double sharingScale) {
+        return netPrice() * sharingScale;
     }
 
     public double priceAsDouble() {
@@ -507,6 +511,7 @@ public class Order implements Serializable {
     public double deliverPriceAsDouble() {
         return deliverPrice / 100.00;
     }
+
     public boolean deliverByDaDa() {
         return deliverGroup != null && deliverGroup == 2;
     }

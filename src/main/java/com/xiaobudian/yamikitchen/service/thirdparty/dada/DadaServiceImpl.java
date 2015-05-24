@@ -35,7 +35,7 @@ public class DadaServiceImpl implements DadaService {
 	private ThirdPartyRepository httpClientRepository;
 	@Inject
 	private OrderRepository orderRepository;
-	
+
 	@Override
 	public String getGrantCode() {
 		String requestUrl = DadaConstans.getGrantCodeUrl();
@@ -46,7 +46,7 @@ public class DadaServiceImpl implements DadaService {
 		}
 		return dadaDto.getResult().getGrant_code();
 	}
-	
+
 	@Override
 	public DadaDto createAccessToken(String grantCode) {
 		Assert.notNull(grantCode, "params can't be null : grantCode");
@@ -54,12 +54,12 @@ public class DadaServiceImpl implements DadaService {
 		String resultJson = httpClientService.httpGet(requestUrl);
 		return fromJson(resultJson);
 	}
-	
+
 	@Override
 	public DadaDto createAccessToken() {
 		return createAccessToken(getGrantCode());
 	}
-	
+
 	@Override
 	public String getAccessToken() {
 		ThirdParty thirdGroup = httpClientRepository.findOne(1L);
@@ -71,31 +71,31 @@ public class DadaServiceImpl implements DadaService {
         }
         return thirdGroup.getAccessToken();
 	}
-	
+
 	@Override
 	public void addOrderToDada(Order order, Merchant merchant) {
         String token = getAccessToken();
         DadaDto dadaDto = addOrder(order, token, merchant);
         if (dadaDto == null || !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
-            throw new RuntimeException("Add order to DADA error, errorCode：" + dadaDto.getErrorCode());
+            throw new RuntimeException("Add order to DADA error, errorCode:" + dadaDto.getErrorCode());
         }
     }
-	
+
 	@Override
 	public void cancelOrder(Order order) {
 		String token = getAccessToken();
 		DadaDto dadaDto = cancelOrder(order, token);
 		if (dadaDto == null || !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
-            throw new RuntimeException("cancel order to DADA error, errorCode：" + dadaDto.getErrorCode());
+            throw new RuntimeException("cancel order to DADA error, errorCode:" + dadaDto.getErrorCode());
         }
 	}
-	
+
 	@Override
     public Order dadaCallBack(DadaDto dadaDto) {
         Assert.notNull(dadaDto, "dadaResultDto can't be null");
         Assert.notNull(dadaDto.getOrder_id(), "dadaResultDto.order_id can't be null");
         Assert.notNull(dadaDto.getOrder_status(), "dadaResultDto.order_status can't be null");
-        
+
         Order order = orderRepository.findByOrderNo(dadaDto.getOrder_id());
         Assert.notNull(order, "Order not longer exist : " + dadaDto.getOrder_id());
         order.setDeliverGroupOrderStatus(dadaDto.getOrder_status());
@@ -108,7 +108,7 @@ public class DadaServiceImpl implements DadaService {
         }
         return orderRepository.save(order);
     }
-	
+
     private void saveThirdGroup(ThirdParty thirdGroup) {
         DadaDto dadaDto = createAccessToken();
         thirdGroup.setAccessToken(dadaDto.getResult().getAccess_token());
@@ -136,7 +136,7 @@ public class DadaServiceImpl implements DadaService {
 		signString = signString.replace(" ", "").replace(",", "").replace("[", "").replace("]", "");
 		return MD5Util.md5(signString);
 	}
-	
+
 	private DadaDto cancelOrder(Order order, String token) {
 		Date currentDate = new Date();
 		String signature = getSignature(currentDate, token);
@@ -145,7 +145,7 @@ public class DadaServiceImpl implements DadaService {
 		String resultJson = httpClientService.httpGet(requestUrl);
 		return fromJson(resultJson);
 	}
-	
+
 	private DadaDto addOrder(Order order, String token, Merchant merchant) {
 		Map<String, String> requestMap = new HashMap<String, String>();
 		requestMap.put("token", token);
@@ -169,7 +169,7 @@ public class DadaServiceImpl implements DadaService {
 		requestMap.put("expected_finish_time", String.valueOf(order.getDeliverDate()));
 		requestMap.put("supplier_id", String.valueOf(order.getMerchantId()));
 		requestMap.put("supplier_name", order.getMerchantName());
-		
+
 		requestMap.put("supplier_address", merchant.getAddress());
 		requestMap.put("supplier_phone", String.valueOf(order.getMerchantPhone()));
 		requestMap.put("supplier_tel", null);
@@ -183,11 +183,11 @@ public class DadaServiceImpl implements DadaService {
 		requestMap.put("receiver_lat", String.valueOf(order.getLatitude()));
 		requestMap.put("receiver_lng", String.valueOf(order.getLongitude()));
 		requestMap.put("callback", DadaConstans.DADA_CALL_BACK_URL);
-		
+
 		String resultJson = httpClientService.httpPost(DadaConstans.addOrderToDadaUrl(), requestMap);
 		return fromJson(resultJson);
 	}
-	
+
 	private DadaDto fromJson(String json) {
 		if (StringUtils.isBlank(json)) {
 			return null;
@@ -200,7 +200,7 @@ public class DadaServiceImpl implements DadaService {
 		}
 		return null;
 	}
-	
+
 	public static void main(String[] args) {
         DadaServiceImpl impl = new DadaServiceImpl();
         String token = "9b8cc46f3aa0eec29b8cc46f3aa0eec2";
@@ -214,5 +214,5 @@ public class DadaServiceImpl implements DadaService {
                 + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
         System.out.println(url);
     }
-	
+
 }

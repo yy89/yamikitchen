@@ -19,11 +19,28 @@ public class Coupon implements Serializable {
     private Long uid;
     private String name;
     private Long amount;
-    private String usageCondition;
-    private Date availableDate;
+    private Integer usageCondition;
+    private Date availableDate = new Date();
     private Date expireDate;
     private String phone;
-    private boolean hasUsed;
+    private boolean hasUsed = false;
+
+    public Coupon() {
+    }
+
+    public Coupon(Long uid, String name, Long amount, Integer usageCondition, Date expireDate, String phone) {
+        this();
+        this.uid = uid;
+        this.name = name;
+        this.amount = amount;
+        this.usageCondition = usageCondition;
+        this.expireDate = expireDate;
+        this.phone = phone;
+    }
+
+    public Coupon(CouponType couponType, CouponAccount account) {
+        this(account.getUid(), couponType.getName(), couponType.getAmount(), couponType.getUsageCondition(), couponType.actualExpireDate(), account.getMobile());
+    }
 
     public Long getId() {
         return id;
@@ -31,6 +48,14 @@ public class Coupon implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getUid() {
+        return uid;
+    }
+
+    public void setUid(Long uid) {
+        this.uid = uid;
     }
 
     public String getName() {
@@ -49,11 +74,11 @@ public class Coupon implements Serializable {
         this.amount = amount;
     }
 
-    public String getUsageCondition() {
+    public Integer getUsageCondition() {
         return usageCondition;
     }
 
-    public void setUsageCondition(String usageCondition) {
+    public void setUsageCondition(Integer usageCondition) {
         this.usageCondition = usageCondition;
     }
 
@@ -73,14 +98,6 @@ public class Coupon implements Serializable {
         this.expireDate = expireDate;
     }
 
-    public boolean isHasUsed() {
-        return hasUsed;
-    }
-
-    public void setHasUsed(boolean hasUsed) {
-        this.hasUsed = hasUsed;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -89,11 +106,11 @@ public class Coupon implements Serializable {
         this.phone = phone;
     }
 
-    public Long getUid() {
-        return uid;
+    public boolean isHasUsed() {
+        return hasUsed;
     }
 
-    public void setUid(Long uid) {
-        this.uid = uid;
+    public void setHasUsed(boolean hasUsed) {
+        this.hasUsed = hasUsed;
     }
 }

@@ -7,11 +7,14 @@ import com.xiaobudian.yamikitchen.repository.PlatformAccountRepository;
 import com.xiaobudian.yamikitchen.repository.PlatformTransactionFlowRepository;
 import com.xiaobudian.yamikitchen.repository.account.AccountRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionFlowRepository;
+import com.xiaobudian.yamikitchen.repository.account.TransactionTypeRepository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Johnson on 2015/5/20.
@@ -26,43 +29,44 @@ public class TransactionHandler {
     private PlatformAccountRepository platformAccountRepository;
     @Inject
     private PlatformTransactionFlowRepository platformTransactionFlowRepository;
-
+    @Inject
+    private TransactionTypeRepository transactionTypeRepository;
     private PlatformAccount platformAccount;
+    private Map<Integer, Integer> TRANS_ACT_TYPE_MAP = new HashMap<>();
 
     @PostConstruct
     public void init() {
         platformAccount = platformAccountRepository.findOne(1l);
+        for (TransactionType t : transactionTypeRepository.findAll()) {
+            TRANS_ACT_TYPE_MAP.put(t.getCode(), t.getAccountType());
+        }
     }
 
-    private Account getAccount(Order order, TransactionType type) {
+    private Account getAccount(Order order, int transactionCode) {
         List<Account> accounts = accountRepository.findByMerchantId(order.getMerchantId());
-        return accounts.get(type.getAccountType());
+        return accounts.get(TRANS_ACT_TYPE_MAP.get(transactionCode));
     }
 
-    public void handle(Order order, TransactionType type) {
-        handle(order, order.priceAsDouble(), type);
+    public void handle(Order order, int transactionCode) {
+        handle(order, order.priceAsDouble(), transactionCode);
     }
 
-    public void handle(Order order, Double amount, TransactionType type) {
-        Account account = getAccount(order, type);
+    public void handle(Order order, Double amount, int transactionCode) {
+        Account account = getAccount(order, transactionCode);
         account.setAvailableBalance(account.getAvailableBalance() + amount);
         account.setBalance(account.getBalance() + amount);
         accountRepository.save(account);
-        TransactionFlow flow = new TransactionFlow(account.getAccountNo(), order.getOrderNo(), order.getMerchantId(),
-                account.getUid(), order.priceAsDouble(), type.getCode());
-        transactionFlowRepository.save(flow);
+        transactionFlowRepository.save(new TransactionFlow(account, order, amount, transactionCode));
     }
 
-    public void handle(Account account, Double amount, TransactionType type) {
-        TransactionFlow flow = new TransactionFlow(account.getAccountNo(), null, account.getMerchantId(),
-                account.getUid(), amount, type.getCode());
-        transactionFlowRepository.save(flow);
+    public void handle(Account account, Double amount, int transactionCode) {
+        transactionFlowRepository.save(new TransactionFlow(account, amount, transactionCode));
     }
 
-    public void handleWithinPlatform(Order order, double amt, TransactionType type) {
+    public void handleWithinPlatform(Order order, double amt, int transactionCode) {
         platformAccount.setBalance(platformAccount.getBalance() + amt);
         platformAccount.setAvailableBalance(platformAccount.getAvailableBalance() + amt);
         platformAccountRepository.save(platformAccount);
-        platformTransactionFlowRepository.save(new PlatformTransactionFlow(platformAccount.getAccountNo(), order.getOrderNo(), order.getMerchantId(), null, amt, type.getCode()));
+        platformTransactionFlowRepository.save(new PlatformTransactionFlow(platformAccount, order, amt, transactionCode));
     }
 }

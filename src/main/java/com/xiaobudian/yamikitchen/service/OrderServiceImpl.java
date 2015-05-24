@@ -2,7 +2,7 @@ package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.common.Keys;
-import com.xiaobudian.yamikitchen.domain.account.SettlementHandler;
+import com.xiaobudian.yamikitchen.domain.account.SettlementCenter;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Inject
     private DadaService dadaService;
     @Inject
-    private SettlementHandler settlementHandler;
+    private SettlementCenter settlementCenter;
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId, boolean isToday) {
@@ -234,7 +234,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
 
     @Override
     public void settlement(Order order) {
-        settlementHandler.settlement(order);
+        settlementCenter.settle(order);
     }
 
     @Override
@@ -300,20 +300,20 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         settlement(order);
         return orderRepository.save(order);
     }
-    
+
     @Override
     public Order beganDeliver(Order order) {
-    	order.deliver();
-    	return orderRepository.save(order);
-    }
-    
-    @Override
-    public Order cancelOrder(Order order, Long uid) {
-    	order.cancel();
-    	if (order.isHasPaid()) {
-    		// TODO 订单退款结算
-    	}
+        order.deliver();
         return orderRepository.save(order);
     }
-    
+
+    @Override
+    public Order cancelOrder(Order order, Long uid) {
+        order.cancel();
+        if (order.isHasPaid()) {
+            // TODO 订单退款结算
+        }
+        return orderRepository.save(order);
+    }
+
 }

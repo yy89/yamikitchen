@@ -1,8 +1,10 @@
 package com.xiaobudian.yamikitchen.domain.merchant;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.xiaobudian.yamikitchen.domain.account.Account;
 import com.xiaobudian.yamikitchen.domain.account.AccountType;
+import com.xiaobudian.yamikitchen.domain.order.Order;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -66,6 +68,7 @@ public class Merchant implements Serializable {
     @Column(insertable = false, columnDefinition = "int default 0")
     private Integer verifyStatus = 0;
     private double turnover = 0.00d;
+    @JsonIgnore
     private double sharing = 0;
     @Column(insertable = false, columnDefinition = "bit default 0")
     private Boolean isAutoOpen = false;//是否允许自由开店
@@ -361,7 +364,7 @@ public class Merchant implements Serializable {
         List<Account> result = new ArrayList<>();
         for (AccountType accountType : AccountType.values()) {
             final String accountNo = String.format(Account.ACCOUNT_NO_PATTERN, creator, id, accountType.ordinal());
-            result.add(new Account(getCreator(), accountNo, accountType));
+            result.add(new Account(id, getCreator(), accountNo, accountType));
         }
         return result;
     }
@@ -404,5 +407,9 @@ public class Merchant implements Serializable {
 
     public void setIsAutoOpen(Boolean isAutoOpen) {
         this.isAutoOpen = isAutoOpen;
+    }
+
+    public void updateTurnOver(Order order) {
+        this.turnover += order.getPrice() / 100.00d;
     }
 }

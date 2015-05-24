@@ -9,7 +9,11 @@ import java.util.List;
  * Created by Johnson on 2015/5/3.
  */
 public interface CouponService {
-    public List<Coupon> getCoupons();
+    public List<Coupon> getCoupons(Long uid);
+
+    public List<Coupon> getAvailableCoupons(Long uid);
+
+    public List<Coupon> getExpiredCoupons(Long uid);
 
     public List<CouponSummary> getCouponHistories();
 

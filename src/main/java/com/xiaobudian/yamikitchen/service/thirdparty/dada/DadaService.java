@@ -16,11 +16,11 @@ public interface DadaService {
 	DadaDto createAccessToken();
 
 	void addOrderToDada(Order order, Merchant merchant);
-	
+
     Order dadaCallBack(DadaDto dadaDto);
 
     String getAccessToken();
 
 	void cancelOrder(Order order);
-	
+
 }
