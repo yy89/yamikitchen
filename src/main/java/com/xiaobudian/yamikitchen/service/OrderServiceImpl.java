@@ -301,9 +301,19 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         return orderRepository.save(order);
     }
     
-    public Order cancelOrder(Order order) {
-
-        return null;
+    @Override
+    public Order beganDeliver(Order order) {
+    	order.deliver();
+    	return orderRepository.save(order);
+    }
+    
+    @Override
+    public Order cancelOrder(Order order, Long uid) {
+    	order.cancel();
+    	if (order.isHasPaid()) {
+    		// TODO 订单退款结算
+    	}
+        return orderRepository.save(order);
     }
     
 }

@@ -31,6 +31,8 @@ public class DadaConstans {
     public static final String GET_ACCESS_TOKEN = "%s/oauth/access_token/?grant_type=authorization_code&app_key=%s&grant_code=%s";
  	// 添加订单
     public static final String ADD_ORDER_DADA = "%s/v1_0/addOrder/";
+    // 取消订单
+    public static final String CANCEL_ORDER_DADA = "%s/v1_0/cancelOrder/?token=%s&timestamp=%s&signature=%s&order_id=%s&reason=%s";
     
     public static String getGrantCodeUrl() {
     	return String.format(GET_GRANT_CODE, DADA_URL, DADA_APPKEY);
@@ -42,6 +44,10 @@ public class DadaConstans {
     
     public static String addOrderToDadaUrl() {
     	return String.format(ADD_ORDER_DADA, DADA_URL);
+    }
+    
+    public static String cancelOrderToDadaUrl(String token, Long timestamp, String signature, String orderNo, String reason) {
+    	return String.format(CANCEL_ORDER_DADA, DADA_URL, token, timestamp, signature, orderNo, reason);
     }
 
 }

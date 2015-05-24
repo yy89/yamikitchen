@@ -56,5 +56,9 @@ public interface OrderService {
 
 	public Order finishOrder(Order order);
 
+	public Order beganDeliver(Order order);
+
+	public Order cancelOrder(Order order, Long uid);
+
 }
 
