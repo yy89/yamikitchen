@@ -50,7 +50,7 @@ public class SettlementCenter {
             transactionHandler.handleWithinPlatform(order, deliverPrice, 1008);
             transactionHandler.handle(order, 0 - deliverPrice, 2008);
         } else {
-            transactionHandler.handle(order, deliverPrice, 2009);
+            transactionHandler.handle(order, deliverPrice, 1009);
             transactionHandler.handle(order, 0 - deliverPrice, 2009);
         }
     }

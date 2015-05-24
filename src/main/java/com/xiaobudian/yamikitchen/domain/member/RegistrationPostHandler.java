@@ -16,8 +16,9 @@ public class RegistrationPostHandler {
     private CouponAccountRepository couponAccountRepository;
     @Inject
     private Dispatcher dispatcher;
+
     public void handle(User user) {
-        CouponAccount account= couponAccountRepository.findByMobile(user.getBindingPhone());
+        CouponAccount account = couponAccountRepository.findByMobile(user.getBindingPhone());
         if (account == null) account = new CouponAccount(user.getId(), user.getBindingPhone());
         account.setUid(user.getId());
         couponAccountRepository.save(account);

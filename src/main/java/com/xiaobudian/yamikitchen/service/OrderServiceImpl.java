@@ -297,8 +297,9 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Override
     public Order finishOrder(Order order) {
         order.finish();
-        settlement(order);
-        return orderRepository.save(order);
+        Order newOrder = orderRepository.save(order);
+        settlement(newOrder);
+        return newOrder;
     }
 
     @Override

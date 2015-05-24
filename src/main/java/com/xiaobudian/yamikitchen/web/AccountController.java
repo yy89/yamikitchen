@@ -56,8 +56,8 @@ public class AccountController {
 
     @RequestMapping(value = "/transactionFlows", method = RequestMethod.GET)
     @ResponseBody
-    public Result getFlowsOfPlatform(@PathVariable Long uid, @AuthenticationPrincipal User user) {
-        return Result.successResult(accountService.getTransactionFlows(uid));
+    public Result getTransactionFlows(@AuthenticationPrincipal User user) {
+        return Result.successResult(accountService.getTransactionFlows(user.getId()));
     }
 
     @RequestMapping(value = "/orders/{orderNo}/transactionFlows", method = RequestMethod.GET)
