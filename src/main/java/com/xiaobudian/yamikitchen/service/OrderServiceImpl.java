@@ -282,9 +282,9 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     }
 
     @Override
-    public Order chooseDeliverGroup(Order order, Integer deliverGroup) {
+    public Order chooseDeliverGroup(Order order, Integer deliverGroup, Merchant merchant) {
         order.setDeliverGroup(deliverGroup);
-        if (order.deliverByDaDa()) dadaService.addOrderToDada(order);
+        if (order.deliverByDaDa()) dadaService.addOrderToDada(order, merchant);
         order.setStatus(3);
         return orderRepository.save(order);
     }

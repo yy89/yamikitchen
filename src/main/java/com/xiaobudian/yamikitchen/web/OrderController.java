@@ -124,7 +124,7 @@ public class OrderController {
         if (order == null) throw new RuntimeException("order.does.not.exist");
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
-        return Result.successResult(orderService.chooseDeliverGroup(order, deliverGroup));
+        return Result.successResult(orderService.chooseDeliverGroup(order, deliverGroup, merchant));
     }
 
     @RequestMapping(value = "/orders/{orderNo}", method = RequestMethod.GET)
