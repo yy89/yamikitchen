@@ -5,6 +5,7 @@ import com.xiaobudian.yamikitchen.domain.account.AccountSummary;
 import com.xiaobudian.yamikitchen.domain.account.AlipayHistory;
 import com.xiaobudian.yamikitchen.domain.account.TransactionFlow;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
+import com.xiaobudian.yamikitchen.domain.operation.PlatformAccount;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 
 import java.util.List;
@@ -20,6 +21,8 @@ public interface AccountService {
     public List<Account> getAccounts(Long uid);
 
     public AccountSummary getAccountSummary(Long uid);
+
+    public PlatformAccount getPlatformAccount();
 
     public BankCard getBindingBankCard(Long uid);
 

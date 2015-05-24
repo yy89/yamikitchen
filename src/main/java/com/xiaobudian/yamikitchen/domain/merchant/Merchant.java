@@ -1,8 +1,10 @@
 package com.xiaobudian.yamikitchen.domain.merchant;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.xiaobudian.yamikitchen.domain.account.Account;
 import com.xiaobudian.yamikitchen.domain.account.AccountType;
+import com.xiaobudian.yamikitchen.domain.order.Order;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -66,6 +68,7 @@ public class Merchant implements Serializable {
     @Column(insertable = false, columnDefinition = "int default 0")
     private Integer verifyStatus = 0;
     private double turnover = 0.00d;
+    @JsonIgnore
     private double sharing = 0;
     private Date createDate;
     private Date lastModifiedDate;
@@ -394,5 +397,9 @@ public class Merchant implements Serializable {
 
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public void updateTurnOver(Order order) {
+        this.turnover += order.getPrice() / 100.00d;
     }
 }

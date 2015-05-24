@@ -26,4 +26,8 @@ public final class Day {
     public Date plusDays(int days) {
         return date.plusDays(days).toDate();
     }
+
+    public Date getDate() {
+        return date.toDate();
+    }
 }

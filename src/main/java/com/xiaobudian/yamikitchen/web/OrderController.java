@@ -151,7 +151,7 @@ public class OrderController {
     public Result finishOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
         Order order = orderService.getOrder(orderId);
         if (order == null) throw new RuntimeException("order.does.not.exist");
-        if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty"); 
+        if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty");
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
         return Result.successResult(orderService.finishOrder(order));

@@ -52,4 +52,10 @@ public class AccountController {
     public Result getAccountSummary(@AuthenticationPrincipal User user) {
         return Result.successResult(accountService.getAccountSummary(user.getId()));
     }
+
+    @RequestMapping(value = "/platform/account/summary", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getPlatformAccount() {
+        return Result.successResult(accountService.getPlatformAccount());
+    }
 }

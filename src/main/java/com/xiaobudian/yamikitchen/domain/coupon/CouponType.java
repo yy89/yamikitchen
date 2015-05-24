@@ -1,5 +1,7 @@
 package com.xiaobudian.yamikitchen.domain.coupon;
 
+import org.joda.time.DateTime;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,13 +13,13 @@ import java.util.Date;
  * Created by Johnson on 2015/4/22.
  */
 @Entity
-public class CouponRule implements Serializable {
+public class CouponType implements Serializable {
     private static final long serialVersionUID = -461378934511020093L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Double amount;
+    private Long amount;
     private Integer usageCondition;
     private Integer expiredDays;
     private Integer quantity;
@@ -33,11 +35,11 @@ public class CouponRule implements Serializable {
         this.id = id;
     }
 
-    public Double getAmount() {
+    public Long getAmount() {
         return amount;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(Long amount) {
         this.amount = amount;
     }
 
@@ -95,5 +97,9 @@ public class CouponRule implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Date actualExpireDate() {
+        return DateTime.now().plusDays(expiredDays).toDate();
     }
 }

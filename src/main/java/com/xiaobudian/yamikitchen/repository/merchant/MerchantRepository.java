@@ -25,4 +25,9 @@ public interface MerchantRepository extends JpaRepository<Merchant, Long> {
     public void removeById(long id);
     @Query("select m from Merchant m where m.removed <>true and m.creator = ?1")
     public Merchant findByCreator(Long creator);
+
+    @Modifying
+    @Query("update Merchant p set p.turnover = 0.00")
+    @Transactional
+    public void updateTurnover();
 }

@@ -5,22 +5,26 @@ import com.xiaobudian.yamikitchen.domain.account.*;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
+import com.xiaobudian.yamikitchen.domain.operation.PlatformAccount;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
 import com.xiaobudian.yamikitchen.domain.order.OrderPostHandler;
 import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
+import com.xiaobudian.yamikitchen.repository.PlatformAccountRepository;
 import com.xiaobudian.yamikitchen.repository.account.AccountRepository;
 import com.xiaobudian.yamikitchen.repository.account.AlipayHistoryRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionFlowRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionTypeRepository;
 import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
+import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -64,14 +68,20 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     private OrderItemRepository orderItemRepository;
     private ApplicationEventPublisher applicationEventPublisher;
     @Inject
-    private SettlementHandler settlementHandler;
+    private SettlementCenter settlementCenter;
+    @Inject
+    private ProductRepository productRepository;
+    @Inject
+    private PlatformAccountRepository platformAccountRepository;
 
 
     public void writePaymentHistory(AlipayHistory history) {
         AlipayHistory his = alipayHistoryRepository.save(history);
         Order order = payOrder(his.getOut_trade_no());
-        transactionHandler.handle(order, transactionTypeRepository.findByCode(1001));
+        transactionHandler.handle(order, 1001);
+        settlementCenter.settle(order);
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
+        merchant.updateTurnOver(order);
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));
     }
 
@@ -104,6 +114,11 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     }
 
     @Override
+    public PlatformAccount getPlatformAccount() {
+        return platformAccountRepository.findOne(1l);
+    }
+
+    @Override
     public BankCard getBindingBankCard(Long uid) {
         return bankCardRepository.findByUid(uid);
     }
@@ -122,5 +137,11 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void executeDailyJob() {
+        merchantRepository.updateTurnover();
+        productRepository.updateRest();
     }
 }
