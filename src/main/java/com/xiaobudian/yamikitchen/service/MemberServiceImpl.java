@@ -1,9 +1,11 @@
 package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.LocalizedMessageSource;
+import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.member.RegistrationPostHandler;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
+import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserAddressRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +32,8 @@ public class MemberServiceImpl implements MemberService {
     private UserAddressRepository userAddressRepository;
     @Inject
     private RegistrationPostHandler registrationPostHandler;
+    @Inject
+    private BankCardRepository bankCardRepository;
 
     @Override
     public User register(User user) {
@@ -97,5 +101,12 @@ public class MemberServiceImpl implements MemberService {
         }
         userRepository.save(oldUser);
         return oldUser;
+    }
+
+    @Override
+    public BankCard bindingBankCard(BankCard card) {
+        BankCard c = bankCardRepository.findByUid(card.getUid());
+        if (c != null) bankCardRepository.delete(c);
+        return bankCardRepository.save(card);
     }
 }
