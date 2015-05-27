@@ -96,8 +96,13 @@ public class MemberController {
     }
 
     @RequestMapping(value = "/users/bankCard", method = RequestMethod.POST)
-    public Result updateUserIntroduction(@RequestBody BankCard card, @AuthenticationPrincipal User authenticationUser) {
+    public Result addBankCard(@RequestBody BankCard card, @AuthenticationPrincipal User authenticationUser) {
         card.setUid(authenticationUser.getId());
         return Result.successResult(memberService.bindingBankCard(card));
+    }
+
+    @RequestMapping(value = "/users/bankCard", method = RequestMethod.GET)
+    public Result getBankCard(@AuthenticationPrincipal User authenticationUser) {
+        return Result.successResult(memberService.getBindingBankCard(authenticationUser.getId()));
     }
 }

@@ -1,6 +1,7 @@
 package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.LocalizedMessageSource;
+import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.member.RegistrationPostHandler;
 import com.xiaobudian.yamikitchen.domain.member.User;
@@ -9,6 +10,7 @@ import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserAddressRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -83,24 +85,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public User updateUser(User user) {
-        User oldUser = userRepository.findOne(user.getId());
-        if (StringUtils.isNotEmpty(user.getHeadPic())) {
-            oldUser.setHeadPic(user.getHeadPic());
-        }
-        if (StringUtils.isNotEmpty(user.getUsername())) {
-            oldUser.setUsername(user.getUsername());
-        }
-        if (user.getGender() != null) {
-            oldUser.setGender(user.getGender());
-        }
-        if (StringUtils.isNotEmpty(user.getRegion())) {
-            oldUser.setRegion(user.getRegion());
-        }
-        if (StringUtils.isNotEmpty(user.getDescription())) {
-            oldUser.setDescription(user.getDescription());
-        }
-        userRepository.save(oldUser);
-        return oldUser;
+        User u = userRepository.findOne(user.getId());
+        BeanUtils.copyProperties(user, u, Util.getNullPropertyNames(user));
+        return userRepository.save(u);
     }
 
     @Override
@@ -108,5 +95,10 @@ public class MemberServiceImpl implements MemberService {
         BankCard c = bankCardRepository.findByUid(card.getUid());
         if (c != null) bankCardRepository.delete(c);
         return bankCardRepository.save(card);
+    }
+
+    @Override
+    public BankCard getBindingBankCard(Long uid) {
+        return bankCardRepository.findByUid(uid);
     }
 }

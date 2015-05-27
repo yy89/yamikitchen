@@ -28,4 +28,6 @@ public interface MemberService {
 
     public BankCard bindingBankCard(BankCard card);
 
+    public BankCard getBindingBankCard(Long uid);
+
 }
