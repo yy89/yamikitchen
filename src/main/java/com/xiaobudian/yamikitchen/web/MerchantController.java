@@ -134,6 +134,12 @@ public class MerchantController {
     public Result openMerchant(@PathVariable boolean isRest, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (merchant == null) throw new RuntimeException("user.merchant.unauthorized");
+        if(merchant.getVerifyStatus() !=1){
+            return Result.failResult("商户未审核通过，不允许营业！");
+        }
+        if(merchant.getIsAutoOpen()==false){
+            return Result.failResult("未通过自由开店，请联系客服！");
+        }
         return Result.successResult(merchantService.changeMerchantRestStatus(merchant.getId(), isRest));
     }
 
