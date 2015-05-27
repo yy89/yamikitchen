@@ -2,6 +2,7 @@ package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.account.*;
+import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
@@ -17,6 +18,7 @@ import com.xiaobudian.yamikitchen.repository.account.AccountRepository;
 import com.xiaobudian.yamikitchen.repository.account.AlipayHistoryRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionFlowRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionTypeRepository;
+import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
 import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
@@ -78,6 +80,8 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     private PlatformAccountRepository platformAccountRepository;
     @Inject
     private PlatformTransactionFlowRepository platformTransactionFlowRepository;
+    @Inject
+    private CouponRepository couponRepository;
     private List<String> inQueueList = new ArrayList<>();
 
     public void writePaymentHistory(AlipayHistory history) {
@@ -89,12 +93,21 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
         transactionProcessor.process(payOrder(order), 1001);
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
         merchant.updateTurnOver(order);
+        updateCouponStatus(order);
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));
+    }
+
+    private void updateCouponStatus(Order order) {
+        if (order.getCouponId() == null) return;
+        Coupon coupon = couponRepository.findOne(order.getCouponId());
+        coupon.setHasUsed(true);
+        coupon.setLocked(false);
+        couponRepository.save(coupon);
     }
 
     private Order payOrder(Order order) {
         order.pay();
-        orderPostHandler.handle(new OrderDetail(order, orderItemRepository.findByOrderNo(order.getOrderNo())));
+        orderPostHandler.handle(new OrderDetail(order, orderItemRepository.findByOrderNo(order.getOrderNo())), null);
         return orderRepository.save(order);
     }
 
@@ -155,7 +168,7 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 13 15 * * ?")
     public void executeDailyJob() {
         merchantRepository.updateTurnover();
         productRepository.updateRest();

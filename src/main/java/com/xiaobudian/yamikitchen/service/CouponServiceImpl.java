@@ -5,10 +5,13 @@ import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.coupon.CouponSummary;
 import com.xiaobudian.yamikitchen.repository.coupon.CouponHistoryRepository;
 import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,5 +44,11 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public List<CouponSummary> getCouponHistories() {
         return couponHistoryRepository.findAll();
+    }
+
+    @Override
+    public Coupon getCouponBy(Long uid, Long price) {
+        List<Coupon> result = couponRepository.findFirstByAmountAndExpireDate(uid, price, new Date(), new PageRequest(0, 1));
+        return CollectionUtils.isEmpty(result) ? null : result.get(0);
     }
 }

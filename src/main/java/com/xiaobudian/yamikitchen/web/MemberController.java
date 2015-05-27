@@ -44,11 +44,11 @@ public class MemberController {
     @ResponseBody
     public Result register(@RequestBody UserRequest userRequest, HttpServletRequest request) {
         User u = new User(userRequest.getMobile(), userRequest.getPassword());
-//        if (memberService.getUserBy(u.getUsername()) != null)
-//            throw new RuntimeException("registration.username.exists.error");
-//        if (!smsService.isValidVerificationCode(userRequest.getMobile(), userRequest.getCertCode())) {
-//            throw new RuntimeException("registration.mobile.verification.error");
-//        }
+        if (memberService.getUserBy(u.getUsername()) != null)
+            throw new RuntimeException("registration.username.exists.error");
+        if (!smsService.isValidVerificationCode(userRequest.getMobile(), userRequest.getCertCode())) {
+            throw new RuntimeException("registration.mobile.verification.error");
+        }
         User newUser = memberService.register(u);
         return Result.successResult(new UserResponse(autoLoginAfterRegistration(userRequest, request), newUser));
     }

@@ -1,9 +1,13 @@
 package com.xiaobudian.yamikitchen.domain.merchant;
 
+import com.xiaobudian.yamikitchen.domain.message.Message;
+import com.xiaobudian.yamikitchen.domain.message.MessageType;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,17 +21,21 @@ public class Comment implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long uid;
+    @NotNull(message = "comment.orderId.not.empty")
     private Long orderId;
     private String nickName;
     private String headPic;
     private String content;
+    @NotNull(message = "comment.star.not.empty")
     private Integer star;
     private Long merchantId;
     private String merchantName;
     private Long productId;
     private String productName;
-    private Date createDate;
+    private Date publishDate;
     private boolean removed = false;
+    private Long cid;
+    private String replyNickName;
 
     public Long getId() {
         return id;
@@ -117,12 +125,12 @@ public class Comment implements Serializable {
         this.productName = productName;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getPublishDate() {
+        return publishDate;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setPublishDate(Date publishDate) {
+        this.publishDate = publishDate;
     }
 
     public boolean isRemoved() {
@@ -131,5 +139,29 @@ public class Comment implements Serializable {
 
     public void setRemoved(boolean removed) {
         this.removed = removed;
+    }
+
+    public Long getCid() {
+        return cid;
+    }
+
+    public void setCid(Long cid) {
+        this.cid = cid;
+    }
+
+    public String getReplyNickName() {
+        return replyNickName;
+    }
+
+    public void setReplyNickName(String replyNickName) {
+        this.replyNickName = replyNickName;
+    }
+
+
+    public Message createMessage(Long receiver, Long orderId, Long merchantId) {
+        Message message = new Message(cid != null ? MessageType.REPLY_COMMENT : MessageType.COMMENT, receiver, nickName, headPic, uid, orderId, merchantId);
+        message.setCommentId(id);
+        message.setContent(content);
+        return message;
     }
 }

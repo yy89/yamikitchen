@@ -36,4 +36,13 @@ public class MessageController {
     public Result addNotice(@RequestBody Notice notice) {
         return Result.successResult(messageService.addNotice(notice));
     }
+
+    @RequestMapping(value = "/messages/type/{type}", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getMessages(@PathVariable Integer type,
+                              @RequestParam("from") Integer pageFrom,
+                              @RequestParam("size") Integer pageSize,
+                              @AuthenticationPrincipal User user) {
+        return new Result(messageService.getMessages(type, user.getId(), pageFrom, pageSize));
+    }
 }

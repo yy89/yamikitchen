@@ -20,7 +20,7 @@ public class CouponType implements Serializable {
     private Long id;
     private String name;
     private Long amount;
-    private Integer usageCondition;
+    private Long usageCondition;
     private Integer expiredDays;
     private Integer quantity;
     private Date createDate;
@@ -43,11 +43,11 @@ public class CouponType implements Serializable {
         this.amount = amount;
     }
 
-    public Integer getUsageCondition() {
+    public Long getUsageCondition() {
         return usageCondition;
     }
 
-    public void setUsageCondition(Integer usageCondition) {
+    public void setUsageCondition(Long usageCondition) {
         this.usageCondition = usageCondition;
     }
 

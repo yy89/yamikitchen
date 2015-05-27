@@ -12,6 +12,17 @@ public class Settlement {
     private Cart cart;
     private Coupon coupon;
     private Integer paymentMethod;
+    private Long totalAmount = 0l;
+
+    public Settlement() {
+    }
+
+    public Settlement(Coupon coupon, Integer paymentMethod, Long totalAmount) {
+        this();
+        this.coupon = coupon;
+        this.paymentMethod = paymentMethod;
+        this.totalAmount = totalAmount;
+    }
 
     public UserAddress getAddress() {
         return address;
@@ -43,6 +54,14 @@ public class Settlement {
 
     public void setCoupon(Coupon coupon) {
         this.coupon = coupon;
+    }
+
+    public Long getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Long totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public Integer getPaymentMethod() {

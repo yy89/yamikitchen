@@ -2,6 +2,7 @@ package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
+import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
@@ -59,6 +60,8 @@ public interface OrderService {
     public Order beganDeliver(Order order);
 
     public Order cancelOrder(Order order, Long uid);
+
+    public Settlement changeCouponForSettlement(Long uid, Long couponId);
 
 }
 

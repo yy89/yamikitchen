@@ -57,22 +57,18 @@ public class Order implements Serializable {
     private String distance;
     private String checkFlag = "I";
     private Long couponId;
+    private Double couponAmount = 0.00d;
     private boolean firstDeal;
     private Double longitude;
     private Double latitude;
     private Integer deliverGroup;
     private boolean directCancelable = false;
-
-    // 第三方配送机构的订单状态
+    private Double paymentAmount = 0.00d;
     // 达达：1待接单 2待取货 3执行中 4已完成 5已取消
     private Integer deliverGroupOrderStatus;
-    // 配送员id
     private Integer diliverymanId;
-    // 配送员姓名
     private String diliverymanName;
-    // 配送员手机
     private String diliverymanMobile;
-    // 更新时间
     private Date updateTime;
 
     public Long getId() {
@@ -514,5 +510,21 @@ public class Order implements Serializable {
 
     public boolean deliverByDaDa() {
         return deliverGroup != null && deliverGroup == 2;
+    }
+
+    public Double getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public void setPaymentAmount(Double paymentAmount) {
+        this.paymentAmount = paymentAmount;
+    }
+
+    public Double getCouponAmount() {
+        return couponAmount;
+    }
+
+    public void setCouponAmount(Double couponAmount) {
+        this.couponAmount = couponAmount;
     }
 }

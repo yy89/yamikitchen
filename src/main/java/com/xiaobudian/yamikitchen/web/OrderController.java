@@ -71,6 +71,10 @@ public class OrderController {
         return Result.successResult(orderService.getSettlement(user.getId()));
     }
 
+    @RequestMapping(value = "/settlement/coupons/{couponId}", method = RequestMethod.PUT)
+    public Result changeCoupon(@PathVariable Long couponId, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.changeCouponForSettlement(user.getId(), couponId));
+    }
     @RequestMapping(value = "/orders", method = RequestMethod.POST)
     public Result createOrder(@RequestBody @Valid @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME, pattern = "yyyy-mm-dd HH:mm:ss") Order order, @AuthenticationPrincipal User user) {
         if (!order.isToday() && !order.isTomorrow()) throw new RuntimeException("order.expect.date.error");

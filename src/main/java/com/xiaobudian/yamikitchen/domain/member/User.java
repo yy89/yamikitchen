@@ -2,10 +2,12 @@ package com.xiaobudian.yamikitchen.domain.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.xiaobudian.yamikitchen.domain.message.MessageType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -204,4 +206,14 @@ public class User implements Serializable, UserDetails {
     public void setBindingPhone(String bindingPhone) {
         this.bindingPhone = bindingPhone;
     }
+
+//    public boolean pushNotificationIfNeeded(MessageType type) {
+//        try {
+//            if (settings == null) return false;
+//            ParentSetting setting = MAPPER.readValue(settings, ParentSetting.class);
+//            return setting != null && setting.ifSwitchOn(type) && !setting.withinDisturbRanges();
+//        } catch (IOException e) {
+//            return false;
+//        }
+//    }
 }

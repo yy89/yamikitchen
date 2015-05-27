@@ -19,16 +19,17 @@ public class Coupon implements Serializable {
     private Long uid;
     private String name;
     private Long amount;
-    private Integer usageCondition;
+    private Long usageCondition;
     private Date availableDate = new Date();
     private Date expireDate;
     private String phone;
+    private boolean locked = false;
     private boolean hasUsed = false;
 
     public Coupon() {
     }
 
-    public Coupon(Long uid, String name, Long amount, Integer usageCondition, Date expireDate, String phone) {
+    public Coupon(Long uid, String name, Long amount, Long usageCondition, Date expireDate, String phone) {
         this();
         this.uid = uid;
         this.name = name;
@@ -74,11 +75,11 @@ public class Coupon implements Serializable {
         this.amount = amount;
     }
 
-    public Integer getUsageCondition() {
+    public Long getUsageCondition() {
         return usageCondition;
     }
 
-    public void setUsageCondition(Integer usageCondition) {
+    public void setUsageCondition(Long usageCondition) {
         this.usageCondition = usageCondition;
     }
 
@@ -112,5 +113,13 @@ public class Coupon implements Serializable {
 
     public void setHasUsed(boolean hasUsed) {
         this.hasUsed = hasUsed;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 }

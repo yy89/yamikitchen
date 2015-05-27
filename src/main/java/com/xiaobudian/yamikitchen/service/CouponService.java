@@ -2,6 +2,7 @@ package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.coupon.CouponSummary;
+import com.xiaobudian.yamikitchen.domain.order.Order;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface CouponService {
     public List<Coupon> getExpiredCoupons(Long uid);
 
     public List<CouponSummary> getCouponHistories();
+
+    public Coupon getCouponBy(Long uid, Long price);
 
 }

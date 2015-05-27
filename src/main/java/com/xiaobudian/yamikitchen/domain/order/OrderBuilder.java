@@ -2,6 +2,7 @@ package com.xiaobudian.yamikitchen.domain.order;
 
 import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
+import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
@@ -61,5 +62,12 @@ public class OrderBuilder {
 
     public Order build() {
         return this.order;
+    }
+
+    public OrderBuilder coupon(Coupon coupon) {
+        if (coupon == null) return this;
+        this.order.setCouponAmount(coupon.getAmount() / 100.00d);
+        this.order.setPaymentAmount(this.order.getPrice() - this.order.getCouponAmount());
+        return this;
     }
 }
