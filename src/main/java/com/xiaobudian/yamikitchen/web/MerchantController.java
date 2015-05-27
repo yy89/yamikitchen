@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.web;
 
+import com.xiaobudian.yamikitchen.common.LocalizedMessageSource;
 import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.member.User;
@@ -30,6 +31,8 @@ public class MerchantController {
     private MemberService memberService;
     @Inject
     private OrderService orderService;
+    @Inject
+    private LocalizedMessageSource localizedMessageSource;
 
     @RequestMapping(value = "/merchants", method = RequestMethod.GET)
     @ResponseBody
@@ -164,12 +167,9 @@ public class MerchantController {
     public Result openMerchant(@PathVariable boolean isRest, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (merchant == null) throw new RuntimeException("user.merchant.unauthorized");
-        if(merchant.getVerifyStatus() !=1){
-            return Result.failResult("商户未审核通过，不允许营业！");
-        }
-        if(merchant.getIsAutoOpen()==false){
-            return Result.failResult("未通过自由开店，请联系客服！");
-        }
+        if (merchant.isApproved()) return Result.failResult(localizedMessageSource.getMessage("merchant.not.approved"));
+        if (!merchant.getIsAutoOpen())
+            return Result.failResult(localizedMessageSource.getMessage("merchant.not.autoOpen"));
         return Result.successResult(merchantService.changeMerchantRestStatus(merchant.getId(), isRest));
     }
 

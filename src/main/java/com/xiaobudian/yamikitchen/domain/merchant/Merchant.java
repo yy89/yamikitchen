@@ -412,4 +412,8 @@ public class Merchant implements Serializable {
     public void setIsAutoOpen(Boolean isAutoOpen) {
         this.isAutoOpen = isAutoOpen;
     }
+
+    public boolean isApproved() {
+        return verifyStatus != null && verifyStatus == 1;
+    }
 }
