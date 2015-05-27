@@ -1,8 +1,10 @@
 package com.xiaobudian.yamikitchen.service;
 
+import com.xiaobudian.yamikitchen.domain.merchant.Comment;
 import com.xiaobudian.yamikitchen.domain.merchant.FavoriteResult;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
+import com.xiaobudian.yamikitchen.domain.order.Order;
 
 import java.util.List;
 
@@ -21,6 +23,12 @@ public interface MerchantService {
     public Product saveProduct(Product product);
 
     public boolean removeProduct(long id);
+
+    public Comment addComment(Comment comment, Order order);
+
+    public Comment getComment(Long commentId);
+
+    public List<Comment> getComments(Long merchantId, int page, int pageSize);
 
     public FavoriteResult addFavorite(Long rid, Long uid);
 
@@ -47,4 +55,6 @@ public interface MerchantService {
     public Product changeProductAvailability(Long pid, boolean available);
 
     public Product changeProductMain(Long pid, boolean isMain);
+
+    public boolean removeComment(Long merchantId, Long commentId);
 }

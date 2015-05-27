@@ -108,6 +108,15 @@ public class AppConfig {
         return redisTemplate;
     }
 
+    @Bean(name = "longRedisTemplate")
+    public RedisTemplate<String, Long> longRedisTemplate() {
+        RedisTemplate<String, Long> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Long.class));
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        return redisTemplate;
+    }
+
     @Bean
     public StringRedisTemplate stringRedisTemplate() {
         return new StringRedisTemplate(redisConnectionFactory());

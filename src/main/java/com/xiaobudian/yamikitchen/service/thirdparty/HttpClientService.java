@@ -7,8 +7,8 @@ import java.util.Map;
  */
 public interface HttpClientService {
 
-	String httpGet(String getUrl);
+    String httpGet(String getUrl);
 
-	String httpPost(String postUrl, Map<String, String> requestParams);
-	
+    String httpPost(String postUrl, Map<String, String> requestParams);
+
 }

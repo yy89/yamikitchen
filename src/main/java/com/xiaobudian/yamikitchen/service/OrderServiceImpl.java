@@ -2,9 +2,10 @@ package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.common.Keys;
-import com.xiaobudian.yamikitchen.domain.account.SettlementHandler;
+import com.xiaobudian.yamikitchen.domain.account.SettlementCenter;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
+import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
 import com.xiaobudian.yamikitchen.domain.order.*;
@@ -64,7 +65,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Inject
     private DadaService dadaService;
     @Inject
-    private SettlementHandler settlementHandler;
+    private SettlementCenter settlementCenter;
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId, boolean isToday) {
@@ -112,14 +113,15 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         Cart cart = getCart(order.getUid());
         if (cart == null) return null;
         Merchant merchant = merchantRepository.findOne(cart.getMerchantId());
+        Coupon coupon = order.getCouponId() == null ? null : couponRepository.findOne(order.getCouponId());
         Order newOrder = new OrderBuilder(order).cart(cart).merchant(merchant)
                 .address(userAddressRepository.findOne(order.getAddressId()))
                 .user(userRepository.findOne(order.getUid())).distance(merchant)
+                .coupon(coupon)
                 .orderNo(oderNoGenerator.getOrderNo(order.getMerchantNo())).build();
         newOrder = orderRepository.save(newOrder);
         List<OrderItem> items = saveOrderItems(cart, newOrder.getOrderNo());
-        if (newOrder.getPaymentMethod() == 1)
-            orderPostHandler.handle(new OrderDetail(newOrder, items));
+        if (newOrder.getPaymentMethod() == 1) orderPostHandler.handle(new OrderDetail(newOrder, items), coupon);
         removeCart(newOrder.getUid());
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, newOrder)));
         return newOrder;
@@ -142,8 +144,11 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         Settlement settlement = new Settlement();
         settlement.setAddress(userAddressRepository.findByUidAndIsDefaultTrue(uid));
         settlement.setPaymentMethod(1);
+        Cart cart = getCart(uid);
         settlement.setCart(getCart(uid));
-        settlement.setCoupon(couponRepository.findFirstByUid(uid));
+        List<Coupon> coupons = couponRepository.findFirstByAmountAndExpireDate(uid, cart.getTotalAmount(), new Date(), new PageRequest(0, 1));
+        settlement.setCoupon(CollectionUtils.isEmpty(coupons) ? null : coupons.get(0));
+        settlement.setTotalAmount(cart.getTotalAmount() - (settlement.getCoupon() == null ? 0 : coupons.get(0).getAmount() * 100));
         settlement.setDeliverDate(merchantRepository.findOne(settlement.getCart().getMerchantId()).getBusinessHours());
         return settlement;
     }
@@ -234,7 +239,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
 
     @Override
     public void settlement(Order order) {
-        settlementHandler.settlement(order);
+        settlementCenter.settle(order);
     }
 
     @Override
@@ -282,9 +287,9 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     }
 
     @Override
-    public Order chooseDeliverGroup(Order order, Integer deliverGroup) {
+    public Order chooseDeliverGroup(Order order, Integer deliverGroup, Merchant merchant) {
         order.setDeliverGroup(deliverGroup);
-        if (order.deliverByDaDa()) dadaService.addOrderToDada(order);
+        if (order.deliverByDaDa()) dadaService.addOrderToDada(order, merchant);
         order.setStatus(3);
         return orderRepository.save(order);
     }
@@ -297,23 +302,31 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Override
     public Order finishOrder(Order order) {
         order.finish();
-        settlement(order);
-        return orderRepository.save(order);
+        Order newOrder = orderRepository.save(order);
+        settlement(newOrder);
+        return newOrder;
     }
-    
+
     @Override
     public Order beganDeliver(Order order) {
-    	order.deliver();
-    	return orderRepository.save(order);
-    }
-    
-    @Override
-    public Order cancelOrder(Order order, Long uid) {
-    	order.cancel();
-    	if (order.isHasPaid()) {
-    		// TODO 订单退款结算
-    	}
+        order.deliver();
         return orderRepository.save(order);
     }
-    
+
+    @Override
+    public Order cancelOrder(Order order, Long uid) {
+        order.cancel();
+        if (order.isHasPaid()) {
+            // TODO 订单退款结算
+        }
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public Settlement changeCouponForSettlement(Long uid, Long couponId) {
+        Cart cart = getCart(uid);
+        Coupon coupon = couponRepository.findOne(couponId);
+        Long amt = cart.getTotalAmount() - (coupon == null ? 0 : coupon.getAmount() * 100);
+        return new Settlement(coupon, 1, amt);
+    }
 }

@@ -1,5 +1,7 @@
 package com.xiaobudian.yamikitchen.common;
 
+import com.xiaobudian.yamikitchen.domain.message.MessageType;
+
 /**
  * Created by Johnson on 2015/4/23.
  */
@@ -32,5 +34,16 @@ public final class Keys {
         return String.format("uid:%s:unread:notices", uid);
     }
 
+    public static String uidMessageQueue(Long uid, MessageType type) {
+        final int code = type.isComment() ? MessageType.COMMENT.getCode() : type.getCode();
+        return String.format("uid:%d:type:%d:messages", uid, code);
+    }
 
+    public static String uidMessageUnreadQueue(Long uid, MessageType type) {
+        return String.format("uid:%d:type:%d:unread:messages", uid, type.getCode());
+    }
+
+    public static String commentMessageIdQueue(Long commentId) {
+        return String.format("comment:%d:message", commentId);
+    }
 }

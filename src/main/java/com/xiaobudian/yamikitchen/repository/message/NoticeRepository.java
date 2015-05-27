@@ -1,4 +1,4 @@
-package com.xiaobudian.yamikitchen.repository.member;
+package com.xiaobudian.yamikitchen.repository.message;
 
 import com.xiaobudian.yamikitchen.domain.message.Notice;
 import org.springframework.data.jpa.repository.JpaRepository;

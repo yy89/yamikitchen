@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.service.thirdparty.dada;
 
+import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.web.dto.thirdparty.DadaDto;
 
@@ -7,19 +8,19 @@ import com.xiaobudian.yamikitchen.web.dto.thirdparty.DadaDto;
  * @author Liuminglu 2015/5/19.
  */
 public interface DadaService {
-	
-	String getGrantCode();
 
-	DadaDto createAccessToken(String grantCode);
+    String getGrantCode();
 
-	DadaDto createAccessToken();
+    DadaDto createAccessToken(String grantCode);
 
-	void addOrderToDada(Order order);
-	
+    DadaDto createAccessToken();
+
+    void addOrderToDada(Order order, Merchant merchant);
+
     Order dadaCallBack(DadaDto dadaDto);
 
     String getAccessToken();
 
-	void cancelOrder(Order order);
-	
+    void cancelOrder(Order order);
+
 }

@@ -33,4 +33,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("update Product p set p.main = false where p.merchantId = ?1")
     @Transactional
     public void disableMain(Long merchantId);
+
+    @Modifying
+    @Query("update Product p set p.restCount = p.twRestCount, p.twRestCount = p.supplyPerDay")
+    @Transactional
+    public void updateRest();
 }
