@@ -39,6 +39,7 @@ public class User implements Serializable, UserDetails {
     private String city;
     private String region;
     private String bindingPhone;
+    private String realName;
 
     public User() {
     }
@@ -207,7 +208,15 @@ public class User implements Serializable, UserDetails {
         this.bindingPhone = bindingPhone;
     }
 
-//    public boolean pushNotificationIfNeeded(MessageType type) {
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    //    public boolean pushNotificationIfNeeded(MessageType type) {
 //        try {
 //            if (settings == null) return false;
 //            ParentSetting setting = MAPPER.readValue(settings, ParentSetting.class);
