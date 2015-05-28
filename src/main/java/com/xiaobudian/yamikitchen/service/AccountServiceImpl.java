@@ -97,6 +97,7 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));
     }
 
+
     private void updateCouponStatus(Order order) {
         if (order.getCouponId() == null) return;
         Coupon coupon = couponRepository.findOne(order.getCouponId());
