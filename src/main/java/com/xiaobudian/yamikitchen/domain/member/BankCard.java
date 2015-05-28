@@ -24,6 +24,8 @@ public class BankCard implements Serializable {
     private String cardNo;
     private String branch;
     private String name;
+    private Integer idType;
+    private String idNo;
 
     public Long getId() {
         return id;
@@ -81,4 +83,22 @@ public class BankCard implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Integer getIdType() {
+        return idType;
+    }
+
+    public void setIdType(Integer idType) {
+        this.idType = idType;
+    }
+
+    public String getIdNo() {
+        return idNo;
+    }
+
+    public void setIdNo(String idNo) {
+        this.idNo = idNo;
+    }
+
+
 }

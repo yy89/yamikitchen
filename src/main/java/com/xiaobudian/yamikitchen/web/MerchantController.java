@@ -167,7 +167,7 @@ public class MerchantController {
     public Result openMerchant(@PathVariable boolean isRest, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (merchant == null) throw new RuntimeException("user.merchant.unauthorized");
-        if (merchant.isApproved()) return Result.failResult(localizedMessageSource.getMessage("merchant.not.approved"));
+        if (!merchant.isApproved()) return Result.failResult(localizedMessageSource.getMessage("merchant.not.approved"));
         if (!merchant.getIsAutoOpen())
             return Result.failResult(localizedMessageSource.getMessage("merchant.not.autoOpen"));
         return Result.successResult(merchantService.changeMerchantRestStatus(merchant.getId(), isRest));

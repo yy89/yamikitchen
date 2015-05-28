@@ -92,6 +92,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public BankCard bindingBankCard(BankCard card) {
+
         BankCard c = bankCardRepository.findByUid(card.getUid());
         if (c != null) bankCardRepository.delete(c);
         return bankCardRepository.save(card);

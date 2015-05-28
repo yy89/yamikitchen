@@ -6,6 +6,7 @@ import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 import com.xiaobudian.yamikitchen.service.MemberService;
 import com.xiaobudian.yamikitchen.service.SmsService;
+import com.xiaobudian.yamikitchen.thirdparty.util.IDCard;
 import com.xiaobudian.yamikitchen.web.dto.UserRequest;
 import com.xiaobudian.yamikitchen.web.dto.UserResponse;
 import org.springframework.security.authentication.AuthenticationManager;
