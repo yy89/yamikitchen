@@ -53,11 +53,11 @@ public interface OrderService {
 
     public Order getOrder(Long orderId);
 
-    public Order chooseDeliverGroup(Order order, Integer deliverGroup, Merchant merchant);
+    public Order chooseDeliverGroup(Order order, Integer deliverGroup);
 
     public Order finishOrder(Order order);
 
-    public Order beganDeliver(Order order);
+    public Order deliverOrder(Order order);
 
     public Order cancelOrder(Order order, Long uid);
 

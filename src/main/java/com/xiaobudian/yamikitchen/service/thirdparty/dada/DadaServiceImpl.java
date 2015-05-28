@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.thirdparty.ThirdParty;
+import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import com.xiaobudian.yamikitchen.repository.thirdgroup.ThirdPartyRepository;
 import com.xiaobudian.yamikitchen.service.thirdparty.HttpClientService;
@@ -28,6 +29,8 @@ public class DadaServiceImpl implements DadaService {
     private ThirdPartyRepository httpClientRepository;
     @Inject
     private OrderRepository orderRepository;
+    @Inject
+    private MerchantRepository merchantRepository;
 
     @Override
     public String getGrantCode() {
@@ -66,9 +69,9 @@ public class DadaServiceImpl implements DadaService {
     }
 
     @Override
-    public void addOrderToDada(Order order, Merchant merchant) {
+    public void addOrderToDada(Order order) {
         String token = getAccessToken();
-        DadaDto dadaDto = addOrder(order, token, merchant);
+        DadaDto dadaDto = addOrder(order, token);
         if (dadaDto == null || !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
             throw new RuntimeException("Add order to DADA error, errorCode:" + dadaDto.getErrorCode());
         }
@@ -99,7 +102,7 @@ public class DadaServiceImpl implements DadaService {
         if (dadaDto.getOrder_status() == 3) {
             order.deliver();
         } else if (dadaDto.getOrder_status() == 4) {
-        	order.finish();
+            order.finish();
         }
         return orderRepository.save(order);
     }
@@ -141,8 +144,8 @@ public class DadaServiceImpl implements DadaService {
         return fromJson(resultJson);
     }
 
-    private DadaDto addOrder(Order order, String token, Merchant merchant) {
-        Map<String, String> requestMap = new HashMap<String, String>();
+    private DadaDto addOrder(Order order, String token) {
+        Map<String, String> requestMap = new HashMap<>();
         requestMap.put("token", token);
         Date currentDate = new Date();
         requestMap.put("timestamp", String.valueOf(currentDate.getTime()));
@@ -164,7 +167,7 @@ public class DadaServiceImpl implements DadaService {
         requestMap.put("expected_finish_time", String.valueOf(order.getDeliverDate()));
         requestMap.put("supplier_id", String.valueOf(order.getMerchantId()));
         requestMap.put("supplier_name", order.getMerchantName());
-
+        Merchant merchant = merchantRepository.findOne(order.getMerchantId());
         requestMap.put("supplier_address", merchant.getAddress());
         requestMap.put("supplier_phone", String.valueOf(order.getMerchantPhone()));
         requestMap.put("supplier_tel", null);
@@ -205,10 +208,10 @@ public class DadaServiceImpl implements DadaService {
         String orderId = "100026-20150524-5";
         String fetchOrder = "/v1_0/fetchOrder/";
         String acceptOrder = "/v1_0/acceptOrder/";
-        String url1 = "http://public.ga.dev.imdada.cn"+fetchOrder+"?token="
+        String url1 = "http://public.ga.dev.imdada.cn" + fetchOrder + "?token="
                 + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
-        String url2 = "http://public.ga.dev.imdada.cn"+acceptOrder+"?token="
-        		+ token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
+        String url2 = "http://public.ga.dev.imdada.cn" + acceptOrder + "?token="
+                + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
         System.out.println("达达确认订单：");
         System.out.println(url2);
         System.out.println("\n达达取件：");

@@ -9,7 +9,6 @@ import com.xiaobudian.yamikitchen.domain.merchant.Product;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.service.OrderService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -75,8 +74,9 @@ public class OrderController {
     public Result changeCoupon(@PathVariable Long couponId, @AuthenticationPrincipal User user) {
         return Result.successResult(orderService.changeCouponForSettlement(user.getId(), couponId));
     }
+
     @RequestMapping(value = "/orders", method = RequestMethod.POST)
-    public Result createOrder(@RequestBody @Valid @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME, pattern = "yyyy-mm-dd HH:mm:ss") Order order, @AuthenticationPrincipal User user) {
+    public Result createOrder(@RequestBody @Valid Order order, @AuthenticationPrincipal User user) {
         if (!order.isToday() && !order.isTomorrow()) throw new RuntimeException("order.expect.date.error");
         Cart cart = orderService.getCart(user.getId());
         List<String> errors = cartValidator.validate(cart);
@@ -102,31 +102,33 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/orders/status/{status}/today/{isToday}/{lastOrderCreateDate}", method = RequestMethod.GET)
-    public Result getOrdersByConditionAndTimestamp(@PathVariable Integer status,
-                                                   @PathVariable boolean isToday,
-                                                   @PathVariable Long lastOrderCreateDate,
-                                                   @AuthenticationPrincipal User user) {
+    public Result getOrdersByConditionAndTimestamp(@PathVariable Integer status, @PathVariable boolean isToday,
+                                                   @PathVariable Long lastOrderCreateDate, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (merchant == null) throw new RuntimeException("user.merchant.not.create");
         return Result.successResult(orderService.getOrdersByCondition(merchant.getId(), status, isToday, new Date(lastOrderCreateDate)));
     }
 
-    @RequestMapping(value = "/orders/{orderId}/confirm", method = RequestMethod.GET)
-    public Result confirmOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
-        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+    private Order getOrder(Long orderId, User user) {
         Order order = orderService.getOrder(orderId);
         if (order == null) throw new RuntimeException("order.does.not.exist");
-        if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        if (order.isAuthorizedBy(user, merchant)) throw new RuntimeException("order.unauthorized");
+        if (order.getStatus() > 3 && order.getDeliverGroup() == null)
+            throw new RuntimeException("order.deliverGroup.not.empty");
+        return order;
+    }
+
+    @RequestMapping(value = "/orders/{orderId}/confirm", method = RequestMethod.GET)
+    public Result confirmOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
+        Order order = getOrder(orderId, user);
         return Result.successResult(orderService.confirmOrder(order));
     }
 
     @RequestMapping(value = "/orders/{orderId}/deliverGroup/{deliverGroup}", method = RequestMethod.GET)
     public Result chooseDeliverGroup(@PathVariable Long orderId, @PathVariable Integer deliverGroup, @AuthenticationPrincipal User user) {
         Order order = orderService.getOrder(orderId);
-        if (order == null) throw new RuntimeException("order.does.not.exist");
-        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-        if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
-        return Result.successResult(orderService.chooseDeliverGroup(order, deliverGroup, merchant));
+        return Result.successResult(orderService.chooseDeliverGroup(order, deliverGroup));
     }
 
     @RequestMapping(value = "/orders/{orderNo}", method = RequestMethod.GET)
@@ -149,48 +151,23 @@ public class OrderController {
         return Result.successResult(orderService.getWaitForCommentOrders(user.getId()));
     }
 
-    @RequestMapping(value = "/orders/{orderId}/beganDeliver", method = RequestMethod.GET)
-    public Result beganDeliver(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
-        Order order = orderService.getOrder(orderId);
-        if (order == null) throw new RuntimeException("order.does.not.exist");
-        if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty");
-        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-        if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
-        return Result.successResult(orderService.beganDeliver(order));
+    @RequestMapping(value = "/orders/{orderId}/deliver", method = RequestMethod.GET)
+    public Result deliverOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
+        Order order = getOrder(orderId, user);
+        return Result.successResult(orderService.deliverOrder(order));
     }
 
     @RequestMapping(value = "/orders/{orderId}/finish", method = RequestMethod.POST)
     public Result finishOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
-        Order order = orderService.getOrder(orderId);
-        if (order == null) throw new RuntimeException("order.does.not.exist");
+        Order order = getOrder(orderId, user);
         if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty");
-        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-        if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
         return Result.successResult(orderService.finishOrder(order));
     }
 
-    @RequestMapping(value = "/orders/{orderId}/cancel/merchant/{isMerchant}", method = RequestMethod.POST)
-    public Result cancelOrder(@PathVariable Long orderId, @PathVariable boolean isMerchant, @AuthenticationPrincipal User user) {
-        Order order = orderService.getOrder(orderId);
-        if (order == null) throw new RuntimeException("order.does.not.exist");
-        if (isMerchant) {
-            Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-            if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
-            if (!order.isCancelable()) throw new RuntimeException("order.cancel.unauthorized");
-        } else {
-            if (!order.getId().equals(user.getId())) throw new RuntimeException("order.unauthorized");
-            if (!order.isDirectCancelable()) throw new RuntimeException("order.cancel.unauthorized");
-        }
-        return Result.successResult(orderService.cancelOrder(order, user.getId()));
-    }
-    
     @RequestMapping(value = "/orders/{orderId}/cancel", method = RequestMethod.POST)
     public Result cancelOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
-        Order order = orderService.getOrder(orderId);
-        if (order == null) throw new RuntimeException("order.does.not.exist");
-        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-        if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
+        Order order = getOrder(orderId, user);
+        if (!order.canBeCanceledBy(user)) throw new RuntimeException("order.unauthorized");
         return Result.successResult(orderService.cancelOrder(order, user.getId()));
     }
-    
 }

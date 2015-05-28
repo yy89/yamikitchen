@@ -15,7 +15,7 @@ public interface DadaService {
 
     DadaDto createAccessToken();
 
-    void addOrderToDada(Order order, Merchant merchant);
+    void addOrderToDada(Order order);
 
     Order dadaCallBack(DadaDto dadaDto);
 

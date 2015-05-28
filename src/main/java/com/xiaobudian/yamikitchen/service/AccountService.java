@@ -35,6 +35,6 @@ public interface AccountService {
 
     public List<TransactionFlow> getTransactionFlows(Long uid);
 
-	public void unconfirmedOrderRefund(Order order);
+	public void refundOrder(Order order);
 
 }

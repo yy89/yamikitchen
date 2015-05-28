@@ -302,9 +302,9 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     }
 
     @Override
-    public Order chooseDeliverGroup(Order order, Integer deliverGroup, Merchant merchant) {
+    public Order chooseDeliverGroup(Order order, Integer deliverGroup) {
         order.setDeliverGroup(deliverGroup);
-        if (order.deliverByDaDa()) dadaService.addOrderToDada(order, merchant);
+        if (order.deliverByDaDa()) dadaService.addOrderToDada(order);
         order.setStatus(3);
         return orderRepository.save(order);
     }
@@ -323,7 +323,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     }
 
     @Override
-    public Order beganDeliver(Order order) {
+    public Order deliverOrder(Order order) {
         order.deliver();
         return orderRepository.save(order);
     }
@@ -332,7 +332,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     public Order cancelOrder(Order order, Long uid) {
     	order.cancel();
     	if (order.getPaymentMethod() == 0 && order.isHasPaid()) {
-    		accountService.unconfirmedOrderRefund(order);
+    		accountService.refundOrder(order);
     	}
     	if (order.getCouponId() != null) {
     		Coupon coupon = couponRepository.findFirstByUid(uid);

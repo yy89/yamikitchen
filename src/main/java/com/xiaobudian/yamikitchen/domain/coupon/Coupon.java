@@ -25,6 +25,7 @@ public class Coupon implements Serializable {
     private String phone;
     private boolean locked = false;
     private boolean hasUsed = false;
+    private String orderNo;
 
     public Coupon() {
     }
@@ -121,5 +122,13 @@ public class Coupon implements Serializable {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 }

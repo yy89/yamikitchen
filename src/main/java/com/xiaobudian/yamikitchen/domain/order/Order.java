@@ -1,5 +1,7 @@
 package com.xiaobudian.yamikitchen.domain.order;
 
+import com.xiaobudian.yamikitchen.domain.member.User;
+import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
@@ -526,5 +528,25 @@ public class Order implements Serializable {
 
     public void setCouponAmount(Double couponAmount) {
         this.couponAmount = couponAmount;
+    }
+
+    @Transient
+    public boolean isOwnedBy(Merchant merchant) {
+        return merchantId != null && merchantId.equals(merchant.getId());
+    }
+
+    @Transient
+    public boolean isCreateBy(Long uid) {
+        return getUid() != null && getUid().equals(uid);
+    }
+
+    public boolean isAuthorizedBy(User user, Merchant merchant) {
+        if (user.isMerchant()) return isOwnedBy(merchant);
+        return isCreateBy(user.getId());
+    }
+
+    public boolean canBeCanceledBy(User user) {
+        if (user.isMerchant()) return isCancelable();
+        return isDirectCancelable();
     }
 }

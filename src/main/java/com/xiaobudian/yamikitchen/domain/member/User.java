@@ -216,6 +216,10 @@ public class User implements Serializable, UserDetails {
         this.realName = realName;
     }
 
+    public boolean isMerchant() {
+        return type != null && type == 1;
+    }
+
     //    public boolean pushNotificationIfNeeded(MessageType type) {
 //        try {
 //            if (settings == null) return false;

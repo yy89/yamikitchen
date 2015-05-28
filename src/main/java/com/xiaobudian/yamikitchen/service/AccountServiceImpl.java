@@ -112,6 +112,12 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     }
 
     @Override
+    public void refundOrder(Order order) {
+        order.setPrice(0 - order.getPrice());
+        transactionProcessor.process(order, 2004);
+    }
+
+    @Override
     public String getOrderStringOfAlipay(Order order) {
         String signTemplate = StringUtils.substringBefore(orderStringTemplate, "&sign");
         String signMessage = MessageFormat.format(signTemplate, order.getOrderNo(), order.getPrice() / 100.00d);
@@ -142,7 +148,6 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
         return bankCardRepository.findByUid(uid);
     }
 
-
     @Override
     public TransactionFlow writeTransactionFlow(TransactionFlow flow) {
         return transactionFlowRepository.save(flow);
@@ -172,11 +177,5 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     public void executeDailyJob() {
         merchantRepository.updateTurnover();
         productRepository.updateRest();
-    }
-    
-    @Override
-    public void unconfirmedOrderRefund(Order order) {
-    	order.setPrice(order.getPrice() * -1);
-    	transactionHandler.handle(order, transactionTypeRepository.findByCode(2004));
     }
 }
