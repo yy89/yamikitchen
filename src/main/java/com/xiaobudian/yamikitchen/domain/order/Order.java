@@ -1,6 +1,5 @@
 package com.xiaobudian.yamikitchen.domain.order;
 
-import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import org.joda.time.DateTime;
