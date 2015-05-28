@@ -17,6 +17,7 @@ public class TransactionType implements Serializable {
     private Long id;
     private Integer code;
     private Integer accountType;
+    private String name;
     private String description;
 
     public Integer getAccountType() {
@@ -49,5 +50,13 @@ public class TransactionType implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

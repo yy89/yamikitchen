@@ -3,7 +3,6 @@ package com.xiaobudian.yamikitchen.domain.account;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.repository.account.AccountRepository;
-import com.xiaobudian.yamikitchen.repository.account.TransactionTypeRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,8 +22,6 @@ public class SettlementCenter {
     private MerchantRepository merchantRepository;
     @Inject
     private TransactionProcessor transactionProcessor;
-    @Inject
-    private TransactionTypeRepository transactionTypeRepository;
 
     private double getShareScale(Long merchantId) {
         Merchant merchant = merchantRepository.findOne(merchantId);
