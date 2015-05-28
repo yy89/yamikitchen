@@ -1,11 +1,12 @@
 package com.xiaobudian.yamikitchen.domain.order;
 
+import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
+import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.List;
 
 /**
  * Created by Johnson on 2015/5/15.
@@ -14,8 +15,17 @@ import java.util.List;
 public class OrderPostHandler {
     @Inject
     private ProductRepository productRepository;
+    @Inject
+    private CouponRepository couponRepository;
 
-    public void handle(OrderDetail orderDetail) {
+    private void handleCoupon(Coupon coupon) {
+        if (coupon == null) return;
+        coupon.setLocked(true);
+        couponRepository.save(coupon);
+    }
+
+    public void handle(OrderDetail orderDetail, Coupon coupon) {
+        handleCoupon(coupon);
         for (OrderItem item : orderDetail.getItems()) {
             Product p = productRepository.findOne(item.getProductId());
             p.setSoldCount(p.getSoldCount() + 1);

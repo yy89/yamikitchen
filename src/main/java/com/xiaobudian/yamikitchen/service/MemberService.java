@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.service;
 
+import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 
@@ -24,5 +25,9 @@ public interface MemberService {
     public boolean removeAddress(Long addressId);
 
     public User updateUser(User user);
+
+    public BankCard bindingBankCard(BankCard card);
+
+    public BankCard getBindingBankCard(Long uid);
 
 }

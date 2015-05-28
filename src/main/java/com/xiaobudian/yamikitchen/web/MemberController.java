@@ -1,6 +1,7 @@
 package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
+import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 import com.xiaobudian.yamikitchen.service.MemberService;
@@ -94,4 +95,14 @@ public class MemberController {
         return Result.successResult(memberService.updateUser(user));
     }
 
+    @RequestMapping(value = "/users/bankCard", method = RequestMethod.POST)
+    public Result addBankCard(@RequestBody BankCard card, @AuthenticationPrincipal User authenticationUser) {
+        card.setUid(authenticationUser.getId());
+        return Result.successResult(memberService.bindingBankCard(card));
+    }
+
+    @RequestMapping(value = "/users/bankCard", method = RequestMethod.GET)
+    public Result getBankCard(@AuthenticationPrincipal User authenticationUser) {
+        return Result.successResult(memberService.getBindingBankCard(authenticationUser.getId()));
+    }
 }

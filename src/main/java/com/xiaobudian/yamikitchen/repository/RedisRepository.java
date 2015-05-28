@@ -20,6 +20,8 @@ public class RedisRepository {
     private StringRedisTemplate stringRedisTemplate;
     @Inject
     private RedisTemplate<String, Cart> cartRedisTemplate;
+    @Inject
+    private RedisTemplate<String, Long> longRedisTemplate;
 
     public void set(String key, String value, Long expireMinutes) {
         stringRedisTemplate.opsForValue().set(key, value, expireMinutes, TimeUnit.MINUTES);
@@ -27,6 +29,14 @@ public class RedisRepository {
 
     public void setCart(String key, Cart value) {
         cartRedisTemplate.opsForValue().set(key, value);
+    }
+
+    public void setLong(String key, Long value) {
+        longRedisTemplate.opsForValue().set(key, value);
+    }
+
+    public Long getLong(String key) {
+        return longRedisTemplate.opsForValue().get(key);
     }
 
     public Cart getCart(String key) {
@@ -58,6 +68,10 @@ public class RedisRepository {
         return stringRedisTemplate.opsForZSet().reverseRange(key, 0, -1);
     }
 
+    public Set<Long> membersAsLong(String key, long start, long end) {
+        return longRedisTemplate.opsForZSet().reverseRange(key, start, end);
+    }
+
     public void removeForZSet(String key, String value) {
         stringRedisTemplate.opsForZSet().remove(key, value);
     }
@@ -68,5 +82,9 @@ public class RedisRepository {
 
     public Long nextLong(String key) {
         return stringRedisTemplate.opsForValue().increment(key, 1);
+    }
+
+    public void addForZSetWithScore(String key, Long value, double score) {
+        longRedisTemplate.opsForZSet().add(key, value, score);
     }
 }

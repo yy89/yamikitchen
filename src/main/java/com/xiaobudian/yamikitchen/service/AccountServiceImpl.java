@@ -2,30 +2,39 @@ package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.account.*;
+import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
+import com.xiaobudian.yamikitchen.domain.operation.PlatformAccount;
+import com.xiaobudian.yamikitchen.domain.operation.PlatformTransactionFlow;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
 import com.xiaobudian.yamikitchen.domain.order.OrderPostHandler;
 import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
+import com.xiaobudian.yamikitchen.repository.PlatformAccountRepository;
+import com.xiaobudian.yamikitchen.repository.PlatformTransactionFlowRepository;
 import com.xiaobudian.yamikitchen.repository.account.AccountRepository;
 import com.xiaobudian.yamikitchen.repository.account.AlipayHistoryRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionFlowRepository;
 import com.xiaobudian.yamikitchen.repository.account.TransactionTypeRepository;
+import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
 import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
+import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,28 +66,48 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     @Inject
     private BankCardRepository bankCardRepository;
     @Inject
-    private TransactionHandler transactionHandler;
+    private TransactionProcessor transactionProcessor;
     @Inject
     private TransactionTypeRepository transactionTypeRepository;
     @Inject
     private OrderItemRepository orderItemRepository;
     private ApplicationEventPublisher applicationEventPublisher;
     @Inject
-    private SettlementHandler settlementHandler;
-
+    private SettlementCenter settlementCenter;
+    @Inject
+    private ProductRepository productRepository;
+    @Inject
+    private PlatformAccountRepository platformAccountRepository;
+    @Inject
+    private PlatformTransactionFlowRepository platformTransactionFlowRepository;
+    @Inject
+    private CouponRepository couponRepository;
+    private List<String> inQueueList = new ArrayList<>();
 
     public void writePaymentHistory(AlipayHistory history) {
-        AlipayHistory his = alipayHistoryRepository.save(history);
-        Order order = payOrder(his.getOut_trade_no());
-        transactionHandler.handle(order, transactionTypeRepository.findByCode(1001));
+        if (inQueueList.indexOf(history.getOut_trade_no()) > -1) return;
+        inQueueList.add(history.getOut_trade_no());
+        Order order = orderRepository.findByOrderNo(history.getOut_trade_no());
+        if (order.isHasPaid()) return;
+        alipayHistoryRepository.save(history);
+        transactionProcessor.process(payOrder(order), 1001);
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
+        merchant.updateTurnOver(order);
+        updateCouponStatus(order);
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));
     }
 
-    private Order payOrder(String orderNo) {
-        Order order = orderRepository.findByOrderNo(orderNo);
+    private void updateCouponStatus(Order order) {
+        if (order.getCouponId() == null) return;
+        Coupon coupon = couponRepository.findOne(order.getCouponId());
+        coupon.setHasUsed(true);
+        coupon.setLocked(false);
+        couponRepository.save(coupon);
+    }
+
+    private Order payOrder(Order order) {
         order.pay();
-        orderPostHandler.handle(new OrderDetail(order, orderItemRepository.findByOrderNo(orderNo)));
+        orderPostHandler.handle(new OrderDetail(order, orderItemRepository.findByOrderNo(order.getOrderNo())), null);
         return orderRepository.save(order);
     }
 
@@ -104,6 +133,11 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     }
 
     @Override
+    public PlatformAccount getPlatformAccount() {
+        return platformAccountRepository.findOne(1l);
+    }
+
+    @Override
     public BankCard getBindingBankCard(Long uid) {
         return bankCardRepository.findByUid(uid);
     }
@@ -115,13 +149,29 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     }
 
     @Override
-    public List<TransactionFlow> getTransactionFlowsBy(Long uid) {
+    public List<TransactionFlow> getTransactionFlowsBy(String orderNo) {
+        return transactionFlowRepository.findByOrderNo(orderNo);
+    }
+
+    @Override
+    public List<PlatformTransactionFlow> getTransactionFlowsOfPlatform() {
+        return platformTransactionFlowRepository.findAll();
+    }
+
+    @Override
+    public List<TransactionFlow> getTransactionFlows(Long uid) {
         return transactionFlowRepository.findByUid(uid);
     }
 
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    @Scheduled(cron = "0 13 15 * * ?")
+    public void executeDailyJob() {
+        merchantRepository.updateTurnover();
+        productRepository.updateRest();
     }
     
     @Override

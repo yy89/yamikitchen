@@ -25,7 +25,7 @@ public class Product implements Serializable {
     private String tags;
     @Column(insertable = false, columnDefinition = "int default 1")
     private Long soldCount = 0l;
-    private Integer supplyPerDay;
+    private Long supplyPerDay;
     @Column(insertable = false, columnDefinition = "int default 1")
     private Long commentCount = 0l;
     @Column(insertable = false, columnDefinition = "int default 1")
@@ -35,7 +35,7 @@ public class Product implements Serializable {
     private Boolean main = false;
     private boolean soldOut;
     private Date createDate;
-    private Date lastModifiedDate = new Date();
+    private Date lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -117,11 +117,11 @@ public class Product implements Serializable {
         this.soldCount = soldCount;
     }
 
-    public Integer getSupplyPerDay() {
+    public Long getSupplyPerDay() {
         return supplyPerDay;
     }
 
-    public void setSupplyPerDay(Integer supplyPerDay) {
+    public void setSupplyPerDay(Long supplyPerDay) {
         this.supplyPerDay = supplyPerDay;
     }
 

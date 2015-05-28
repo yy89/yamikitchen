@@ -1,10 +1,13 @@
 package com.xiaobudian.yamikitchen.web;
 
+import com.xiaobudian.yamikitchen.common.LocalizedMessageSource;
 import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.member.User;
+import com.xiaobudian.yamikitchen.domain.merchant.Comment;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
+import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.service.MemberService;
 import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.service.OrderService;
@@ -13,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +31,8 @@ public class MerchantController {
     private MemberService memberService;
     @Inject
     private OrderService orderService;
+    @Inject
+    private LocalizedMessageSource localizedMessageSource;
 
     @RequestMapping(value = "/merchants", method = RequestMethod.GET)
     @ResponseBody
@@ -94,6 +100,33 @@ public class MerchantController {
         return Result.successResult(merchantService.getFavorites(user.getId(), pageFrom, pageSize));
     }
 
+    @RequestMapping(value = "/merchants/{merchantId}/comments", method = RequestMethod.GET)
+    @ResponseBody
+    public Result getCommentsByFeedId(@PathVariable Long merchantId, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return Result.successResult(merchantService.getComments(merchantId, page, size));
+    }
+
+    @RequestMapping(value = "/merchants/comments", method = RequestMethod.POST)
+    @ResponseBody
+    public Result addComment(@RequestBody @Valid Comment comment, @AuthenticationPrincipal User user) {
+        comment.setUid(user.getId());
+        Order order = orderService.getOrder(comment.getOrderId());
+        if (order == null || !order.isCommentable() || !order.getUid().equals(user.getId()))
+            throw new RuntimeException("comment.unauthorized");
+        return Result.successResult(merchantService.addComment(comment, order));
+    }
+
+
+    @RequestMapping(value = "/merchants/{merchantId}/comments/{commentId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public Result removeComment(@PathVariable Long merchantId, @PathVariable Long commentId, @AuthenticationPrincipal User user) {
+        Comment comment = merchantService.getComment(commentId);
+        Merchant merchant = merchantService.getMerchantBy(merchantId);
+        Long uid = user.getId();
+        if (merchant.getCreator().equals(uid) || comment.getUid().equals(uid))
+            return Result.successResult(merchantService.removeComment(merchantId, commentId));
+        throw new RuntimeException("comment.remove.error");
+    }
 
     @RequestMapping(value = "/merchants", method = RequestMethod.POST)
     @ResponseBody
@@ -134,6 +167,9 @@ public class MerchantController {
     public Result openMerchant(@PathVariable boolean isRest, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (merchant == null) throw new RuntimeException("user.merchant.unauthorized");
+        if (merchant.isApproved()) return Result.failResult(localizedMessageSource.getMessage("merchant.not.approved"));
+        if (!merchant.getIsAutoOpen())
+            return Result.failResult(localizedMessageSource.getMessage("merchant.not.autoOpen"));
         return Result.successResult(merchantService.changeMerchantRestStatus(merchant.getId(), isRest));
     }
 
@@ -151,6 +187,7 @@ public class MerchantController {
     public Result editProduct(@RequestBody Product product, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!merchant.isCreateBy(user.getId())) throw new RuntimeException("user.merchant.product.unauthorized");
+        if (product.getSupplyPerDay() != null) product.setRestCount(product.getSupplyPerDay());
         return Result.successResult(merchantService.updateProduct(product));
     }
 

@@ -9,7 +9,6 @@ import com.xiaobudian.yamikitchen.domain.merchant.Product;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.service.OrderService;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.CollectionUtils;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
-
 import java.util.Date;
 import java.util.List;
 
@@ -73,6 +71,10 @@ public class OrderController {
         return Result.successResult(orderService.getSettlement(user.getId()));
     }
 
+    @RequestMapping(value = "/settlement/coupons/{couponId}", method = RequestMethod.PUT)
+    public Result changeCoupon(@PathVariable Long couponId, @AuthenticationPrincipal User user) {
+        return Result.successResult(orderService.changeCouponForSettlement(user.getId(), couponId));
+    }
     @RequestMapping(value = "/orders", method = RequestMethod.POST)
     public Result createOrder(@RequestBody @Valid @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME, pattern = "yyyy-mm-dd HH:mm:ss") Order order, @AuthenticationPrincipal User user) {
         if (!order.isToday() && !order.isTomorrow()) throw new RuntimeException("order.expect.date.error");
@@ -94,8 +96,8 @@ public class OrderController {
     public Result getOrdersByCondition(@PathVariable Integer status,
                                        @PathVariable boolean isToday,
                                        @AuthenticationPrincipal User user) {
-    	Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-    	if (merchant == null) throw new RuntimeException("user.merchant.not.create");
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        if (merchant == null) throw new RuntimeException("user.merchant.not.create");
         return Result.successResult(orderService.getOrdersByCondition(merchant.getId(), status, isToday, null));
     }
 
@@ -104,8 +106,8 @@ public class OrderController {
                                                    @PathVariable boolean isToday,
                                                    @PathVariable Long lastOrderCreateDate,
                                                    @AuthenticationPrincipal User user) {
-    	Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-    	if (merchant == null) throw new RuntimeException("user.merchant.not.create");
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        if (merchant == null) throw new RuntimeException("user.merchant.not.create");
         return Result.successResult(orderService.getOrdersByCondition(merchant.getId(), status, isToday, new Date(lastOrderCreateDate)));
     }
 
@@ -149,35 +151,35 @@ public class OrderController {
 
     @RequestMapping(value = "/orders/{orderId}/beganDeliver", method = RequestMethod.GET)
     public Result beganDeliver(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
-    	Order order = orderService.getOrder(orderId);
-    	if (order == null) throw new RuntimeException("order.does.not.exist");
-    	if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty"); 
-    	Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-    	if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
-    	return Result.successResult(orderService.beganDeliver(order));
+        Order order = orderService.getOrder(orderId);
+        if (order == null) throw new RuntimeException("order.does.not.exist");
+        if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty");
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
+        return Result.successResult(orderService.beganDeliver(order));
     }
-    
+
     @RequestMapping(value = "/orders/{orderId}/finish", method = RequestMethod.POST)
     public Result finishOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
         Order order = orderService.getOrder(orderId);
         if (order == null) throw new RuntimeException("order.does.not.exist");
-        if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty"); 
+        if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty");
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
         return Result.successResult(orderService.finishOrder(order));
     }
-    
+
     @RequestMapping(value = "/orders/{orderId}/cancel/merchant/{isMerchant}", method = RequestMethod.POST)
     public Result cancelOrder(@PathVariable Long orderId, @PathVariable boolean isMerchant, @AuthenticationPrincipal User user) {
         Order order = orderService.getOrder(orderId);
         if (order == null) throw new RuntimeException("order.does.not.exist");
         if (isMerchant) {
-        	Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-        	if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
-        	if (!order.isCancelable()) throw new RuntimeException("order.cancel.unauthorized");
+            Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+            if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
+            if (!order.isCancelable()) throw new RuntimeException("order.cancel.unauthorized");
         } else {
-        	if (!order.getId().equals(user.getId())) throw new RuntimeException("order.unauthorized");
-        	if (!order.isDirectCancelable()) throw new RuntimeException("order.cancel.unauthorized");
+            if (!order.getId().equals(user.getId())) throw new RuntimeException("order.unauthorized");
+            if (!order.isDirectCancelable()) throw new RuntimeException("order.cancel.unauthorized");
         }
         return Result.successResult(orderService.cancelOrder(order, user.getId()));
     }

@@ -18,8 +18,18 @@ public class CouponAccount implements Serializable {
     private Long id;
     private String mobile;
     private Long uid;
-    private boolean available;
-    private Date createDate;
+    private Boolean available = true;
+    private Date createDate = new Date();
+    private Date updateDate = new Date();
+
+    public CouponAccount() {
+    }
+
+    public CouponAccount(Long uid, String mobile) {
+        this();
+        this.uid = uid;
+        this.mobile = mobile;
+    }
 
     public Long getId() {
         return id;
@@ -45,11 +55,11 @@ public class CouponAccount implements Serializable {
         this.uid = uid;
     }
 
-    public boolean isAvailable() {
+    public Boolean getAvailable() {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    public void setAvailable(Boolean available) {
         this.available = available;
     }
 
@@ -59,5 +69,13 @@ public class CouponAccount implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }

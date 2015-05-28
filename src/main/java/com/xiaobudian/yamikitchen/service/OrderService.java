@@ -1,15 +1,15 @@
 package com.xiaobudian.yamikitchen.service;
 
-import java.util.Date;
-import java.util.List;
-
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
+import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
-import com.xiaobudian.yamikitchen.domain.order.OrderItem;
 import com.xiaobudian.yamikitchen.web.dto.OrderDetailResponse;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by johnson1 on 4/27/15.
@@ -55,11 +55,13 @@ public interface OrderService {
 
     public Order chooseDeliverGroup(Order order, Integer deliverGroup, Merchant merchant);
 
-	public Order finishOrder(Order order);
+    public Order finishOrder(Order order);
 
-	public Order beganDeliver(Order order);
+    public Order beganDeliver(Order order);
 
-	public Order cancelOrder(Order order, Long uid);
+    public Order cancelOrder(Order order, Long uid);
+
+    public Settlement changeCouponForSettlement(Long uid, Long couponId);
 
 }
 
