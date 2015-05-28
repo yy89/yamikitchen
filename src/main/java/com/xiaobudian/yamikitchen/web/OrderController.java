@@ -181,4 +181,14 @@ public class OrderController {
         }
         return Result.successResult(orderService.cancelOrder(order, user.getId()));
     }
+    
+    @RequestMapping(value = "/orders/{orderId}/cancel", method = RequestMethod.POST)
+    public Result cancelOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
+        Order order = orderService.getOrder(orderId);
+        if (order == null) throw new RuntimeException("order.does.not.exist");
+        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
+        if (!order.getMerchantId().equals(merchant.getId())) throw new RuntimeException("order.unauthorized");
+        return Result.successResult(orderService.cancelOrder(order, user.getId()));
+    }
+    
 }

@@ -1,13 +1,38 @@
 package com.xiaobudian.yamikitchen.service;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
 import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.domain.account.SettlementHandler;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
+import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
-import com.xiaobudian.yamikitchen.domain.order.*;
+import com.xiaobudian.yamikitchen.domain.order.Order;
+import com.xiaobudian.yamikitchen.domain.order.OrderBuilder;
+import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
+import com.xiaobudian.yamikitchen.domain.order.OrderItem;
+import com.xiaobudian.yamikitchen.domain.order.OrderNoGenerator;
+import com.xiaobudian.yamikitchen.domain.order.OrderPostHandler;
+import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
 import com.xiaobudian.yamikitchen.repository.RedisRepository;
 import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserAddressRepository;
@@ -18,17 +43,6 @@ import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
 import com.xiaobudian.yamikitchen.web.dto.OrderDetailResponse;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.*;
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -65,6 +79,8 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     private DadaService dadaService;
     @Inject
     private SettlementHandler settlementHandler;
+    @Inject
+    private AccountService accountService;
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId, boolean isToday) {
@@ -310,8 +326,13 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Override
     public Order cancelOrder(Order order, Long uid) {
     	order.cancel();
-    	if (order.isHasPaid()) {
-    		// TODO 订单退款结算
+    	if (order.getPaymentMethod() == 0 && order.isHasPaid()) {
+    		accountService.unconfirmedOrderRefund(order);
+    	}
+    	if (order.getCouponId() != null) {
+    		Coupon coupon = couponRepository.findFirstByUid(uid);
+    		coupon.setHasUsed(false);
+    		couponRepository.save(coupon);
     	}
         return orderRepository.save(order);
     }

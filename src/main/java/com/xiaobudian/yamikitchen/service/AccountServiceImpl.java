@@ -123,4 +123,10 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
+    
+    @Override
+    public void unconfirmedOrderRefund(Order order) {
+    	order.setPrice(order.getPrice() * -1);
+    	transactionHandler.handle(order, transactionTypeRepository.findByCode(2004));
+    }
 }

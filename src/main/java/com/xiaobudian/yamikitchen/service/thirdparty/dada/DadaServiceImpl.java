@@ -105,6 +105,8 @@ public class DadaServiceImpl implements DadaService {
         order.setUpdateTime(new Date(dadaDto.getUpdate_time()));
         if (dadaDto.getOrder_status() == 3) {
         	order.deliver();
+        } else if (dadaDto.getOrder_status() == 4) {
+        	order.finish();
         }
         return orderRepository.save(order);
     }
@@ -207,12 +209,17 @@ public class DadaServiceImpl implements DadaService {
         Date currentDate = new Date();
         Long timestamp = currentDate.getTime();
         String signature = impl.getSignature(currentDate, token);
-        String orderId = "100006-20150512-2";
-        String interfaceUrl = "/v1_0/fetchOrder/";
-//        String interfaceUrl = "/v1_0/acceptOrder/";
-        String url = "http://public.ga.dev.imdada.cn"+interfaceUrl+"?token="
+        String orderId = "100026-20150524-5";
+        String fetchOrder = "/v1_0/fetchOrder/";
+        String acceptOrder = "/v1_0/acceptOrder/";
+        String url1 = "http://public.ga.dev.imdada.cn"+fetchOrder+"?token="
                 + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
-        System.out.println(url);
+        String url2 = "http://public.ga.dev.imdada.cn"+acceptOrder+"?token="
+        		+ token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
+        System.out.println("达达确认订单：");
+        System.out.println(url2);
+        System.out.println("\n达达取件：");
+        System.out.println(url1);
     }
 	
 }
