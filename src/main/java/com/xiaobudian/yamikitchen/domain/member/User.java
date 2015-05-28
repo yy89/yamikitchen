@@ -2,12 +2,10 @@ package com.xiaobudian.yamikitchen.domain.member;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.xiaobudian.yamikitchen.domain.message.MessageType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;

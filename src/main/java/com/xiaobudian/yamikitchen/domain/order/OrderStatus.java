@@ -26,6 +26,8 @@ public enum OrderStatus {
     public static final Collection<Integer> IN_PROGRESS = Arrays.asList(WAIT_PAYMENT.getIndex(), WAIT_CONFIRMATION.getIndex(), WAIT_DELIVER.getIndex(), DELIVERING.getIndex());
     public static final Collection<Integer> SOLVED = Arrays.asList(DELIVERING.getIndex(), COMPLETED.getIndex());
     public static final Collection<Integer> PROCESSING = Arrays.asList(WAIT_CONFIRMATION.getIndex(), WAIT_DELIVER.getIndex());
+    public static final Collection<Integer> PENDING = Arrays.asList(WAIT_CONFIRMATION.getIndex(), WAIT_DELIVER.getIndex(), WAIT_SELF_TAKE.getIndex(), COMPLETED.getIndex());
+
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final SpelExpressionParser PARSER = new SpelExpressionParser();

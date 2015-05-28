@@ -18,7 +18,6 @@ import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
-import com.xiaobudian.yamikitchen.web.dto.OrderDetailResponse;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -29,7 +28,10 @@ import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -157,77 +159,12 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
 
     @SuppressWarnings("deprecation")
     @Override
-    public OrderDetailResponse getOrdersByCondition(Long uid, Integer status, boolean isToday, Date lastOrderCreateDate) {
-        OrderDetailResponse orderDetailResponse = new OrderDetailResponse();
-        List<OrderDetail> orderDetails = new ArrayList<OrderDetail>();
-        if (status == 0) {
-            orderDetails = orderRepository.findOnhandOrders(uid);
-        } else if (status == 2) {
-            orderDetails = orderRepository.findUnconfirmedOrders(uid);
-        } else if (status == 3) {
-            orderDetails = orderRepository.findWaitDeliverOrders(uid);
-        } else if (status == 5) {
-            orderDetails = orderRepository.findFinishedAndCanceledOrders(uid);
-        }
-        if (CollectionUtils.isEmpty(orderDetails)) {
-            return orderDetailResponse;
-        }
-
-        Map<String, List<OrderItem>> returnOrderItemMap = new HashMap<String, List<OrderItem>>();
-        // 锟斤拷为sql锟侥斤拷锟斤拷墙锟斤拷锟斤拷锟斤拷樱锟斤拷锟斤拷锟給rder锟斤拷锟截革拷锟斤拷锟斤拷map去锟斤拷
-        Map<String, Order> returnOrderMap = new HashMap<String, Order>();
-        // 锟斤拷为sql锟侥斤拷锟斤拷丫锟斤拷藕锟斤拷锟斤拷锟斤拷锟絣ist锟斤拷锟秸ｏ拷锟斤拷map锟斤拷锟斤拷锟剿筹拷锟�
-        List<Order> returnOrders = new ArrayList<Order>();
-        for (Iterator<OrderDetail> iter = orderDetails.iterator(); iter.hasNext(); ) {
-            Object orderDetailObject = iter.next();
-            Object[][] orderDetailObjects = {(Object[]) orderDetailObject};
-            Order order = (Order) orderDetailObjects[0][0];
-            Date today = new Date();
-            today.setHours(23);
-            today.setMinutes(59);
-            today.setSeconds(59);
-            if (isToday) {
-                if (order.getExpectDate().after(today)) {
-                    iter.remove();
-                    continue;
-                }
-            } else {
-                if (order.getExpectDate().before(today)) {
-                    iter.remove();
-                    continue;
-                }
-            }
-
-            OrderItem orderItem = (OrderItem) orderDetailObjects[0][1];
-            List<OrderItem> orderItems = returnOrderItemMap.get(order.getOrderNo());
-            if (CollectionUtils.isEmpty(orderItems)) {
-                orderItems = new ArrayList<OrderItem>();
-                orderItems.add(orderItem);
-                returnOrderItemMap.put(order.getOrderNo(), orderItems);
-            } else {
-                orderItems.add(orderItem);
-            }
-            if (returnOrderMap.get(order.getOrderNo()) == null) {
-                returnOrderMap.put(order.getOrderNo(), order);
-                returnOrders.add(order);
-            }
-
-            if (lastOrderCreateDate == null || orderDetailResponse.isHaveNewOrder()) {
-                continue;
-            } else {
-                if (order.getCreateDate().after(lastOrderCreateDate)) {
-                    orderDetailResponse.setHaveNewOrder(true);
-                }
-            }
-        }
-
-        List<OrderDetail> returnOrderDetails = new ArrayList<OrderDetail>();
-        for (Order order : returnOrders) {
-            OrderDetail orderDetail = new OrderDetail(order, returnOrderItemMap.get(order.getOrderNo()));
-            returnOrderDetails.add(orderDetail);
-        }
-        orderDetailResponse.setOrderDetails(returnOrderDetails);
-        return orderDetailResponse;
+    public List<OrderDetail> getOrders(Long merchantId, Integer status, boolean isToday, Date lastPaymentDate) {
+        Day day = isToday ? Day.TODAY : Day.TOMORROW;
+        Collection<Integer> statuses = status == 0 ? OrderStatus.PENDING : Arrays.asList(status);
+        if (lastPaymentDate != null)
+            return orderRepository.findLatestOrders(merchantId, statuses, day.startOfDay(), day.endOfDay(), lastPaymentDate);
+        return orderRepository.findOrders(merchantId, statuses, day.startOfDay(), day.endOfDay());
     }
 
     @Override
@@ -335,5 +272,9 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         Coupon coupon = couponRepository.findOne(couponId);
         Long amt = cart.getTotalAmount() - (coupon == null ? 0 : coupon.getAmount() * 100);
         return new Settlement(coupon, 1, amt);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Date().getTime());
     }
 }

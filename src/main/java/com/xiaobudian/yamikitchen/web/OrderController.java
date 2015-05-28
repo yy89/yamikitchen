@@ -93,20 +93,11 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/orders/status/{status}/today/{isToday}", method = RequestMethod.GET)
-    public Result getOrdersByCondition(@PathVariable Integer status,
-                                       @PathVariable boolean isToday,
-                                       @AuthenticationPrincipal User user) {
+    public Result getOrdersByCondition(@PathVariable Integer status, @PathVariable boolean isToday,
+                                       @MatrixVariable(value = "d", required = false) Long lastPaymentDate, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (merchant == null) throw new RuntimeException("user.merchant.not.create");
-        return Result.successResult(orderService.getOrdersByCondition(merchant.getId(), status, isToday, null));
-    }
-
-    @RequestMapping(value = "/orders/status/{status}/today/{isToday}/{lastOrderCreateDate}", method = RequestMethod.GET)
-    public Result getOrdersByConditionAndTimestamp(@PathVariable Integer status, @PathVariable boolean isToday,
-                                                   @PathVariable Long lastOrderCreateDate, @AuthenticationPrincipal User user) {
-        Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-        if (merchant == null) throw new RuntimeException("user.merchant.not.create");
-        return Result.successResult(orderService.getOrdersByCondition(merchant.getId(), status, isToday, new Date(lastOrderCreateDate)));
+        return Result.successResult(orderService.getOrders(merchant.getId(), status, isToday, new Date(lastPaymentDate)));
     }
 
     private Order getOrder(Long orderId, User user) {

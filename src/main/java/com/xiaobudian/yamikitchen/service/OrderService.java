@@ -2,11 +2,8 @@ package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
-import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
-import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
-import com.xiaobudian.yamikitchen.web.dto.OrderDetailResponse;
 
 import java.util.Date;
 import java.util.List;
@@ -33,7 +30,7 @@ public interface OrderService {
 
     public Settlement getSettlement(Long uid);
 
-    public OrderDetailResponse getOrdersByCondition(Long uid, Integer status, boolean isToday, Date lastOrderCreateDate);
+    public List<OrderDetail> getOrders(Long merchantId, Integer status, boolean isToday, Date lastPaymentDate);
 
     public Order confirmOrder(Order order);
 

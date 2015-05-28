@@ -1,6 +1,5 @@
 package com.xiaobudian.yamikitchen.service.thirdparty.dada;
 
-import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.order.Order;
 import com.xiaobudian.yamikitchen.web.dto.thirdparty.DadaDto;
 

@@ -27,26 +27,28 @@ public class TransactionFlow implements Serializable {
     private Double currentBalance = 0.00d;
     private Double fee = 0.00d;
     private Integer transactionType;
+    private String transactionName;
 
     public TransactionFlow() {
     }
 
-    public TransactionFlow(String accountNo, String orderNo, Long merchantId, Long uid, Double amount, Integer transactionType) {
+    public TransactionFlow(String accountNo, String orderNo, Long merchantId, Long uid, Double amount, TransactionType type) {
         this.orderNo = orderNo;
         this.merchantId = merchantId;
         this.uid = uid;
         this.amount = amount;
-        this.transactionType = transactionType;
+        this.transactionType = type.getCode();
+        this.transactionName = type.getName();
         this.accountNo = accountNo;
     }
 
-    public TransactionFlow(Account account, Order order, double amount, Integer transactionCode) {
-        this(account.getAccountNo(), order.getOrderNo(), order.getMerchantId(), account.getUid(), amount, transactionCode);
+    public TransactionFlow(Account account, Order order, double amount, TransactionType type) {
+        this(account.getAccountNo(), order.getOrderNo(), order.getMerchantId(), account.getUid(), amount, type);
         this.currentBalance = account.getBalance();
     }
 
-    public TransactionFlow(Account account, double amount, Integer transactionCode) {
-        this(account, null, amount, transactionCode);
+    public TransactionFlow(Account account, double amount, TransactionType type) {
+        this(account, null, amount, type);
     }
 
     public Long getId() {
@@ -127,5 +129,13 @@ public class TransactionFlow implements Serializable {
 
     public void setAccountNo(String accountNo) {
         this.accountNo = accountNo;
+    }
+
+    public String getTransactionName() {
+        return transactionName;
+    }
+
+    public void setTransactionName(String transactionName) {
+        this.transactionName = transactionName;
     }
 }

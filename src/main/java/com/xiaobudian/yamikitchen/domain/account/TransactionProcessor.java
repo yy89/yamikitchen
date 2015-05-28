@@ -32,19 +32,19 @@ public class TransactionProcessor {
     @Inject
     private TransactionTypeRepository transactionTypeRepository;
     private PlatformAccount platformAccount;
-    private Map<Integer, Integer> TRANS_ACT_TYPE_MAP = new HashMap<>();
+    private Map<Integer, TransactionType> TRANS_CODE_TYPE_MAP = new HashMap<>();
 
     @PostConstruct
     public void init() {
         platformAccount = platformAccountRepository.findOne(1l);
         for (TransactionType t : transactionTypeRepository.findAll()) {
-            TRANS_ACT_TYPE_MAP.put(t.getCode(), t.getAccountType());
+            TRANS_CODE_TYPE_MAP.put(t.getCode(), t);
         }
     }
 
     private Account getAccount(Order order, int transactionCode) {
         List<Account> accounts = accountRepository.findByMerchantId(order.getMerchantId());
-        return accounts.get(TRANS_ACT_TYPE_MAP.get(transactionCode));
+        return accounts.get(TRANS_CODE_TYPE_MAP.get(transactionCode).getAccountType());
     }
 
     private boolean isDebit(int transactionCode) {
@@ -61,11 +61,11 @@ public class TransactionProcessor {
         account.setAvailableBalance(account.getAvailableBalance() + amt);
         account.setBalance(account.getBalance() + amt);
         accountRepository.save(account);
-        transactionFlowRepository.save(new TransactionFlow(account, order, amount, transactionCode));
+        transactionFlowRepository.save(new TransactionFlow(account, order, amount, TRANS_CODE_TYPE_MAP.get(transactionCode)));
     }
 
     public void process(Account account, Double amount, int transactionCode) {
-        transactionFlowRepository.save(new TransactionFlow(account, amount, transactionCode));
+        transactionFlowRepository.save(new TransactionFlow(account, amount, TRANS_CODE_TYPE_MAP.get(transactionCode)));
     }
 
     public void processByPlatform(Order order, double amount, int transactionCode) {

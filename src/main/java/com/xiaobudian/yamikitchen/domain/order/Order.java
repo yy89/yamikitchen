@@ -66,6 +66,7 @@ public class Order implements Serializable {
     private Integer deliverGroup;
     private boolean directCancelable = false;
     private Double paymentAmount = 0.00d;
+    private Date paymentDate;
     // 达达：1待接单 2待取货 3执行中 4已完成 5已取消
     private Integer deliverGroupOrderStatus;
     private Integer diliverymanId;
@@ -463,6 +464,7 @@ public class Order implements Serializable {
     public void pay() {
         this.setPayable(false);
         this.setHasPaid(true);
+        this.setPaymentDate(DateTime.now().toDate());
         this.setStatus(2);
     }
 
@@ -555,4 +557,11 @@ public class Order implements Serializable {
         return couponId != null && couponId > 0 && paymentMethod == 0;
     }
 
+    public Date getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(Date paymentDate) {
+        this.paymentDate = paymentDate;
+    }
 }

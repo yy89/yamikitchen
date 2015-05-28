@@ -9,6 +9,7 @@ import java.util.Date;
  */
 public final class Day {
     public static final Day TODAY = new Day(new Date());
+    public static final Day TOMORROW = new Day(TODAY.plusDays(1));
     private final DateTime date;
 
     public Day(Date date) {
