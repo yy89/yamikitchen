@@ -61,6 +61,8 @@ public interface OrderService {
 
     public Order cancelOrder(Order order, Long uid);
 
+    public void recoveryCoupon(Long couponId);
+
     public Settlement changeCouponForSettlement(Long uid, Long couponId);
 
 }

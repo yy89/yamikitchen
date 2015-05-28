@@ -540,6 +540,7 @@ public class Order implements Serializable {
         return getUid() != null && getUid().equals(uid);
     }
 
+    @Transient
     public boolean isAuthorizedBy(User user, Merchant merchant) {
         if (user.isMerchant()) return isOwnedBy(merchant);
         return isCreateBy(user.getId());
@@ -549,4 +550,9 @@ public class Order implements Serializable {
         if (user.isMerchant()) return isCancelable();
         return isDirectCancelable();
     }
+
+    public boolean payIncludeCoupon() {
+        return couponId != null && couponId > 0 && paymentMethod == 0;
+    }
+
 }

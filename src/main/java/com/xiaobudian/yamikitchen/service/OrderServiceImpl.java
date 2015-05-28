@@ -1,23 +1,5 @@
 package com.xiaobudian.yamikitchen.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.domain.account.SettlementCenter;
@@ -26,13 +8,7 @@ import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
-import com.xiaobudian.yamikitchen.domain.order.Order;
-import com.xiaobudian.yamikitchen.domain.order.OrderBuilder;
-import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
-import com.xiaobudian.yamikitchen.domain.order.OrderItem;
-import com.xiaobudian.yamikitchen.domain.order.OrderNoGenerator;
-import com.xiaobudian.yamikitchen.domain.order.OrderPostHandler;
-import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
+import com.xiaobudian.yamikitchen.domain.order.*;
 import com.xiaobudian.yamikitchen.repository.RedisRepository;
 import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserAddressRepository;
@@ -43,6 +19,17 @@ import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
 import com.xiaobudian.yamikitchen.web.dto.OrderDetailResponse;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.*;
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -330,16 +317,16 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
 
     @Override
     public Order cancelOrder(Order order, Long uid) {
-    	order.cancel();
-    	if (order.getPaymentMethod() == 0 && order.isHasPaid()) {
-    		accountService.refundOrder(order);
-    	}
-    	if (order.getCouponId() != null) {
-    		Coupon coupon = couponRepository.findFirstByUid(uid);
-    		coupon.setHasUsed(false);
-    		couponRepository.save(coupon);
-    	}
+        order.cancel();
+        if (order.isRefundable()) accountService.refundOrder(order);
+        if (order.payIncludeCoupon()) recoveryCoupon(order.getCouponId());
         return orderRepository.save(order);
+    }
+
+    public void recoveryCoupon(Long couponId) {
+        Coupon coupon = couponRepository.findOne(couponId);
+        coupon.setHasUsed(false);
+        couponRepository.save(coupon);
     }
 
     @Override
