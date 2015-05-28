@@ -1,14 +1,16 @@
 package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
+import com.xiaobudian.yamikitchen.domain.member.Bank;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
+import com.xiaobudian.yamikitchen.service.AccountService;
 import com.xiaobudian.yamikitchen.service.MemberService;
 import com.xiaobudian.yamikitchen.service.SmsService;
-import com.xiaobudian.yamikitchen.thirdparty.util.IDCard;
 import com.xiaobudian.yamikitchen.web.dto.UserRequest;
 import com.xiaobudian.yamikitchen.web.dto.UserResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 public class MemberController {
     @Inject
     private MemberService memberService;
+    @Inject
+    private AccountService accountService;
     @Inject
     private SmsService smsService;
     @Resource(name = "authenticationManager")
@@ -98,6 +102,20 @@ public class MemberController {
 
     @RequestMapping(value = "/users/bankCard", method = RequestMethod.POST)
     public Result addBankCard(@RequestBody BankCard card, @AuthenticationPrincipal User authenticationUser) {
+        User user = memberService.getUserBy(authenticationUser.getId());
+        if (StringUtils.isEmpty(user.getRealName()))throw new RuntimeException("realname.not.register");
+        if(!card.getName().equals(user.getRealName()))throw new RuntimeException("name.validate.fail");
+        Bank bankByName = accountService.getBankByName(card.getBankName());
+        if (!(card.getBankName()!=null&&bankByName!=null) ) {
+            throw new RuntimeException("bankName.validate.fail");
+        }
+        Bank bankByBinCode = accountService.getBankByBinCode(card.getBinCode());
+        if (!(card.getBinCode()!=null&&bankByBinCode!=null)) {
+            throw new RuntimeException("binCode.validate.fail");
+        }
+        if(bankByName.getId()!=bankByBinCode.getId()) throw new RuntimeException("bankName.bincode.notmatched");
+        if (!card.isValidatedCardNo())  throw new RuntimeException("cardno.validate.fail");
+        if (!card.isValidatedIdNo())  throw new RuntimeException("idcard.validate.fail");
         card.setUid(authenticationUser.getId());
         return Result.successResult(memberService.bindingBankCard(card));
     }

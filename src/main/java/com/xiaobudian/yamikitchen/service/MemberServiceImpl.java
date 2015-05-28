@@ -56,6 +56,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public User getUserBy(long id) {
+        return userRepository.findOne(id);
+    }
+
+    @Override
     public User changePassword(User user) {
         User u = userRepository.findByUsername(user.getUsername());
         u.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -92,7 +97,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public BankCard bindingBankCard(BankCard card) {
-
         BankCard c = bankCardRepository.findByUid(card.getUid());
         if (c != null) bankCardRepository.delete(c);
         return bankCardRepository.save(card);

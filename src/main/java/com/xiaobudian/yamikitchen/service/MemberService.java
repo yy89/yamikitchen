@@ -14,6 +14,8 @@ public interface MemberService {
 
     public User getUserBy(String userName);
 
+    public User getUserBy(long id);
+
     public User changePassword(User user);
 
     public List<UserAddress> getAddresses(Long uid);

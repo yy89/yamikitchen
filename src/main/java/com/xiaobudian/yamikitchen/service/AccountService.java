@@ -4,6 +4,7 @@ import com.xiaobudian.yamikitchen.domain.account.Account;
 import com.xiaobudian.yamikitchen.domain.account.AccountSummary;
 import com.xiaobudian.yamikitchen.domain.account.AlipayHistory;
 import com.xiaobudian.yamikitchen.domain.account.TransactionFlow;
+import com.xiaobudian.yamikitchen.domain.member.Bank;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.operation.PlatformAccount;
 import com.xiaobudian.yamikitchen.domain.operation.PlatformTransactionFlow;
@@ -36,5 +37,10 @@ public interface AccountService {
     public List<TransactionFlow> getTransactionFlows(Long uid);
 
 	public void refundOrder(Order order);
+
+    public Bank getBankByName(String bankName);
+
+    public Bank getBankByBinCode(String binCode);
+
 
 }

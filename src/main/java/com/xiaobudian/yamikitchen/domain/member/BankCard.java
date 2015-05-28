@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.domain.member;
 
+import com.xiaobudian.yamikitchen.thirdparty.util.ValidateUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
@@ -24,7 +25,7 @@ public class BankCard implements Serializable {
     private String cardNo;
     private String branch;
     private String name;
-    private Integer idType;
+    private Integer idType = 0;//身份证类型
     private String idNo;
 
     public Long getId() {
@@ -100,5 +101,13 @@ public class BankCard implements Serializable {
         this.idNo = idNo;
     }
 
+
+    public boolean isValidatedIdNo(){
+        return idNo!=null&&ValidateUtil.checkIdCard(idNo);
+    }
+
+    public boolean isValidatedCardNo(){
+        return cardNo!=null&&ValidateUtil.checkBankCard(cardNo);
+    }
 
 }

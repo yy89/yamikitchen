@@ -3,6 +3,7 @@ package com.xiaobudian.yamikitchen.service;
 import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.account.*;
 import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
+import com.xiaobudian.yamikitchen.domain.member.Bank;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
@@ -14,10 +15,7 @@ import com.xiaobudian.yamikitchen.domain.order.OrderPostHandler;
 import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
 import com.xiaobudian.yamikitchen.repository.PlatformAccountRepository;
 import com.xiaobudian.yamikitchen.repository.PlatformTransactionFlowRepository;
-import com.xiaobudian.yamikitchen.repository.account.AccountRepository;
-import com.xiaobudian.yamikitchen.repository.account.AlipayHistoryRepository;
-import com.xiaobudian.yamikitchen.repository.account.TransactionFlowRepository;
-import com.xiaobudian.yamikitchen.repository.account.TransactionTypeRepository;
+import com.xiaobudian.yamikitchen.repository.account.*;
 import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
 import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
@@ -59,6 +57,8 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     private OrderPostHandler orderPostHandler;
     @Inject
     private AccountRepository accountRepository;
+    @Inject
+    private BankRepository bankRepository;
     @Inject
     private TransactionFlowRepository transactionFlowRepository;
     @Inject
@@ -115,6 +115,16 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     public void refundOrder(Order order) {
         order.setPrice(0 - order.getPrice());
         transactionProcessor.process(order, 2004);
+    }
+
+    @Override
+    public Bank getBankByName(String bankName) {
+        return bankRepository.findByBankName(bankName);
+    }
+
+    @Override
+    public Bank getBankByBinCode(String binCode) {
+        return bankRepository.findByBinCode(binCode);
     }
 
     @Override
