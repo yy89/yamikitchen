@@ -2,10 +2,12 @@ package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.LocalizedMessageSource;
 import com.xiaobudian.yamikitchen.common.Util;
+import com.xiaobudian.yamikitchen.domain.member.Bank;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.member.RegistrationPostHandler;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
+import com.xiaobudian.yamikitchen.repository.account.BankRepository;
 import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserAddressRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserRepository;
@@ -28,6 +30,8 @@ public class MemberServiceImpl implements MemberService {
     private PasswordEncoder passwordEncoder;
     @Inject
     private UserRepository userRepository;
+    @Inject
+    private BankRepository bankRepository;
     @Inject
     private LocalizedMessageSource localizedMessageSource;
     @Inject
@@ -105,5 +109,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public BankCard getBindingBankCard(Long uid) {
         return bankCardRepository.findByUid(uid);
+    }
+
+    @Override
+    public Bank getBankByName(String bankName) {
+        return bankRepository.findByBankName(bankName);
+    }
+
+    @Override
+    public Bank getBankByBinCode(String binCode) {
+        return bankRepository.findByBinCode(binCode);
     }
 }

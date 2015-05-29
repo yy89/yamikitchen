@@ -144,6 +144,7 @@ public class MerchantController {
         if (m == null) throw new RuntimeException("merchant.does.not.exist");
         if (!m.isCreateBy(user.getId())) throw new RuntimeException("user.merchant.unauthorized");
         merchant.setId(m.getId());
+        merchant.setVerifyStatus(null);
         return Result.successResult(merchantService.updateMerchant(merchant));
     }
 

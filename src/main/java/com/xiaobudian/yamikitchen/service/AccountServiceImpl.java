@@ -58,8 +58,6 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     @Inject
     private AccountRepository accountRepository;
     @Inject
-    private BankRepository bankRepository;
-    @Inject
     private TransactionFlowRepository transactionFlowRepository;
     @Inject
     private MerchantRepository merchantRepository;
@@ -118,15 +116,7 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
         transactionProcessor.process(order, 2004);
     }
 
-    @Override
-    public Bank getBankByName(String bankName) {
-        return bankRepository.findByBankName(bankName);
-    }
 
-    @Override
-    public Bank getBankByBinCode(String binCode) {
-        return bankRepository.findByBinCode(binCode);
-    }
 
     @Override
     public String getOrderStringOfAlipay(Order order) {

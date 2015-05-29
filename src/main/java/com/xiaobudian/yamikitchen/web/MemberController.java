@@ -105,11 +105,11 @@ public class MemberController {
         User user = memberService.getUserBy(authenticationUser.getId());
         if (StringUtils.isEmpty(user.getRealName()))throw new RuntimeException("realname.not.register");
         if(!card.getName().equals(user.getRealName()))throw new RuntimeException("name.validate.fail");
-        Bank bankByName = accountService.getBankByName(card.getBankName());
+        Bank bankByName = memberService.getBankByName(card.getBankName());
         if (!(card.getBankName()!=null&&bankByName!=null) ) {
             throw new RuntimeException("bankName.validate.fail");
         }
-        Bank bankByBinCode = accountService.getBankByBinCode(card.getBinCode());
+        Bank bankByBinCode = memberService.getBankByBinCode(card.getBinCode());
         if (!(card.getBinCode()!=null&&bankByBinCode!=null)) {
             throw new RuntimeException("binCode.validate.fail");
         }

@@ -38,9 +38,6 @@ public interface AccountService {
 
     public void refundOrder(Order order);
 
-    public Bank getBankByName(String bankName);
-
-    public Bank getBankByBinCode(String binCode);
 
 
 }

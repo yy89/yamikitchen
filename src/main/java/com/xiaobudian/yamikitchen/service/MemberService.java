@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.service;
 
+import com.xiaobudian.yamikitchen.domain.member.Bank;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
@@ -31,5 +32,9 @@ public interface MemberService {
     public BankCard bindingBankCard(BankCard card);
 
     public BankCard getBindingBankCard(Long uid);
+
+    public Bank getBankByName(String bankName);
+
+    public Bank getBankByBinCode(String binCode);
 
 }
