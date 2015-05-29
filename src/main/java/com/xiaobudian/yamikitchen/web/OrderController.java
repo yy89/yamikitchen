@@ -94,17 +94,18 @@ public class OrderController {
 
     @RequestMapping(value = "/orders/status/{status}/today/{isToday}", method = RequestMethod.GET)
     public Result getOrdersByCondition(@PathVariable Integer status, @PathVariable boolean isToday,
-                                       @MatrixVariable(value = "d", required = false) Long lastPaymentDate, @AuthenticationPrincipal User user) {
+                                       @MatrixVariable(value = "d", required = false) Long lastPaymentTimestamp, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (merchant == null) throw new RuntimeException("user.merchant.not.create");
-        return Result.successResult(orderService.getOrders(merchant.getId(), status, isToday, new Date(lastPaymentDate)));
+        Date lastPaymentDate = lastPaymentTimestamp == null ? null : new Date(lastPaymentTimestamp);
+        return Result.successResult(orderService.getOrders(merchant.getId(), status, isToday, lastPaymentDate));
     }
 
     private Order getOrder(Long orderId, User user) {
         Order order = orderService.getOrder(orderId);
         if (order == null) throw new RuntimeException("order.does.not.exist");
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-        if (order.isAuthorizedBy(user, merchant)) throw new RuntimeException("order.unauthorized");
+        if (!order.isAuthorizedBy(user, merchant)) throw new RuntimeException("order.unauthorized");
         if (order.getStatus() > 3 && order.getDeliverGroup() == null)
             throw new RuntimeException("order.deliverGroup.not.empty");
         return order;

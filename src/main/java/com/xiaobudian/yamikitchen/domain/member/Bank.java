@@ -9,7 +9,7 @@ import javax.persistence.Id;
  * Created by hackcoder on 2015/5/28.
  */
 @Entity
-public aspect Bank {
+public class Bank {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
