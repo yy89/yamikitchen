@@ -152,7 +152,9 @@ public class OrderController {
     @RequestMapping(value = "/orders/{orderId}/finish", method = RequestMethod.POST)
     public Result finishOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
         Order order = getOrder(orderId, user);
-        if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty");
+        if (order.getDeliverMethod() == 0) {
+        	if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty");
+        }
         return Result.successResult(orderService.finishOrder(order));
     }
 
