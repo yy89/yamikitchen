@@ -105,7 +105,7 @@ public class OrderController {
         Order order = orderService.getOrder(orderId);
         if (order == null) throw new RuntimeException("order.does.not.exist");
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
-        if (order.isAuthorizedBy(user, merchant)) throw new RuntimeException("order.unauthorized");
+        if (!order.isAuthorizedBy(user, merchant)) throw new RuntimeException("order.unauthorized");
         if (order.getStatus() > 3 && order.getDeliverGroup() == null)
             throw new RuntimeException("order.deliverGroup.not.empty");
         return order;
