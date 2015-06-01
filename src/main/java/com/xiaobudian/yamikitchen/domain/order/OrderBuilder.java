@@ -45,12 +45,16 @@ public class OrderBuilder {
     public OrderBuilder address(UserAddress address) {
         this.order.setPhone(address.getPhone());
         this.order.setName(address.getName());
+        this.order.setAddress(address.getAddress());
+        this.order.setAddressId(address.getId());
         this.order.setLatitude(address.getLatitude());
         this.order.setLongitude(address.getLongitude());
         return this;
     }
 
     public OrderBuilder distance(Merchant merchant) {
+        if (merchant.getLatitude() == null || merchant.getLongitude() == null
+                || order.getLatitude() == null || order.getLongitude() == null) return this;
         this.order.setDistance(Util.calculateDistanceAsString(merchant.getLongitude(), order.getLongitude(), merchant.getLatitude(), order.getLatitude()));
         return this;
     }
@@ -66,8 +70,8 @@ public class OrderBuilder {
 
     public OrderBuilder coupon(Coupon coupon) {
         if (coupon == null) return this;
-        this.order.setCouponAmount(coupon.getAmount() / 100.00d);
-        this.order.setPaymentAmount(this.order.getPrice() - this.order.getCouponAmount());
+        this.order.setCouponId(coupon.getId());
+        this.order.setCouponAmount(coupon.getAmount());
         return this;
     }
 }

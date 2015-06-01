@@ -25,7 +25,7 @@ public class SettlementCenter {
 
     private double getShareScale(Long merchantId) {
         Merchant merchant = merchantRepository.findOne(merchantId);
-        return (merchant.getSharing() + serviceCharge) / 100.00;
+        return merchant.getSharing() + serviceCharge;
     }
 
     public void settle(Order order) {

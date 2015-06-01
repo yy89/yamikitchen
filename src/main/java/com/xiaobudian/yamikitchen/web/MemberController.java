@@ -103,19 +103,19 @@ public class MemberController {
     @RequestMapping(value = "/users/bankCard", method = RequestMethod.POST)
     public Result addBankCard(@RequestBody BankCard card, @AuthenticationPrincipal User authenticationUser) {
         User user = memberService.getUserBy(authenticationUser.getId());
-        if (StringUtils.isEmpty(user.getRealName()))throw new RuntimeException("realname.not.register");
-        if(!card.getName().equals(user.getRealName()))throw new RuntimeException("name.validate.fail");
-        Bank bankByName = memberService.getBankByName(card.getBankName());
-        if (!(card.getBankName()!=null&&bankByName!=null) ) {
+        if (StringUtils.isEmpty(user.getRealName())) throw new RuntimeException("realname.not.register");
+        if (!card.getName().equals(user.getRealName())) throw new RuntimeException("name.validate.fail");
+        Bank bankByName = accountService.getBankByName(card.getBankName());
+        if (!(card.getBankName() != null && bankByName != null)) {
             throw new RuntimeException("bankName.validate.fail");
         }
-        Bank bankByBinCode = memberService.getBankByBinCode(card.getBinCode());
-        if (!(card.getBinCode()!=null&&bankByBinCode!=null)) {
+        Bank bankByBinCode = accountService.getBankByBinCode(card.getBinCode());
+        if (!(card.getBinCode() != null && bankByBinCode != null)) {
             throw new RuntimeException("binCode.validate.fail");
         }
-        if(bankByName.getId()!=bankByBinCode.getId()) throw new RuntimeException("bankName.bincode.notmatched");
-        if (!card.isValidatedCardNo())  throw new RuntimeException("cardno.validate.fail");
-        if (!card.isValidatedIdNo())  throw new RuntimeException("idcard.validate.fail");
+        if (bankByName.getId() != bankByBinCode.getId()) throw new RuntimeException("bankName.bincode.notmatched");
+        if (!card.isValidCardNo()) throw new RuntimeException("cardno.validate.fail");
+        if (!card.isValidIdNo()) throw new RuntimeException("idcard.validate.fail");
         card.setUid(authenticationUser.getId());
         return Result.successResult(memberService.bindingBankCard(card));
     }

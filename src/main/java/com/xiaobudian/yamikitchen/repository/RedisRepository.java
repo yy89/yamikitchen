@@ -35,6 +35,10 @@ public class RedisRepository {
         longRedisTemplate.opsForValue().set(key, value);
     }
 
+    public void setLong(String key, Long value, Long expireMinutes) {
+        longRedisTemplate.opsForValue().set(key, value, expireMinutes, TimeUnit.SECONDS);
+    }
+
     public Long getLong(String key) {
         return longRedisTemplate.opsForValue().get(key);
     }
@@ -86,5 +90,17 @@ public class RedisRepository {
 
     public void addForZSetWithScore(String key, Long value, double score) {
         longRedisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    public boolean isMember(String key, String value) {
+        return stringRedisTemplate.opsForSet().isMember(key, value);
+    }
+
+    public void addForSet(String key, String value) {
+        stringRedisTemplate.opsForSet().add(key, value);
+    }
+
+    public void removeFromSet(String key, String value) {
+        stringRedisTemplate.opsForSet().remove(key, value);
     }
 }

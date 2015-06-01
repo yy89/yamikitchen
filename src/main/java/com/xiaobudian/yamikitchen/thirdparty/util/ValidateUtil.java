@@ -5,44 +5,47 @@ package com.xiaobudian.yamikitchen.thirdparty.util;
  */
 public class ValidateUtil {
 
-    public static boolean checkIdCard(String idcard){
-        String patternCardno="^(\\d{15}$|^\\d{18}$|^\\d{17}(\\d|X|x))$";
-        return idcard!=null&&idcard.matches(patternCardno);
+    public static boolean checkIdCard(String idcard) {
+        String patternCardno = "^(\\d{15}$|^\\d{18}$|^\\d{17}(\\d|X|x))$";
+        return idcard != null && idcard.matches(patternCardno);
     }
+
     /**
-     * Ð£ÑéÒøÐÐ¿¨¿¨ºÅ
+     * Ð£ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½ï¿½ï¿½ï¿½
+     *
      * @param cardId
      * @return
      */
     public static boolean checkBankCard(String cardId) {
         char bit = getBankCardCheckCode(cardId.substring(0, cardId.length() - 1));
-        if(bit == 'N'){
+        if (bit == 'N') {
             return false;
         }
         return cardId.charAt(cardId.length() - 1) == bit;
     }
 
     /**
-     * ´Ó²»º¬Ð£ÑéÎ»µÄÒøÐÐ¿¨¿¨ºÅ²ÉÓÃ Luhm Ð£ÑéËã·¨»ñµÃÐ£ÑéÎ»
+     * ï¿½Ó²ï¿½ï¿½ï¿½Ð£ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½ï¿½ï¿½Å²ï¿½ï¿½ï¿½ Luhm Ð£ï¿½ï¿½ï¿½ã·¨ï¿½ï¿½ï¿½Ð£ï¿½ï¿½Î»
+     *
      * @param nonCheckCodeCardId
      * @return
      */
-    public static char getBankCardCheckCode(String nonCheckCodeCardId){
-        if(nonCheckCodeCardId == null || nonCheckCodeCardId.trim().length() == 0
+    public static char getBankCardCheckCode(String nonCheckCodeCardId) {
+        if (nonCheckCodeCardId == null || nonCheckCodeCardId.trim().length() == 0
                 || !nonCheckCodeCardId.matches("\\d+")) {
-            //Èç¹û´«µÄ²»ÊÇÊý¾Ý·µ»ØN
+            //ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½N
             return 'N';
         }
         char[] chs = nonCheckCodeCardId.trim().toCharArray();
         int luhmSum = 0;
-        for(int i = chs.length - 1, j = 0; i >= 0; i--, j++) {
+        for (int i = chs.length - 1, j = 0; i >= 0; i--, j++) {
             int k = chs[i] - '0';
-            if(j % 2 == 0) {
+            if (j % 2 == 0) {
                 k *= 2;
                 k = k / 10 + k % 10;
             }
             luhmSum += k;
         }
-        return (luhmSum % 10 == 0) ? '0' : (char)((10 - luhmSum % 10) + '0');
+        return (luhmSum % 10 == 0) ? '0' : (char) ((10 - luhmSum % 10) + '0');
     }
 }

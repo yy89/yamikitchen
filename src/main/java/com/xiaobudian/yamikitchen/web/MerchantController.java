@@ -64,7 +64,7 @@ public class MerchantController {
         MerchantResponse response = new MerchantResponse.Builder()
                 .merchant(merchant)
                 .user(user)
-                .products(merchantService.getProductsBy(merchant.getId(), page, size)).build();
+                .products(merchantService.getProductsBy(merchant.getId(), true, page, size)).build();
         return Result.successResult(response);
     }
 
@@ -77,7 +77,7 @@ public class MerchantController {
                 .merchant(merchant)
                 .hasFavorite(user != null && merchantService.hasFavorite(merchant.getId(), user.getId()))
                 .user(memberService.getUser(merchant.getCreator()))
-                .products(merchantService.getProductsBy(rid, page, size)).build();
+                .products(merchantService.getProductsBy(rid, false, page, size)).build();
         return Result.successResult(response);
     }
 
@@ -168,7 +168,8 @@ public class MerchantController {
     public Result openMerchant(@PathVariable boolean isRest, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (merchant == null) throw new RuntimeException("user.merchant.unauthorized");
-        if (!merchant.isApproved()) return Result.failResult(localizedMessageSource.getMessage("merchant.not.approved"));
+        if (!merchant.isApproved())
+            return Result.failResult(localizedMessageSource.getMessage("merchant.not.approved"));
         if (!merchant.getIsAutoOpen())
             return Result.failResult(localizedMessageSource.getMessage("merchant.not.autoOpen"));
         return Result.successResult(merchantService.changeMerchantRestStatus(merchant.getId(), isRest));

@@ -21,5 +21,5 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     public List<Coupon> findExpiredCoupons(Long uid, Date date);
 
     @Query("from Coupon c where c.uid = ?1 and c.usageCondition <= ?2 and c.expireDate >?3 and c.hasUsed<>true and c.locked <> true order by c.amount desc, c.availableDate asc")
-    public List<Coupon> findFirstByAmountAndExpireDate(Long uid, Long price, Date date, Pageable pageable);
+    public List<Coupon> findFirstByAmountAndExpireDate(Long uid, Double price, Date date, Pageable pageable);
 }

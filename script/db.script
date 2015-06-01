@@ -1,0 +1,611 @@
+
+DROP TABLE IF EXISTS `account`;
+CREATE TABLE `account` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `accountNo` varchar(255) default NULL,
+  `availableBalance` double default NULL,
+  `balance` double default NULL,
+  `cashLimit` double default NULL,
+  `createDate` datetime default NULL,
+  `merchantId` bigint(20) default NULL,
+  `methodOfCashFee` int(11) default NULL,
+  `status` int(11) NOT NULL,
+  `type` int(11) default NULL,
+  `uid` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `alipayhistory`
+--
+
+DROP TABLE IF EXISTS `alipayhistory`;
+CREATE TABLE `alipayhistory` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `buyer_email` varchar(255) default NULL,
+  `buyer_id` varchar(255) default NULL,
+  `discount` varchar(255) default NULL,
+  `gmt_create` varchar(255) default NULL,
+  `gmt_payment` varchar(255) default NULL,
+  `is_total_fee_adjust` varchar(255) default NULL,
+  `notify_id` varchar(255) default NULL,
+  `notify_time` varchar(255) default NULL,
+  `notify_type` varchar(255) default NULL,
+  `out_trade_no` varchar(255) default NULL,
+  `payment_type` varchar(255) default NULL,
+  `price` varchar(255) default NULL,
+  `quantity` varchar(255) default NULL,
+  `refund_date` varchar(255) default NULL,
+  `refund_status` varchar(255) default NULL,
+  `sign` varchar(255) default NULL,
+  `sign_type` varchar(255) default NULL,
+  `subject` varchar(255) default NULL,
+  `total_fee` varchar(255) default NULL,
+  `trade_no` varchar(255) default NULL,
+  `trade_status` varchar(255) default NULL,
+  `use_coupon` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `bank`
+--
+
+DROP TABLE IF EXISTS `bank`;
+CREATE TABLE `bank` (
+  `id` int(11) NOT NULL auto_increment,
+  `bankName` varchar(255) default NULL,
+  `binCode` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `bankcard`
+--
+
+DROP TABLE IF EXISTS `bankcard`;
+CREATE TABLE `bankcard` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `bankName` varchar(255) default NULL,
+  `binCode` varchar(255) default NULL,
+  `branch` varchar(255) default NULL,
+  `cardNo` varchar(255) default NULL,
+  `idNo` varchar(255) default NULL,
+  `idType` int(11) default NULL,
+  `name` varchar(255) default NULL,
+  `uid` bigint(20) default NULL,
+  `region` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `comment`
+--
+
+DROP TABLE IF EXISTS `comment`;
+CREATE TABLE `comment` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `cid` bigint(20) default NULL,
+  `content` varchar(255) default NULL,
+  `headPic` varchar(255) default NULL,
+  `merchantId` bigint(20) default NULL,
+  `merchantName` varchar(255) default NULL,
+  `nickName` varchar(255) default NULL,
+  `orderId` bigint(20) NOT NULL,
+  `productId` bigint(20) default NULL,
+  `productName` varchar(255) default NULL,
+  `publishDate` datetime default NULL,
+  `removed` bit(1) NOT NULL,
+  `replyNickName` varchar(255) default NULL,
+  `star` int(11) NOT NULL,
+  `uid` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `coupon`
+--
+
+DROP TABLE IF EXISTS `coupon`;
+CREATE TABLE `coupon` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `amount` bigint(20) default NULL,
+  `availableDate` datetime default NULL,
+  `expireDate` datetime default NULL,
+  `hasUsed` bit(1) NOT NULL,
+  `locked` bit(1) NOT NULL,
+  `name` varchar(255) default NULL,
+  `orderNo` varchar(255) default NULL,
+  `phone` varchar(255) default NULL,
+  `uid` bigint(20) default NULL,
+  `usageCondition` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `couponaccount`
+--
+
+DROP TABLE IF EXISTS `couponaccount`;
+CREATE TABLE `couponaccount` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `available` bit(1) default NULL,
+  `createDate` datetime default NULL,
+  `mobile` varchar(255) default NULL,
+  `uid` bigint(20) default NULL,
+  `updateDate` datetime default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `couponsummary`
+--
+
+DROP TABLE IF EXISTS `couponsummary`;
+CREATE TABLE `couponsummary` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `amount` bigint(20) default NULL,
+  `couponId` bigint(20) default NULL,
+  `day` datetime default NULL,
+  `name` varchar(255) default NULL,
+  `receivedTimes` bigint(20) default NULL,
+  `usedTimes` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `coupontype`
+--
+
+DROP TABLE IF EXISTS `coupontype`;
+CREATE TABLE `coupontype` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `amount` bigint(20) default NULL,
+  `createDate` datetime default NULL,
+  `expiredDays` int(11) default NULL,
+  `hasExpired` bit(1) NOT NULL,
+  `hasUsed` bit(1) NOT NULL,
+  `name` varchar(255) default NULL,
+  `quantity` int(11) default NULL,
+  `usageCondition` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `device`
+--
+
+DROP TABLE IF EXISTS `device`;
+CREATE TABLE `device` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `channel` varchar(255) default NULL,
+  `createDate` datetime default NULL,
+  `deviceToken` varchar(255) default NULL,
+  `type` int(11) default NULL,
+  `uid` bigint(20) default NULL,
+  `uuid` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `dispatchrule`
+--
+
+DROP TABLE IF EXISTS `dispatchrule`;
+CREATE TABLE `dispatchrule` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `available` bit(1) NOT NULL,
+  `count` int(11) default NULL,
+  `forShare` bit(1) NOT NULL,
+  `name` varchar(255) default NULL,
+  `ruleId` bigint(20) default NULL,
+  `scale` double default NULL,
+  `type` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `favorite`
+--
+
+DROP TABLE IF EXISTS `favorite`;
+CREATE TABLE `favorite` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `createDate` datetime default NULL,
+  `headPic` varchar(255) default NULL,
+  `merchantId` bigint(20) default NULL,
+  `nickName` varchar(255) default NULL,
+  `uid` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `idfarecord`
+--
+
+DROP TABLE IF EXISTS `idfarecord`;
+CREATE TABLE `idfarecord` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `createDate` datetime default NULL,
+  `idfa` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `manager`
+--
+
+DROP TABLE IF EXISTS `manager`;
+CREATE TABLE `manager` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `createDate` datetime default NULL,
+  `lastVisitedDate` datetime default NULL,
+  `password` varchar(255) default NULL,
+  `username` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `merchant`
+--
+
+DROP TABLE IF EXISTS `merchant`;
+CREATE TABLE `merchant` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `address` varchar(255) default NULL,
+  `businessDayPerWeek` varchar(255) default NULL,
+  `businessHours` varchar(255) default NULL,
+  `comment` varchar(255) default NULL,
+  `commentCount` bigint(20) default '0',
+  `countOfMessHall` int(11) default NULL,
+  `createDate` datetime default NULL,
+  `creator` bigint(20) NOT NULL,
+  `deliverComment` varchar(255) default NULL,
+  `deliverFee` bigint(20) default NULL,
+  `description` varchar(255) default NULL,
+  `favoriteCount` bigint(20) default '0',
+  `goodCuisine` varchar(255) default NULL,
+  `hasOrder` bit(1) default '\0',
+  `headPic` varchar(255) default NULL,
+  `isAutoOpen` bit(1) default '\0',
+  `isRest` bit(1) default '\0',
+  `lastModifiedDate` datetime default NULL,
+  `latitude` double default NULL,
+  `longitude` double default NULL,
+  `mLevel` int(11) default '1',
+  `merchantNo` varchar(255) default NULL,
+  `messHall` bit(1) default NULL,
+  `monthlySoldCount` int(11) default '0',
+  `name` varchar(255) default NULL,
+  `phone` varchar(255) default NULL,
+  `pictures` varchar(255) default NULL,
+  `removed` bit(1) default '\0',
+  `restMark` varchar(255) default NULL,
+  `selfPickup` bit(1) default NULL,
+  `sharing` double NOT NULL,
+  `soldCount` int(11) default '0',
+  `supportDelivery` bit(1) default NULL,
+  `tags` varchar(255) default NULL,
+  `turnover` double NOT NULL,
+  `type` int(11) default NULL,
+  `verifyStatus` int(11) default '0',
+  `voiceIntroduction` varchar(255) default NULL,
+  `star` double default NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `UK_mnefstsuldx0iye2kcclu57x3` (`creator`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `message`
+--
+
+DROP TABLE IF EXISTS `message`;
+CREATE TABLE `message` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `commentId` bigint(20) default NULL,
+  `content` varchar(255) default NULL,
+  `createDate` datetime default NULL,
+  `headPic` varchar(255) default NULL,
+  `merchantId` bigint(20) default NULL,
+  `nickName` varchar(255) default NULL,
+  `orderId` bigint(20) default NULL,
+  `publisher` bigint(20) default NULL,
+  `readDate` datetime default NULL,
+  `receiver` bigint(20) default NULL,
+  `type` int(11) default NULL,
+  `unread` bit(1) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `notice`
+--
+
+DROP TABLE IF EXISTS `notice`;
+CREATE TABLE `notice` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `content` varchar(255) default NULL,
+  `createDate` datetime default NULL,
+  `orderNo` varchar(255) default NULL,
+  `title` varchar(255) default NULL,
+  `type` int(11) default NULL,
+  `uid` bigint(20) default NULL,
+  `url` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `order`
+--
+
+DROP TABLE IF EXISTS `order`;
+CREATE TABLE `order` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `acceptDate` datetime default NULL,
+  `address` varchar(255) default NULL,
+  `addressId` bigint(20) NOT NULL,
+  `cancelable` bit(1) NOT NULL,
+  `checkFlag` varchar(255) default NULL,
+  `commentable` bit(1) NOT NULL,
+  `complainable` bit(1) NOT NULL,
+  `couponAmount` double default NULL,
+  `couponId` bigint(20) default NULL,
+  `createDate` datetime default NULL,
+  `deliverDate` datetime default NULL,
+  `deliverGroup` int(11) default NULL,
+  `deliverGroupOrderStatus` int(11) default NULL,
+  `deliverMethod` int(11) NOT NULL,
+  `deliverPrice` bigint(20) default NULL,
+  `diliverymanId` int(11) default NULL,
+  `diliverymanMobile` varchar(255) default NULL,
+  `diliverymanName` varchar(255) default NULL,
+  `directCancelable` bit(1) NOT NULL,
+  `distance` varchar(255) default NULL,
+  `expectDate` datetime default NULL,
+  `firstDeal` bit(1) NOT NULL,
+  `hasPaid` bit(1) NOT NULL,
+  `headPic` varchar(255) default NULL,
+  `latitude` double default NULL,
+  `longitude` double default NULL,
+  `merchantAddress` varchar(255) default NULL,
+  `merchantHeadPic` varchar(255) default NULL,
+  `merchantId` bigint(20) default NULL,
+  `merchantName` varchar(255) default NULL,
+  `merchantNo` varchar(255) default NULL,
+  `merchantPhone` varchar(255) default NULL,
+  `name` varchar(255) default NULL,
+  `nickName` varchar(255) default NULL,
+  `orderNo` varchar(255) default NULL,
+  `outDate` datetime default NULL,
+  `payable` bit(1) NOT NULL,
+  `paymentAmount` double default NULL,
+  `paymentDate` datetime default NULL,
+  `paymentMethod` int(11) NOT NULL,
+  `paymentTimeLimit` int(11) default NULL,
+  `phone` varchar(255) default NULL,
+  `price` bigint(20) default NULL,
+  `refundable` bit(1) NOT NULL,
+  `remark` varchar(255) default NULL,
+  `status` int(11) default NULL,
+  `totalQuantity` int(11) default NULL,
+  `uid` bigint(20) default NULL,
+  `updateTime` datetime default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `ordercoupon`
+--
+
+DROP TABLE IF EXISTS `ordercoupon`;
+CREATE TABLE `ordercoupon` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `amount` int(11) default NULL,
+  `couponId` bigint(20) default NULL,
+  `mobile` varchar(255) default NULL,
+  `orderNo` varchar(255) default NULL,
+  `receivedDate` datetime default NULL,
+  `uid` bigint(20) default NULL,
+  `weChatHeadPic` varchar(255) default NULL,
+  `weChatId` varchar(255) default NULL,
+  `weChatNickName` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `orderitem`
+--
+
+DROP TABLE IF EXISTS `orderitem`;
+CREATE TABLE `orderitem` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `amount` bigint(20) default NULL,
+  `name` varchar(255) default NULL,
+  `orderNo` varchar(255) default NULL,
+  `price` bigint(20) default NULL,
+  `productId` bigint(20) default NULL,
+  `quantity` int(11) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `platformaccount`
+--
+
+DROP TABLE IF EXISTS `platformaccount`;
+CREATE TABLE `platformaccount` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `accountNo` varchar(255) default NULL,
+  `availableBalance` double default NULL,
+  `balance` double default NULL,
+  `createDate` datetime default NULL,
+  `status` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `platformtransactionflow`
+--
+
+DROP TABLE IF EXISTS `platformtransactionflow`;
+CREATE TABLE `platformtransactionflow` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `accountNo` varchar(255) default NULL,
+  `amount` double default NULL,
+  `currentBalance` double default NULL,
+  `fee` double default NULL,
+  `merchantId` bigint(20) default NULL,
+  `operateDate` datetime default NULL,
+  `orderNo` varchar(255) default NULL,
+  `transactionType` int(11) default NULL,
+  `uid` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `product`
+--
+
+DROP TABLE IF EXISTS `product`;
+CREATE TABLE `product` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `available` bit(1) default NULL,
+  `availableTime` varchar(255) default NULL,
+  `commentCount` int(11) default '1',
+  `createDate` datetime default NULL,
+  `favoriteCount` int(11) default '1',
+  `lastModifiedDate` datetime default NULL,
+  `main` bit(1) default NULL,
+  `merchantId` bigint(20) default NULL,
+  `name` varchar(255) default NULL,
+  `pictures` varchar(255) default NULL,
+  `price` bigint(20) default NULL,
+  `removed` bit(1) default NULL,
+  `restCount` int(11) default '1',
+  `soldCount` int(11) default '1',
+  `soldOut` bit(1) NOT NULL,
+  `summary` varchar(255) default NULL,
+  `supplyPerDay` bigint(20) default NULL,
+  `tags` varchar(255) default NULL,
+  `twRestCount` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `pushhistory`
+--
+
+DROP TABLE IF EXISTS `pushhistory`;
+CREATE TABLE `pushhistory` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `actual` int(11) default NULL,
+  `content` varchar(255) default NULL,
+  `count` int(11) default NULL,
+  `createDate` datetime default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `pushnotificationtype`
+--
+
+DROP TABLE IF EXISTS `pushnotificationtype`;
+CREATE TABLE `pushnotificationtype` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `key` varchar(255) default NULL,
+  `name` varchar(255) default NULL,
+  `pramName` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `thirdparty`
+--
+
+DROP TABLE IF EXISTS `thirdparty`;
+CREATE TABLE `thirdparty` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `accessToken` varchar(255) default NULL,
+  `createDate` datetime default NULL,
+  `expiresIn` bigint(20) default NULL,
+  `refreshToken` varchar(255) default NULL,
+  `thirdGroup` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `transactionflow`
+--
+
+DROP TABLE IF EXISTS `transactionflow`;
+CREATE TABLE `transactionflow` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `accountNo` varchar(255) default NULL,
+  `amount` double default NULL,
+  `currentBalance` double default NULL,
+  `fee` double default NULL,
+  `merchantId` bigint(20) default NULL,
+  `operateDate` datetime default NULL,
+  `orderNo` varchar(255) default NULL,
+  `transactionName` varchar(255) default NULL,
+  `transactionType` int(11) default NULL,
+  `uid` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `transactiontype`
+--
+
+DROP TABLE IF EXISTS `transactiontype`;
+CREATE TABLE `transactiontype` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `accountType` int(11) default NULL,
+  `code` int(11) default NULL,
+  `description` varchar(255) default NULL,
+  `name` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `bindingPhone` varchar(255) default NULL,
+  `city` varchar(255) default NULL,
+  `description` varchar(255) default NULL,
+  `firstPay` bit(1) NOT NULL,
+  `gender` int(11) default NULL,
+  `headPic` varchar(255) default NULL,
+  `nickName` varchar(255) default NULL,
+  `password` varchar(255) default NULL,
+  `payPassword` varchar(255) default NULL,
+  `realName` varchar(255) default NULL,
+  `region` varchar(255) default NULL,
+  `registerDate` datetime default NULL,
+  `status` int(11) default NULL,
+  `type` int(11) default NULL,
+  `username` varchar(255) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `useraddress`
+--
+
+DROP TABLE IF EXISTS `useraddress`;
+CREATE TABLE `useraddress` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `address` varchar(255) default NULL,
+  `isDefault` bit(1) NOT NULL,
+  `latitude` double default NULL,
+  `longitude` double default NULL,
+  `name` varchar(255) default NULL,
+  `phone` varchar(255) default NULL,
+  `uid` bigint(20) default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

@@ -22,7 +22,7 @@ public class Order implements Serializable {
     private Long id;
     private String orderNo;
     private Integer totalQuantity;
-    private Long price;
+    private Double price;
     private Date createDate = new Date();
     private Date deliverDate;
     private Date outDate;
@@ -41,7 +41,7 @@ public class Order implements Serializable {
     private String merchantPhone;
     private String merchantAddress;
     private String remark;
-    private Long deliverPrice;
+    private Double deliverPrice;
     @NotNull(message = "order.deliverMethod.not.empty")
     private Integer deliverMethod;
     private Integer paymentTimeLimit = 15;
@@ -64,14 +64,14 @@ public class Order implements Serializable {
     private Double longitude;
     private Double latitude;
     private Integer deliverGroup;
-    private boolean directCancelable = false;
+    private boolean directCancelable = true;
     private Double paymentAmount = 0.00d;
     private Date paymentDate;
     // 达达：1待接单 2待取货 3执行中 4已完成 5已取消
     private Integer deliverGroupOrderStatus;
-    private Integer diliverymanId;
-    private String diliverymanName;
-    private String diliverymanMobile;
+    private Integer deliveryManId;
+    private String deliveryManName;
+    private String deliveryManMobile;
     private Date updateTime;
 
     public Long getId() {
@@ -98,11 +98,11 @@ public class Order implements Serializable {
         this.totalQuantity = totalQuantity;
     }
 
-    public Long getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -210,11 +210,11 @@ public class Order implements Serializable {
         this.remark = remark;
     }
 
-    public Long getDeliverPrice() {
-        return deliverPrice;
+    public Double getDeliverPrice() {
+        return deliverMethod == 1 ? 0.00 : deliverPrice;
     }
 
-    public void setDeliverPrice(Long deliverPrice) {
+    public void setDeliverPrice(Double deliverPrice) {
         this.deliverPrice = deliverPrice;
     }
 
@@ -343,6 +343,7 @@ public class Order implements Serializable {
     }
 
     public void setDeliverMethod(Integer deliverMethod) {
+        if (deliverMethod == 1) deliverPrice = 0.00d;
         this.deliverMethod = deliverMethod;
     }
 
@@ -410,28 +411,28 @@ public class Order implements Serializable {
         this.deliverGroupOrderStatus = deliverGroupOrderStatus;
     }
 
-    public Integer getDiliverymanId() {
-        return diliverymanId;
+    public Integer getDeliveryManId() {
+        return deliveryManId;
     }
 
-    public void setDiliverymanId(Integer diliverymanId) {
-        this.diliverymanId = diliverymanId;
+    public void setDeliveryManId(Integer deliveryManId) {
+        this.deliveryManId = deliveryManId;
     }
 
-    public String getDiliverymanName() {
-        return diliverymanName;
+    public String getDeliveryManName() {
+        return deliveryManName;
     }
 
-    public void setDiliverymanName(String diliverymanName) {
-        this.diliverymanName = diliverymanName;
+    public void setDeliveryManName(String deliveryManName) {
+        this.deliveryManName = deliveryManName;
     }
 
-    public String getDiliverymanMobile() {
-        return diliverymanMobile;
+    public String getDeliveryManMobile() {
+        return deliveryManMobile;
     }
 
-    public void setDiliverymanMobile(String diliverymanMobile) {
-        this.diliverymanMobile = diliverymanMobile;
+    public void setDeliveryManMobile(String deliveryManMobile) {
+        this.deliveryManMobile = deliveryManMobile;
     }
 
     public Date getUpdateTime() {
@@ -493,11 +494,11 @@ public class Order implements Serializable {
     }
 
     private double netPrice() {
-        return (price - deliverPrice) / 100.00;
+        return (getPrice() - getDeliverPrice());
     }
 
     public double shareOfMerchant(double sharingScale) {
-        return deliverGroup == 0 ? 0 : netPrice() - shareOfPlatform(sharingScale);
+        return netPrice() - shareOfPlatform(sharingScale);
     }
 
     public double shareOfPlatform(double sharingScale) {
@@ -505,11 +506,11 @@ public class Order implements Serializable {
     }
 
     public double priceAsDouble() {
-        return price / 100.00;
+        return price;
     }
 
     public double deliverPriceAsDouble() {
-        return deliverPrice / 100.00;
+        return deliverPrice;
     }
 
     public boolean deliverByDaDa() {
@@ -517,7 +518,7 @@ public class Order implements Serializable {
     }
 
     public Double getPaymentAmount() {
-        return paymentAmount;
+        return getPrice() - getCouponAmount();
     }
 
     public void setPaymentAmount(Double paymentAmount) {
@@ -564,9 +565,14 @@ public class Order implements Serializable {
     public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
     }
-    
+
+    @Transient
+    public boolean isPayWithCoupon() {
+        return paymentMethod != null && paymentMethod == 0 && couponId != null && couponId > 0;
+    }
+
     public boolean isPayOnDeliver() {
-    	return paymentMethod != null && paymentMethod == 1;
+        return paymentMethod != null && paymentMethod == 1;
     }
 
 }

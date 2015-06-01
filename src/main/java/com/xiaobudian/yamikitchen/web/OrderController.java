@@ -3,10 +3,12 @@ package com.xiaobudian.yamikitchen.web;
 import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.CartValidator;
+import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.Product;
 import com.xiaobudian.yamikitchen.domain.order.Order;
+import com.xiaobudian.yamikitchen.service.CouponService;
 import com.xiaobudian.yamikitchen.service.MerchantService;
 import com.xiaobudian.yamikitchen.service.OrderService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,13 +31,16 @@ public class OrderController {
     private MerchantService merchantService;
     @Inject
     private CartValidator cartValidator;
+    @Inject
+    private CouponService couponService;
 
     @RequestMapping(value = "/carts/merchants/{rid}/{productId}/today/{isToday}", method = RequestMethod.POST)
     public Result addProductForCart(@PathVariable Long rid, @PathVariable Long productId, @PathVariable boolean isToday, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantBy(rid);
         if (merchant == null || merchant.getIsRest()) throw new RuntimeException("order.merchant.rest");
         Product product = merchantService.getProductBy(productId);
-        if (product == null || product.isSoldOut(isToday)) throw new RuntimeException("order.product.sold.out");
+        if (product == null || !product.getAvailable() || product.isSoldOut(isToday))
+            throw new RuntimeException("order.product.sold.out");
         if (!product.getMerchantId().equals(rid)) throw new RuntimeException("order.product.unauthorized");
         return Result.successResult(orderService.addProductInCart(user.getId(), rid, productId, isToday));
     }
@@ -72,6 +77,12 @@ public class OrderController {
 
     @RequestMapping(value = "/settlement/coupons/{couponId}", method = RequestMethod.PUT)
     public Result changeCoupon(@PathVariable Long couponId, @AuthenticationPrincipal User user) {
+        Cart cart = orderService.getCart(user.getId());
+        if (cart != null && cart.getPaymentMethod() == 1)
+            throw new RuntimeException("order.change.coupon.wrongPaymentMethod");
+        Coupon coupon = couponService.getCoupon(couponId);
+        if (coupon != null && !coupon.getUid().equals(user.getId()))
+            throw new RuntimeException("order.change.coupon.user.unauthorized");
         return Result.successResult(orderService.changeCouponForSettlement(user.getId(), couponId));
     }
 
@@ -93,12 +104,13 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/orders/status/{status}/today/{isToday}", method = RequestMethod.GET)
-    public Result getOrdersByCondition(@PathVariable Integer status, @PathVariable boolean isToday,
-                                       @MatrixVariable(value = "d", required = false) Long lastPaymentTimestamp, @AuthenticationPrincipal User user) {
+    public Result getOrdersByCondition(@PathVariable Integer status,
+                                       @MatrixVariable(value = "d", required = false) Long paymentTimestamp,
+                                       @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (merchant == null) throw new RuntimeException("user.merchant.not.create");
-        Date lastPaymentDate = lastPaymentTimestamp == null ? null : new Date(lastPaymentTimestamp);
-        return Result.successResult(orderService.getOrders(merchant.getId(), status, isToday, lastPaymentDate));
+        final Date d = paymentTimestamp == null ? null : new Date(paymentTimestamp);
+        return Result.successResult(orderService.getOrders(merchant.getId(), status, d));
     }
 
     private Order getOrder(Long orderId, User user) {
@@ -106,7 +118,7 @@ public class OrderController {
         if (order == null) throw new RuntimeException("order.does.not.exist");
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!order.isAuthorizedBy(user, merchant)) throw new RuntimeException("order.unauthorized");
-        if (order.getStatus() > 3 && order.getDeliverGroup() == null)
+        if (order.getStatus() > 3 && order.getDeliverMethod() == 0 && order.getDeliverGroup() == null)
             throw new RuntimeException("order.deliverGroup.not.empty");
         return order;
     }
@@ -125,7 +137,7 @@ public class OrderController {
 
     @RequestMapping(value = "/orders/{orderNo}", method = RequestMethod.GET)
     public Result getOrders(@PathVariable String orderNo) {
-        return Result.successResult(orderService.getOrdersBy(orderNo));
+        return Result.successResult(orderService.getOrderBy(orderNo));
     }
 
     @RequestMapping(value = "/orders/lastMonth", method = RequestMethod.GET)
@@ -152,9 +164,6 @@ public class OrderController {
     @RequestMapping(value = "/orders/{orderId}/finish", method = RequestMethod.POST)
     public Result finishOrder(@PathVariable Long orderId, @AuthenticationPrincipal User user) {
         Order order = getOrder(orderId, user);
-        if (order.getDeliverMethod() == 0) {
-        	if (order.getDeliverGroup() == null) throw new RuntimeException("order.deliverGroup.not.empty");
-        }
         return Result.successResult(orderService.finishOrder(order));
     }
 

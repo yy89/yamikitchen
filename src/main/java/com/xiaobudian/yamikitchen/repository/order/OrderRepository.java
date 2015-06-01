@@ -1,7 +1,6 @@
 package com.xiaobudian.yamikitchen.repository.order;
 
 import com.xiaobudian.yamikitchen.domain.order.Order;
-import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,18 +13,19 @@ import java.util.List;
  * Created by Johnson on 2015/4/22.
  */
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    @Query("from Order o, OrderItem oi where o.orderNo = oi.orderNo and o.merchantId = ?1 and o.status in (?2) and o.createDate>=?3 and o.createDate<=?4 order by o.status ASC, o.createDate DESC")
-    public List<OrderDetail> findOrdersWithDetail(Long merchantId, Collection<Integer> statuses, Date dateFrom, Date dateTo, Pageable pageable);
+    @Query("from Order o where o.merchantId = ?1 and o.status in (?2) and o.createDate>=?3 and o.createDate<=?4 order by o.status ASC, o.createDate DESC")
+    public List<Order> findOrders(Long merchantId, Collection<Integer> statuses, Date d1, Date d2, Pageable pageable);
 
-    @Query("from Order o, OrderItem oi where o.orderNo = oi.orderNo and o.merchantId = ?1 and o.status in (?2) and o.expectDate>=?3 and o.expectDate<=?4 order by o.createDate DESC")
-    public List<OrderDetail> findOrders(Long merchantId, Collection<Integer> statuses, Date dateFrom, Date dateTo);
+    @Query("from Order o where o.merchantId = ?1 and o.status in (?2) order by o.paymentDate DESC")
+    public List<Order> findOrders(Long merchantId, Collection<Integer> statuses);
 
-    @Query("from Order o, OrderItem oi where o.orderNo = oi.orderNo and o.merchantId = ?1 and o.status in (?2) and o.expectDate>=?3 and o.expectDate<=?4 and o.paymentDate >=?5 order by o.createDate DESC")
-    public List<OrderDetail> findLatestOrders(Long merchantId, Collection<Integer> statuses, Date e1, Date e2, Date p1);
-
+    @Query("from Order o where o.merchantId = ?1 and o.status in (?2) and o.paymentDate >=?3 order by o.paymentDate DESC")
+    public List<Order> findByPaymentDate(Long merchantId, Collection<Integer> statuses, Date p1);
 
     @Query("select o from Order o where o.uid=?1 order by o.createDate desc")
     public List<Order> findByUid(Long uid);
+
+    public int countByUidAndHasPaidTrue(Long uid);
 
     public Order findByOrderNo(String orderNo);
 
