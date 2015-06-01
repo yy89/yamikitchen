@@ -153,8 +153,13 @@ public class DadaServiceImpl implements DadaService {
         requestMap.put("origin_id", order.getOrderNo());
         requestMap.put("city_name", "上海");
         requestMap.put("city_code", "021");
-        requestMap.put("pay_for_supplier_fee", "0");
-        requestMap.put("fetch_from_receiver_fee", "0");
+        if (order.isPayOnDeliver()) {
+        	requestMap.put("pay_for_supplier_fee", String.valueOf((order.getPrice() / 100.0)));
+        	requestMap.put("fetch_from_receiver_fee", String.valueOf((order.getPrice() / 100.0) + 3d));
+        } else {
+        	requestMap.put("pay_for_supplier_fee", "0");
+        	requestMap.put("fetch_from_receiver_fee", "0");
+        }
         requestMap.put("deliver_fee", "0");
         requestMap.put("create_time", String.valueOf(order.getCreateDate().getTime()));
         requestMap.put("info", StringUtils.isBlank(order.getRemark()) ? "订单备注" : order.getRemark());

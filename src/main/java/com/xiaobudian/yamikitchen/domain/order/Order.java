@@ -564,4 +564,9 @@ public class Order implements Serializable {
     public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
     }
+    
+    public boolean isPayOnDeliver() {
+    	return paymentMethod != null && paymentMethod == 1;
+    }
+
 }
