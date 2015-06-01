@@ -103,7 +103,7 @@ public class OrderController {
         return Result.successResult(orderService.getOrders(user.getId()));
     }
 
-    @RequestMapping(value = "/orders/status/{status}/today/{isToday}", method = RequestMethod.GET)
+    @RequestMapping(value = "/orders/status/{status}", method = RequestMethod.GET)
     public Result getOrdersByCondition(@PathVariable Integer status,
                                        @MatrixVariable(value = "d", required = false) Long paymentTimestamp,
                                        @AuthenticationPrincipal User user) {
