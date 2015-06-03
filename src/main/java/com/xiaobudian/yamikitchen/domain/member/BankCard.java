@@ -27,6 +27,7 @@ public class BankCard implements Serializable {
     private String name;
     private Integer idType = 0;//���֤����
     private String idNo;
+    private String region;
 
     public Long getId() {
         return id;
@@ -109,4 +110,11 @@ public class BankCard implements Serializable {
         return cardNo != null && ValidateUtil.checkBankCard(cardNo);
     }
 
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
 }
