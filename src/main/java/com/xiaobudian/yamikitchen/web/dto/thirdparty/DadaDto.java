@@ -5,7 +5,7 @@ package com.xiaobudian.yamikitchen.web.dto.thirdparty;
  */
 public class DadaDto {
     private DadaResult result;
-    private Integer status;
+    private String status;
     private String errorCode;
 
     private String client_id;
@@ -151,12 +151,12 @@ public class DadaDto {
         this.dm_id = dm_id;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
+	public String getStatus() {
+		return status;
+	}
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
 }
