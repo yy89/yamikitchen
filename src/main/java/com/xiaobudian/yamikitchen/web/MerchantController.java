@@ -186,6 +186,8 @@ public class MerchantController {
         if (!merchant.isCreateBy(user.getId())) throw new RuntimeException("user.merchant.product.unauthorized");
         product.setMerchantId(merchant.getId());
         product.setCreateDate(new Date());
+        product.setTwRestCount(product.getSupplyPerDay());
+        product.setRestCount(product.getSupplyPerDay());
         return Result.successResult(merchantService.saveProduct(product));
     }
 
@@ -195,6 +197,8 @@ public class MerchantController {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!merchant.isCreateBy(user.getId())) throw new RuntimeException("user.merchant.product.unauthorized");
         if (product.getSupplyPerDay() != null) product.setRestCount(product.getSupplyPerDay());
+        product.setTwRestCount(product.getSupplyPerDay());
+        product.setRestCount(product.getSupplyPerDay());
         return Result.successResult(merchantService.updateProduct(product));
     }
 

@@ -19,23 +19,24 @@ public class Product implements Serializable {
     private String summary;
     private String pictures;
     private String availableTime;
-    @Column(insertable = false, columnDefinition = "int default 1")
+    @Column(insertable = false, columnDefinition = "int default 0")
     private Long restCount = 0l;
+    @Column(insertable = false, columnDefinition = "int default 0")
     private Long twRestCount = 0l;
     private String tags;
-    @Column(insertable = false, columnDefinition = "int default 1")
+    @Column(insertable = false, columnDefinition = "int default 0")
     private Long soldCount = 0l;
     private Long supplyPerDay;
-    @Column(insertable = false, columnDefinition = "int default 1")
+    @Column(insertable = false, columnDefinition = "int default 0")
     private Long commentCount = 0l;
-    @Column(insertable = false, columnDefinition = "int default 1")
+    @Column(insertable = false, columnDefinition = "int default 0")
     private Long favoriteCount = 0l;
     private Boolean available = true;
     private Boolean removed = false;
     private Boolean main = false;
     private boolean soldOut = false;
-    private Date createDate = new Date();
-    private Date lastModifiedDate;
+    private Date createDate ;
+    private Date lastModifiedDate = new Date();
 
     public Long getId() {
         return id;
