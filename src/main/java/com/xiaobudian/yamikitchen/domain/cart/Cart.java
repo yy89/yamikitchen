@@ -19,13 +19,14 @@ public class Cart implements Serializable {
     private Long uid;
     private Long merchantId;
     private String merchantName;
-    private Long totalAmount = 0l;
+    private Double totalAmount = 0.00;
     private Integer totalQuantity = 0;
     private Integer deliverMethod = 0;
     private Integer paymentMethod = 0;
     private boolean today = true;
     private List<OrderItem> items = new ArrayList<>();
     private Map<String, String> extra = new HashMap<>();
+    private Long couponId;
 
     public Cart() {
     }
@@ -37,6 +38,14 @@ public class Cart implements Serializable {
         this.merchantName = merchant.getName();
         this.today = today;
         putExtra(extraFieldName, deliverPrice);
+    }
+
+    public Long getCouponId() {
+        return couponId;
+    }
+
+    public void setCouponId(Long couponId) {
+        this.couponId = couponId;
     }
 
     public Long getUid() {
@@ -63,8 +72,8 @@ public class Cart implements Serializable {
         this.merchantName = merchantName;
     }
 
-    public Long getTotalAmount() {
-        totalAmount = 0l;
+    public Double getTotalAmount() {
+        totalAmount = 0.00d;
         for (OrderItem item : getItems()) {
             totalAmount += item.getAmount();
         }
@@ -84,7 +93,7 @@ public class Cart implements Serializable {
         this.totalQuantity = totalQuantity;
     }
 
-    public void setTotalAmount(Long totalAmount) {
+    public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
 
@@ -153,8 +162,8 @@ public class Cart implements Serializable {
         }
     }
 
-    public Long deliverPrice() {
+    public Double deliverPrice() {
         String priceString = extra.get(new ArrayList<>(extra.keySet()).get(0));
-        return CollectionUtils.isEmpty(items) ? 0l : NumberUtils.createLong(priceString);
+        return CollectionUtils.isEmpty(items) ? 0l : NumberUtils.createDouble(priceString);
     }
 }

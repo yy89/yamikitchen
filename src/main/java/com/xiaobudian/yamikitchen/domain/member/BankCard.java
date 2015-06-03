@@ -25,7 +25,7 @@ public class BankCard implements Serializable {
     private String cardNo;
     private String branch;
     private String name;
-    private Integer idType = 0;//Éí·ÝÖ¤ÀàÐÍ
+    private Integer idType = 0;//ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½
     private String idNo;
 
     public Long getId() {
@@ -101,13 +101,12 @@ public class BankCard implements Serializable {
         this.idNo = idNo;
     }
 
-
-    public boolean isValidatedIdNo(){
-        return idNo!=null&&ValidateUtil.checkIdCard(idNo);
+    public boolean isValidIdNo() {
+        return idNo != null && ValidateUtil.checkIdCard(idNo);
     }
 
-    public boolean isValidatedCardNo(){
-        return cardNo!=null&&ValidateUtil.checkBankCard(cardNo);
+    public boolean isValidCardNo() {
+        return cardNo != null && ValidateUtil.checkBankCard(cardNo);
     }
 
 }

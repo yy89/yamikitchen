@@ -17,6 +17,10 @@ public interface CouponService {
 
     public List<CouponSummary> getCouponHistories();
 
-    public Coupon getCouponBy(Long uid, Long price);
+    public Coupon getCouponBy(Long uid, Double price);
+
+    public Coupon getCoupon(Long couponId);
+
+    public Coupon addCoupon(String mobile, Long type);
 
 }

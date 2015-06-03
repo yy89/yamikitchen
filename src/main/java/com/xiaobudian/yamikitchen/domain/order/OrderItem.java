@@ -23,9 +23,9 @@ public class OrderItem implements Serializable {
     private String orderNo;
     private Long productId;
     private String name;
-    private Long price = 0l;
+    private Double price = 0.00d;
     private Integer quantity = 0;
-    private Long amount = 0l;
+    private Double amount = 0.00d;
 
     public OrderItem() {
     }
@@ -71,19 +71,19 @@ public class OrderItem implements Serializable {
         this.name = name;
     }
 
-    public Long getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public Long getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(Double price) {
         this.price = price;
         amount = quantity * price;
     }

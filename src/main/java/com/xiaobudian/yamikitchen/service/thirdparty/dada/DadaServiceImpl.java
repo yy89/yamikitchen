@@ -95,9 +95,9 @@ public class DadaServiceImpl implements DadaService {
         Order order = orderRepository.findByOrderNo(dadaDto.getOrder_id());
         Assert.notNull(order, "Order not longer exist : " + dadaDto.getOrder_id());
         order.setDeliverGroupOrderStatus(dadaDto.getOrder_status());
-        order.setDiliverymanId(dadaDto.getDm_id());
-        order.setDiliverymanName(dadaDto.getDm_name());
-        order.setDiliverymanMobile(dadaDto.getDm_mobile());
+        order.setDeliveryManId(dadaDto.getDm_id());
+        order.setDeliveryManName(dadaDto.getDm_name());
+        order.setDeliveryManMobile(dadaDto.getDm_mobile());
         order.setUpdateTime(new Date(dadaDto.getUpdate_time()));
         if (dadaDto.getOrder_status() == 3) {
             order.deliver();
@@ -154,11 +154,11 @@ public class DadaServiceImpl implements DadaService {
         requestMap.put("city_name", "上海");
         requestMap.put("city_code", "021");
         if (order.isPayOnDeliver()) {
-        	requestMap.put("pay_for_supplier_fee", String.valueOf((order.getPrice() / 100.0)));
-        	requestMap.put("fetch_from_receiver_fee", String.valueOf((order.getPrice() / 100.0) + 3d));
+            requestMap.put("pay_for_supplier_fee", String.valueOf((order.getPrice() / 100.0)));
+            requestMap.put("fetch_from_receiver_fee", String.valueOf((order.getPrice() / 100.0) + 3d));
         } else {
-        	requestMap.put("pay_for_supplier_fee", "0");
-        	requestMap.put("fetch_from_receiver_fee", "0");
+            requestMap.put("pay_for_supplier_fee", "0");
+            requestMap.put("fetch_from_receiver_fee", "0");
         }
         requestMap.put("deliver_fee", "0");
         requestMap.put("create_time", String.valueOf(order.getCreateDate().getTime()));
@@ -203,24 +203,4 @@ public class DadaServiceImpl implements DadaService {
         }
         return null;
     }
-
-    public static void main(String[] args) {
-        DadaServiceImpl impl = new DadaServiceImpl();
-        String token = "9b8cc46f3aa0eec29b8cc46f3aa0eec2";
-        Date currentDate = new Date();
-        Long timestamp = currentDate.getTime();
-        String signature = impl.getSignature(currentDate, token);
-        String orderId = "100026-20150524-5";
-        String fetchOrder = "/v1_0/fetchOrder/";
-        String acceptOrder = "/v1_0/acceptOrder/";
-        String url1 = "http://public.ga.dev.imdada.cn" + fetchOrder + "?token="
-                + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
-        String url2 = "http://public.ga.dev.imdada.cn" + acceptOrder + "?token="
-                + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
-        System.out.println("达达确认订单：");
-        System.out.println(url2);
-        System.out.println("\n达达取件：");
-        System.out.println(url1);
-    }
-
 }

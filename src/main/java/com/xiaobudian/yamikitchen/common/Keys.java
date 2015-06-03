@@ -46,4 +46,16 @@ public final class Keys {
     public static String commentMessageIdQueue(Long commentId) {
         return String.format("comment:%d:message", commentId);
     }
+
+    public static String payingQueue() {
+        return "paying.orders";
+    }
+
+    public static String deliveringQueue(Long orderId) {
+        return String.format("delivering:order:%d", orderId);
+    }
+
+    public static String unPaidQueue(Long orderId) {
+        return String.format("unPaid:order:%d", orderId);
+    }
 }

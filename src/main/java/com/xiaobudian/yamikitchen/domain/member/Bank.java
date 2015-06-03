@@ -4,12 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * Created by hackcoder on 2015/5/28.
  */
 @Entity
-public class Bank {
+public class Bank implements Serializable {
+    private static final long serialVersionUID = -8157790883747202163L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

@@ -16,6 +16,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("select p from Product p where p.removed <> true and p.merchantId =?1")
     public List<Product> findByMerchantId(Long merchantId, Pageable pageable);
 
+    @Query("select p from Product p where p.removed <> true and p.available<>false and p.merchantId =?1")
+    public List<Product> findAvailableByMerchantId(Long merchantId, Pageable pageable);
+
     @Query("select p from Product p where p.main = true and p.removed <> true and p.merchantId =?1")
     public List<Product> findMainProducts(Long merchantId);
 

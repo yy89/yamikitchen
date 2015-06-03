@@ -1,5 +1,6 @@
 package com.xiaobudian.yamikitchen.service;
 
+import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.account.*;
 import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
@@ -9,12 +10,10 @@ import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
 import com.xiaobudian.yamikitchen.domain.operation.PlatformAccount;
 import com.xiaobudian.yamikitchen.domain.operation.PlatformTransactionFlow;
-import com.xiaobudian.yamikitchen.domain.order.Order;
-import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
-import com.xiaobudian.yamikitchen.domain.order.OrderPostHandler;
-import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
+import com.xiaobudian.yamikitchen.domain.order.*;
 import com.xiaobudian.yamikitchen.repository.PlatformAccountRepository;
 import com.xiaobudian.yamikitchen.repository.PlatformTransactionFlowRepository;
+import com.xiaobudian.yamikitchen.repository.RedisRepository;
 import com.xiaobudian.yamikitchen.repository.account.*;
 import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
 import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,6 +56,8 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     @Inject
     private AccountRepository accountRepository;
     @Inject
+    private BankRepository bankRepository;
+    @Inject
     private TransactionFlowRepository transactionFlowRepository;
     @Inject
     private MerchantRepository merchantRepository;
@@ -80,11 +80,15 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     private PlatformTransactionFlowRepository platformTransactionFlowRepository;
     @Inject
     private CouponRepository couponRepository;
-    private List<String> inQueueList = new ArrayList<>();
+    @Inject
+    private RedisRepository redisRepository;
+    @Inject
+    private QueueScheduler queueScheduler;
 
     public void writePaymentHistory(AlipayHistory history) {
-        if (inQueueList.indexOf(history.getOut_trade_no()) > -1) return;
-        inQueueList.add(history.getOut_trade_no());
+        queueScheduler.put(Keys.deliveringQueue(19l), 19l, 1l);
+        if (redisRepository.isMember(Keys.payingQueue(), history.getOut_trade_no())) return;
+        redisRepository.addForSet(Keys.payingQueue(), history.getOut_trade_no());
         Order order = orderRepository.findByOrderNo(history.getOut_trade_no());
         if (order.isHasPaid()) return;
         alipayHistoryRepository.save(history);
@@ -93,8 +97,8 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
         merchant.updateTurnOver(order);
         updateCouponStatus(order);
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));
+        redisRepository.removeFromSet(Keys.payingQueue(), history.getOut_trade_no());
     }
-
 
     private void updateCouponStatus(Order order) {
         if (order.getCouponId() == null) return;
@@ -106,6 +110,7 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
 
     private Order payOrder(Order order) {
         order.pay();
+        order.setFirstDeal(orderRepository.countByUidAndHasPaidTrue(order.getUid()) < 1);
         orderPostHandler.handle(new OrderDetail(order, orderItemRepository.findByOrderNo(order.getOrderNo())), null);
         return orderRepository.save(order);
     }
@@ -116,13 +121,21 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
         transactionProcessor.process(order, 2004);
     }
 
+    @Override
+    public Bank getBankByName(String bankName) {
+        return bankRepository.findByBankName(bankName);
+    }
 
+    @Override
+    public Bank getBankByBinCode(String binCode) {
+        return bankRepository.findByBinCode(binCode);
+    }
 
     @Override
     public String getOrderStringOfAlipay(Order order) {
         String signTemplate = StringUtils.substringBefore(orderStringTemplate, "&sign");
-        String signMessage = MessageFormat.format(signTemplate, order.getOrderNo(), order.getPrice() / 100.00d);
-        return MessageFormat.format(orderStringTemplate, order.getOrderNo(), order.getPrice() / 100.00d, Util.signContent(signMessage, privateKey, "UTF-8"));
+        String signMessage = MessageFormat.format(signTemplate, order.getOrderNo(), order.getPaymentAmount());
+        return MessageFormat.format(orderStringTemplate, order.getOrderNo(), order.getPaymentAmount(), Util.signContent(signMessage, privateKey, "UTF-8"));
     }
 
     @Override
@@ -174,7 +187,7 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    @Scheduled(cron = "0 13 15 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void executeDailyJob() {
         merchantRepository.updateTurnover();
         productRepository.updateRest();

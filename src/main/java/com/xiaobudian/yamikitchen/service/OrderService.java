@@ -30,13 +30,13 @@ public interface OrderService {
 
     public Settlement getSettlement(Long uid);
 
-    public List<OrderDetail> getOrders(Long merchantId, Integer status, boolean isToday, Date lastPaymentDate);
+    public List<OrderDetail> getOrders(Long merchantId, Integer status, Date paymentDate);
 
     public Order confirmOrder(Order order);
 
     public void settlement(Order order);
 
-    public OrderDetail getOrdersBy(String orderNo);
+    public OrderDetail getOrderBy(String orderNo);
 
     public List<Order> getOrdersForLastMonth(Long uid);
 
@@ -46,7 +46,7 @@ public interface OrderService {
 
     public Cart changeDeliverMethodOfCart(Long uid, Integer deliverMethod);
 
-    public Cart changePaymentMethodOfCart(Long uid, Integer paymentMethod);
+    public Settlement changePaymentMethodOfCart(Long uid, Integer paymentMethod);
 
     public Order getOrder(Long orderId);
 

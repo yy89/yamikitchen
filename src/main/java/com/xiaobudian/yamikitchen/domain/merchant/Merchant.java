@@ -74,6 +74,7 @@ public class Merchant implements Serializable {
     private Boolean isAutoOpen = false;
     private Date createDate;
     private Date lastModifiedDate = new Date();
+    private double star = 0.00d;
 
     public Long getId() {
         return id;
@@ -402,7 +403,7 @@ public class Merchant implements Serializable {
     }
 
     public void updateTurnOver(Order order) {
-        this.turnover += order.getPrice() / 100.00d;
+        this.turnover += order.getPrice();
     }
 
     public Boolean getIsAutoOpen() {
@@ -415,5 +416,13 @@ public class Merchant implements Serializable {
 
     public boolean isApproved() {
         return verifyStatus != null && verifyStatus == 1;
+    }
+
+    public double getStar() {
+        return star;
+    }
+
+    public void setStar(double star) {
+        this.star = star;
     }
 }

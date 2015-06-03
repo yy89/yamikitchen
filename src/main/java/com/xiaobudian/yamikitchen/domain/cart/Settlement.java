@@ -3,6 +3,8 @@ package com.xiaobudian.yamikitchen.domain.cart;
 import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 
+import java.math.BigDecimal;
+
 /**
  * Created by johnson1 on 5/4/15.
  */
@@ -12,16 +14,22 @@ public class Settlement {
     private Cart cart;
     private Coupon coupon;
     private Integer paymentMethod;
-    private Long totalAmount = 0l;
+    private Double totalAmount = 0.00d;
 
     public Settlement() {
     }
 
-    public Settlement(Coupon coupon, Integer paymentMethod, Long totalAmount) {
+    public Settlement(Coupon coupon, Integer paymentMethod, Double totalAmount) {
         this();
         this.coupon = coupon;
         this.paymentMethod = paymentMethod;
         this.totalAmount = totalAmount;
+    }
+
+    public Settlement(Cart cart) {
+        this.cart = cart;
+        this.totalAmount = cart.getTotalAmount();
+        this.paymentMethod = cart.getPaymentMethod();
     }
 
     public UserAddress getAddress() {
@@ -54,13 +62,16 @@ public class Settlement {
 
     public void setCoupon(Coupon coupon) {
         this.coupon = coupon;
+        if (coupon == null) return;
+        this.totalAmount -= coupon.getAmount();
+        cart.setCouponId(coupon.getId());
     }
 
-    public Long getTotalAmount() {
-        return totalAmount;
+    public Double getTotalAmount() {
+        return new BigDecimal(totalAmount).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
-    public void setTotalAmount(Long totalAmount) {
+    public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
 

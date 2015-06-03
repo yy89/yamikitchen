@@ -18,8 +18,8 @@ public class Coupon implements Serializable {
     private Long id;
     private Long uid;
     private String name;
-    private Long amount;
-    private Long usageCondition;
+    private Double amount;
+    private Double usageCondition;
     private Date availableDate = new Date();
     private Date expireDate;
     private String phone;
@@ -30,7 +30,7 @@ public class Coupon implements Serializable {
     public Coupon() {
     }
 
-    public Coupon(Long uid, String name, Long amount, Long usageCondition, Date expireDate, String phone) {
+    public Coupon(Long uid, String name, Double amount, Double usageCondition, Date expireDate, String phone) {
         this();
         this.uid = uid;
         this.name = name;
@@ -68,19 +68,19 @@ public class Coupon implements Serializable {
         this.name = name;
     }
 
-    public Long getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public Long getUsageCondition() {
+    public Double getUsageCondition() {
         return usageCondition;
     }
 
-    public void setUsageCondition(Long usageCondition) {
+    public void setUsageCondition(Double usageCondition) {
         this.usageCondition = usageCondition;
     }
 

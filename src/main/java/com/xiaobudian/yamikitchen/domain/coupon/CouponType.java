@@ -19,8 +19,8 @@ public class CouponType implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Long amount;
-    private Long usageCondition;
+    private Double amount;
+    private Double usageCondition;
     private Integer expiredDays;
     private Integer quantity;
     private Date createDate;
@@ -35,19 +35,19 @@ public class CouponType implements Serializable {
         this.id = id;
     }
 
-    public Long getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public Long getUsageCondition() {
+    public Double getUsageCondition() {
         return usageCondition;
     }
 
-    public void setUsageCondition(Long usageCondition) {
+    public void setUsageCondition(Double usageCondition) {
         this.usageCondition = usageCondition;
     }
 
