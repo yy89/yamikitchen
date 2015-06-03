@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -134,6 +135,7 @@ public class MerchantController {
         if (merchantService.getMerchantByCreator(user.getId()) != null)
             throw new RuntimeException("user.merchant.exists");
         merchant.setCreator(user.getId());
+        merchant.setCreateDate(new Date());
         return Result.successResult(merchantService.saveMerchant(merchant));
     }
 
@@ -180,6 +182,7 @@ public class MerchantController {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!merchant.isCreateBy(user.getId())) throw new RuntimeException("user.merchant.product.unauthorized");
         product.setMerchantId(merchant.getId());
+        product.setCreateDate(new Date());
         return Result.successResult(merchantService.saveProduct(product));
     }
 

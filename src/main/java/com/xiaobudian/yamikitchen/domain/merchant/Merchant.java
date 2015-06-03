@@ -72,6 +72,7 @@ public class Merchant implements Serializable {
     private double sharing = 0;
     @Column(insertable = false, columnDefinition = "bit default 0")
     private Boolean isAutoOpen = false;
+    private Double star = 0.0d;
     private Date createDate;
     private Date lastModifiedDate = new Date();
 
@@ -415,5 +416,13 @@ public class Merchant implements Serializable {
 
     public boolean isApproved() {
         return verifyStatus != null && verifyStatus == 1;
+    }
+
+    public Double getStar() {
+        return star;
+    }
+
+    public void setStar(Double star) {
+        this.star = star;
     }
 }
