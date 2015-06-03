@@ -187,7 +187,6 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         return settlement;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public List<OrderDetail> getOrders(Long merchantId, Integer status, Date paymentDate) {
         Collection<Integer> statuses = status == 0 ? OrderStatus.PENDING : Arrays.asList(status);
