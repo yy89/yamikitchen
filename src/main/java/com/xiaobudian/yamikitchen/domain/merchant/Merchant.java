@@ -23,7 +23,8 @@ public class Merchant implements Serializable {
     @JsonProperty(value = "rid")
     private Long id;
     private String name;
-    private Integer type;
+    @Column(insertable = false, columnDefinition = "int default 0")
+    private Integer type = 0;
     private String merchantNo;
     private String voiceIntroduction;
     private Double longitude;
@@ -32,8 +33,8 @@ public class Merchant implements Serializable {
     private String headPic;
     private String phone;
     private String pictures;
-    private Boolean messHall;
-    private Integer countOfMessHall;
+    private Boolean messHall = false;
+    private Integer countOfMessHall = 0;
     private Boolean selfPickup;
     private Boolean supportDelivery;
     @Column(insertable = false, columnDefinition = "bit default 0")
@@ -71,7 +72,7 @@ public class Merchant implements Serializable {
     @JsonIgnore
     private double sharing = 0;
     @Column(insertable = false, columnDefinition = "bit default 0")
-    private Boolean isAutoOpen = false;
+    private Boolean isAutoOpen;
     private Date createDate;
     private Date lastModifiedDate = new Date();
     private double star = 0.00d;

@@ -147,6 +147,8 @@ public class MerchantController {
         if (!m.isCreateBy(user.getId())) throw new RuntimeException("user.merchant.unauthorized");
         merchant.setId(m.getId());
         merchant.setVerifyStatus(null);
+        merchant.setIsAutoOpen(null);
+        merchant.setIsRest(null);
         return Result.successResult(merchantService.updateMerchant(merchant));
     }
 
