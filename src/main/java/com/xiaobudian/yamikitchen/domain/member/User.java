@@ -21,7 +21,7 @@ public class User implements Serializable, UserDetails {
     @JsonProperty(value = "uid")
     private Long id;
     private String username;
-    private Integer type = 0;
+    private Integer type;
     private boolean firstPay;
     private String headPic;
     private String nickName;

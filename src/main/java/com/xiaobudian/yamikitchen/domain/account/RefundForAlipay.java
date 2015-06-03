@@ -15,7 +15,7 @@ public class RefundForAlipay {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	private String tradeNo;
-	private String price;
+	private double price;
 	private String orderNo;
 	private String remark;
 	private Long uid;
@@ -53,12 +53,6 @@ public class RefundForAlipay {
 	public void setUid(Long uid) {
 		this.uid = uid;
 	}
-	public String getPrice() {
-		return price;
-	}
-	public void setPrice(String price) {
-		this.price = price;
-	}
 	public Boolean getHasRefund() {
 		return hasRefund;
 	}
@@ -76,6 +70,12 @@ public class RefundForAlipay {
 	}
 	public void setDisposeDate(Date disposeDate) {
 		this.disposeDate = disposeDate;
+	}
+	public double getPrice() {
+		return price;
+	}
+	public void setPrice(double price) {
+		this.price = price;
 	}
 	
 }
