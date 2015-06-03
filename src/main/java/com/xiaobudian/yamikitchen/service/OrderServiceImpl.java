@@ -312,7 +312,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
             return;
         }
         AlipayHistory alipayHistory = alipayHistoryList.get(0);
-        refundForAlipay.setPrice(alipayHistory.getPrice());
+        refundForAlipay.setPrice(Double.parseDouble(alipayHistory.getPrice()));
         refundForAlipay.setTradeNo(alipayHistory.getTrade_no());
         refundForAlipayRepository.save(refundForAlipay);
     }
