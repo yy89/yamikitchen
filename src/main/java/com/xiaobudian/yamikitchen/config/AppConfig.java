@@ -2,6 +2,7 @@ package com.xiaobudian.yamikitchen.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
+import com.xiaobudian.yamikitchen.domain.order.ScheduledOrderListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,10 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.Topic;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -35,6 +40,7 @@ import java.beans.PropertyVetoException;
 @EnableAspectJAutoProxy
 public class AppConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+    private static final String EVENT_NOTIFY_KEY = "__keyevent@0__:expired";
     @Value(value = "${jdbc.dialect}")
     private String dialect;
     @Value(value = "${jdbc.url}")
@@ -126,4 +132,25 @@ public class AppConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean(name = "messageListenerContainer")
+    public RedisMessageListenerContainer redisMessageListenerContainer() {
+        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory());
+        Topic topic = new ChannelTopic(EVENT_NOTIFY_KEY);
+        container.addMessageListener(messageListenerAdapter(), topic);
+        return container;
+    }
+
+    @Bean
+    public ScheduledOrderListener scheduledOrderListener() {
+        return new ScheduledOrderListener();
+    }
+
+    @Bean
+    public MessageListenerAdapter messageListenerAdapter() {
+        return new MessageListenerAdapter(scheduledOrderListener());
+    }
+
+
 }

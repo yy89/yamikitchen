@@ -72,9 +72,9 @@ public class Merchant implements Serializable {
     private double sharing = 0;
     @Column(insertable = false, columnDefinition = "bit default 0")
     private Boolean isAutoOpen = false;
-    private Double star = 0.0d;
     private Date createDate;
     private Date lastModifiedDate = new Date();
+    private double star = 0.00d;
 
     public Long getId() {
         return id;
@@ -403,7 +403,7 @@ public class Merchant implements Serializable {
     }
 
     public void updateTurnOver(Order order) {
-        this.turnover += order.getPrice() / 100.00d;
+        this.turnover += order.getPrice();
     }
 
     public Boolean getIsAutoOpen() {
@@ -418,11 +418,11 @@ public class Merchant implements Serializable {
         return verifyStatus != null && verifyStatus == 1;
     }
 
-    public Double getStar() {
+    public double getStar() {
         return star;
     }
 
-    public void setStar(Double star) {
+    public void setStar(double star) {
         this.star = star;
     }
 }

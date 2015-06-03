@@ -15,7 +15,7 @@ public class Product implements Serializable {
     private Long id;
     private Long merchantId;
     private String name;
-    private Long price;
+    private Double price;
     private String summary;
     private String pictures;
     private String availableTime;
@@ -33,9 +33,9 @@ public class Product implements Serializable {
     private Boolean available = true;
     private Boolean removed = false;
     private Boolean main = false;
-    private boolean soldOut;
-    private Date createDate;
-    private Date lastModifiedDate = new Date();
+    private boolean soldOut = false;
+    private Date createDate = new Date();
+    private Date lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -61,12 +61,11 @@ public class Product implements Serializable {
         this.name = name;
     }
 
-    public Long getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-
-    public void setPrice(Long price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

@@ -18,7 +18,7 @@ public interface MerchantService {
 
     public boolean removeMerchant(long id);
 
-    public List<Product> getProductsBy(Long rid, Integer page, Integer size);
+    public List<Product> getProductsBy(Long rid, boolean isMerchant, Integer page, Integer size);
 
     public Product saveProduct(Product product);
 

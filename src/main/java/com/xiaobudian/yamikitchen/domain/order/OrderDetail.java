@@ -9,6 +9,7 @@ import java.util.List;
 public class OrderDetail {
     private Order order;
     private List<OrderItem> items = new ArrayList<>();
+    private String shareUrl;
 
     public OrderDetail() {
     }
@@ -32,5 +33,13 @@ public class OrderDetail {
 
     public void setItems(List<OrderItem> items) {
         this.items = items;
+    }
+
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
     }
 }

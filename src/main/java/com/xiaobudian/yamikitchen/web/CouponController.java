@@ -25,6 +25,11 @@ public class CouponController {
         return Result.successResult(available ? couponService.getAvailableCoupons(uid) : couponService.getExpiredCoupons(uid));
     }
 
+    @RequestMapping(value = "/coupons/mobile/{mobile}/types/{type}", method = RequestMethod.POST)
+    public Result addCoupon(@PathVariable String mobile, @PathVariable Long type, @AuthenticationPrincipal User user) {
+        return Result.successResult(couponService.addCoupon(mobile, type));
+    }
+
     @RequestMapping(value = "/couponHistories", method = RequestMethod.GET)
     public Result getCouponHistories(@AuthenticationPrincipal User user) {
         return Result.successResult(couponService.getCouponHistories());

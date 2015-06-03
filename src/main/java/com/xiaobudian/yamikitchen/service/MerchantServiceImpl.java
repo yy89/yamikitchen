@@ -69,8 +69,9 @@ public class MerchantServiceImpl implements MerchantService, ApplicationEventPub
     }
 
     @Override
-    public List<Product> getProductsBy(Long rid, Integer page, Integer size) {
-        return productRepository.findByMerchantId(rid, new PageRequest(page, size));
+    public List<Product> getProductsBy(Long rid, boolean isMerchant, Integer page, Integer size) {
+        return isMerchant ? productRepository.findByMerchantId(rid, new PageRequest(page, size)) :
+                productRepository.findAvailableByMerchantId(rid, new PageRequest(page, size));
     }
 
     @Override
@@ -99,6 +100,7 @@ public class MerchantServiceImpl implements MerchantService, ApplicationEventPub
     private Merchant saveMerchant(Comment comment) {
         Merchant merchant = merchantRepository.findOne(comment.getMerchantId());
         merchant.setCommentCount(merchant.getCommentCount() + 1);
+        merchant.setStar(commentRepository.avgOfMerchantStar(merchant.getId()));
         merchantRepository.save(merchant);
         return merchant;
     }
@@ -228,9 +230,12 @@ public class MerchantServiceImpl implements MerchantService, ApplicationEventPub
         if (!comment.getMerchantId().equals(merchantId)) return false;
         Merchant merchant = merchantRepository.findOne(merchantId);
         merchant.setCommentCount(Math.max(0, merchant.getCommentCount() - 1));
+        merchant.setStar(commentRepository.avgOfMerchantStar(merchantId));
         merchantRepository.save(merchant);
         commentRepository.delete(comment);
-//        recoverCommentMessage(commentId);
+        Order order = orderRepository.findOne(comment.getOrderId());
+        order.setCommentable(true);
+        orderRepository.save(order);
         return true;
     }
 

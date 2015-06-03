@@ -28,10 +28,10 @@ import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static com.xiaobudian.yamikitchen.domain.order.QueueScheduler.DELIVER_QUEUE_ESCAPE_TIME;
+import static com.xiaobudian.yamikitchen.domain.order.QueueScheduler.UNPAID_QUEUE_ESCAPE_TIME;
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -70,6 +70,8 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     private SettlementCenter settlementCenter;
     @Inject
     private AccountService accountService;
+    @Inject
+    private QueueScheduler queueScheduler;
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId, boolean isToday) {
@@ -103,13 +105,13 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Override
     public List<OrderDetail> getTodayPendingOrders(Long rid, int page, int pageSize) {
         PageRequest pr = new PageRequest(page, pageSize);
-        return orderRepository.findOrdersWithDetail(rid, OrderStatus.PROCESSING, Day.TODAY.startOfDay(), Day.TODAY.endOfDay(), pr);
+        return getOrderDetails(orderRepository.findOrders(rid, OrderStatus.PROCESSING, Day.TODAY.startOfDay(), Day.TODAY.endOfDay(), pr));
     }
 
     @Override
     public List<OrderDetail> getTodayCompletedOrders(Long rid, int page, int pageSize) {
         PageRequest pr = new PageRequest(page, pageSize);
-        return orderRepository.findOrdersWithDetail(rid, OrderStatus.SOLVED, Day.TODAY.startOfDay(), Day.TODAY.endOfDay(), pr);
+        return getOrderDetails(orderRepository.findOrders(rid, OrderStatus.SOLVED, Day.TODAY.startOfDay(), Day.TODAY.endOfDay(), pr));
     }
 
     @Override
@@ -117,7 +119,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         Cart cart = getCart(order.getUid());
         if (cart == null) return null;
         Merchant merchant = merchantRepository.findOne(cart.getMerchantId());
-        Coupon coupon = order.getCouponId() == null ? null : couponRepository.findOne(order.getCouponId());
+        Coupon coupon = cart.getCouponId() == null ? null : couponRepository.findOne(cart.getCouponId());
         Order newOrder = new OrderBuilder(order).cart(cart).merchant(merchant)
                 .address(userAddressRepository.findOne(order.getAddressId()))
                 .user(userRepository.findOne(order.getUid())).distance(merchant)
@@ -125,9 +127,13 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
                 .orderNo(oderNoGenerator.getOrderNo(order.getMerchantNo())).build();
         newOrder = orderRepository.save(newOrder);
         List<OrderItem> items = saveOrderItems(cart, newOrder.getOrderNo());
-        if (newOrder.getPaymentMethod() == 1) orderPostHandler.handle(new OrderDetail(newOrder, items), coupon);
+        if (newOrder.getPaymentMethod() == 1) {
+            orderPostHandler.handle(new OrderDetail(newOrder, items), coupon);
+            newOrder.setPaymentDate(DateTime.now().toDate());
+        }
         removeCart(newOrder.getUid());
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, newOrder)));
+        queueScheduler.put(Keys.unPaidQueue(order.getId()), order.getId(), UNPAID_QUEUE_ESCAPE_TIME);
         return newOrder;
     }
 
@@ -143,28 +149,38 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         return orderRepository.findByUid(uid);
     }
 
+    private Coupon getCoupon(Cart cart) {
+        if (cart.getPaymentMethod() == 1) return null;
+        if (cart.getCouponId() != null) return couponRepository.findOne(cart.getCouponId());
+        List<Coupon> coupons = couponRepository.findFirstByAmountAndExpireDate(cart.getUid(), cart.getTotalAmount(), new Date(), new PageRequest(0, 1));
+        return CollectionUtils.isEmpty(coupons) ? null : coupons.get(0);
+    }
+
     @Override
     public Settlement getSettlement(Long uid) {
-        Settlement settlement = new Settlement();
+        Settlement settlement = new Settlement(getCart(uid));
         settlement.setAddress(userAddressRepository.findByUidAndIsDefaultTrue(uid));
-        settlement.setPaymentMethod(1);
-        Cart cart = getCart(uid);
-        settlement.setCart(getCart(uid));
-        List<Coupon> coupons = couponRepository.findFirstByAmountAndExpireDate(uid, cart.getTotalAmount(), new Date(), new PageRequest(0, 1));
-        settlement.setCoupon(CollectionUtils.isEmpty(coupons) ? null : coupons.get(0));
-        settlement.setTotalAmount(cart.getTotalAmount() - (settlement.getCoupon() == null ? 0 : coupons.get(0).getAmount() * 100));
         settlement.setDeliverDate(merchantRepository.findOne(settlement.getCart().getMerchantId()).getBusinessHours());
+        settlement.setCoupon(getCoupon(settlement.getCart()));
+        redisRepository.setCart(Keys.uidCartKey(uid), settlement.getCart());
         return settlement;
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public List<OrderDetail> getOrders(Long merchantId, Integer status, boolean isToday, Date lastPaymentDate) {
-        Day day = isToday ? Day.TODAY : Day.TOMORROW;
+    public List<OrderDetail> getOrders(Long merchantId, Integer status, Date paymentDate) {
         Collection<Integer> statuses = status == 0 ? OrderStatus.PENDING : Arrays.asList(status);
-        if (lastPaymentDate != null)
-            return orderRepository.findLatestOrders(merchantId, statuses, day.startOfDay(), day.endOfDay(), lastPaymentDate);
-        return orderRepository.findOrders(merchantId, statuses, day.startOfDay(), day.endOfDay());
+        if (paymentDate != null)
+            return getOrderDetails(orderRepository.findByPaymentDate(merchantId, statuses, paymentDate));
+        return getOrderDetails(orderRepository.findOrders(merchantId, statuses));
+    }
+
+    private List<OrderDetail> getOrderDetails(List<Order> orders) {
+        List<OrderDetail> result = new ArrayList<>();
+        for (Order order : orders) {
+            result.add(new OrderDetail(order, orderItemRepository.findByOrderNo(order.getOrderNo())));
+        }
+        return result;
     }
 
     @Override
@@ -182,7 +198,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     }
 
     @Override
-    public OrderDetail getOrdersBy(String orderNo) {
+    public OrderDetail getOrderBy(String orderNo) {
         Order order = orderRepository.findByOrderNo(orderNo);
         List<OrderItem> items = orderItemRepository.findByOrderNo(orderNo);
         return new OrderDetail(order, items);
@@ -213,11 +229,12 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     }
 
     @Override
-    public Cart changePaymentMethodOfCart(Long uid, Integer paymentMethod) {
+    public Settlement changePaymentMethodOfCart(Long uid, Integer paymentMethod) {
         Cart cart = getCart(uid);
         cart.setPaymentMethod(paymentMethod);
+        cart.setCouponId(null);
         redisRepository.setCart(Keys.uidCartKey(uid), cart);
-        return getCart(uid);
+        return getSettlement(uid);
     }
 
     @Override
@@ -242,6 +259,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     public Order finishOrder(Order order) {
         order.finish();
         Order newOrder = orderRepository.save(order);
+        if (order.getPaymentMethod() == 1) return newOrder;
         settlement(newOrder);
         return newOrder;
     }
@@ -249,7 +267,9 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Override
     public Order deliverOrder(Order order) {
         order.deliver();
-        return orderRepository.save(order);
+        Order newOrder = orderRepository.save(order);
+        queueScheduler.put(Keys.deliveringQueue(order.getId()), order.getId(), DELIVER_QUEUE_ESCAPE_TIME);
+        return newOrder;
     }
 
     @Override
@@ -269,12 +289,10 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     @Override
     public Settlement changeCouponForSettlement(Long uid, Long couponId) {
         Cart cart = getCart(uid);
+        cart.setCouponId(couponId);
+        redisRepository.setCart(Keys.uidCartKey(uid), cart);
         Coupon coupon = couponRepository.findOne(couponId);
-        Long amt = cart.getTotalAmount() - (coupon == null ? 0 : coupon.getAmount() * 100);
+        Double amt = cart.getTotalAmount() - (coupon == null ? 0 : coupon.getAmount());
         return new Settlement(coupon, 1, amt);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new Date().getTime());
     }
 }

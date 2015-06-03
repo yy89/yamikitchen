@@ -28,9 +28,10 @@ public class OrderPostHandler {
         handleCoupon(coupon);
         for (OrderItem item : orderDetail.getItems()) {
             Product p = productRepository.findOne(item.getProductId());
-            p.setSoldCount(p.getSoldCount() + 1);
-            if (orderDetail.getOrder().isToday()) p.setRestCount(p.getRestCount() - 1);
-            if (orderDetail.getOrder().isTomorrow()) p.setTwRestCount(p.getTwRestCount() - 1);
+            p.setSoldCount(p.getSoldCount() + item.getQuantity());
+            if (orderDetail.getOrder().isToday()) p.setRestCount(Math.max(0, p.getRestCount() - item.getQuantity()));
+            if (orderDetail.getOrder().isTomorrow())
+                p.setTwRestCount(Math.max(0, p.getTwRestCount() - item.getQuantity()));
             productRepository.save(p);
         }
     }
