@@ -75,6 +75,8 @@ public class DadaServiceImpl implements DadaService {
         if (dadaDto != null && !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
             throw new RuntimeException("Add order to DADA error, errorCode:" + dadaDto.getErrorCode());
         }
+        order.setDeliverGroupOrderStatus(1);
+        orderRepository.save(order);
     }
 
     @Override
