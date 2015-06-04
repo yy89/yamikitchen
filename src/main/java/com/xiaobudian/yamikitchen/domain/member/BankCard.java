@@ -95,7 +95,8 @@ public class BankCard implements Serializable {
     }
 
     public String getIdNo() {
-        return idNo;
+        String searchString = idNo.substring(idNo.length() - 3, idNo.length());
+        return StringUtils.replace(idNo, searchString, FOUR_START);
     }
 
     public void setIdNo(String idNo) {
