@@ -72,7 +72,7 @@ public class DadaServiceImpl implements DadaService {
     public void addOrderToDada(Order order) {
         String token = getAccessToken();
         DadaDto dadaDto = addOrder(order, token);
-        if (dadaDto == null || !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
+        if (dadaDto != null && !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
             throw new RuntimeException("Add order to DADA error, errorCode:" + dadaDto.getErrorCode());
         }
     }
@@ -81,7 +81,7 @@ public class DadaServiceImpl implements DadaService {
     public void cancelOrder(Order order) {
         String token = getAccessToken();
         DadaDto dadaDto = cancelOrder(order, token);
-        if (dadaDto == null || !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
+        if (dadaDto != null && !DadaConstans.DADA_RESPONSE_STATUS_OK.equals(dadaDto.getStatus())) {
             throw new RuntimeException("cancel order to DADA error, errorCode:" + dadaDto.getErrorCode());
         }
     }
