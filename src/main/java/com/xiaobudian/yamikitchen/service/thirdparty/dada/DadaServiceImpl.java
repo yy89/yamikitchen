@@ -185,8 +185,8 @@ public class DadaServiceImpl implements DadaService {
         requestMap.put("receiver_address", order.getAddress());
         requestMap.put("receiver_phone", String.valueOf(order.getPhone()));
         requestMap.put("receiver_tel", null);
-        requestMap.put("receiver_lat", String.valueOf(order.getLatitude()));
-        requestMap.put("receiver_lng", String.valueOf(order.getLongitude()));
+        requestMap.put("receiver_lat", order.getLatitude() == null ? "0" : String.valueOf(order.getLatitude()));
+        requestMap.put("receiver_lng", order.getLongitude() == null ? "0" : String.valueOf(order.getLongitude()));
         requestMap.put("callback", DadaConstans.DADA_CALL_BACK_URL);
 
         String resultJson = httpClientService.httpPost(DadaConstans.addOrderToDadaUrl(), requestMap);
@@ -204,5 +204,27 @@ public class DadaServiceImpl implements DadaService {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public static void main(String[] args) {
+        DadaServiceImpl impl = new DadaServiceImpl();
+        String token = "596b97c713ed41d7596b97c713ed41d7";
+        Date currentDate = new Date();
+        Long timestamp = currentDate.getTime();
+        String signature = impl.getSignature(currentDate, token);
+        String orderId = "100028-20150605-66";
+        String acceptOrder = "/v1_0/acceptOrder/";
+        String fetchOrder = "/v1_0/fetchOrder/";
+        String url1 = "http://public.ga.dev.imdada.cn"+acceptOrder+"?token="
+                + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
+        String url2 = "http://public.ga.dev.imdada.cn"+fetchOrder+"?token="
+        		+ token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
+        System.out.println("接单：" + url1);
+        System.out.println("取件：" + url2);
+        
+        String getOrderUrl = "/v1_0/getOrderInfo/";
+        String url3 = "http://public.ga.dev.imdada.cn"+getOrderUrl+"?token="
+                + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
+        System.out.println("查询订单状态：" + url3);
     }
 }
