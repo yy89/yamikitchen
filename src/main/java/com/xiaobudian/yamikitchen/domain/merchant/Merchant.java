@@ -70,7 +70,7 @@ public class Merchant implements Serializable {
     private Integer verifyStatus = 0;
     private double turnover = 0.00d;
     @JsonIgnore
-    private double sharing = 0;
+    private double sharing;
     @Column(insertable = false, columnDefinition = "bit default 0")
     private Boolean isAutoOpen;
     private Date createDate;
