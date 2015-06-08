@@ -6,6 +6,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +79,7 @@ public class Cart implements Serializable {
             totalAmount += item.getAmount();
         }
         totalAmount += (deliverMethod == 1 ? 0l : deliverPrice());
-        return totalAmount;
+        return new BigDecimal(totalAmount).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     public Integer getTotalQuantity() {
@@ -94,7 +95,7 @@ public class Cart implements Serializable {
     }
 
     public void setTotalAmount(Double totalAmount) {
-        this.totalAmount = totalAmount;
+        this.totalAmount = new BigDecimal(totalAmount).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     public List<OrderItem> getItems() {
@@ -165,5 +166,12 @@ public class Cart implements Serializable {
     public Double deliverPrice() {
         String priceString = extra.get(new ArrayList<>(extra.keySet()).get(0));
         return CollectionUtils.isEmpty(items) ? 0l : NumberUtils.createDouble(priceString);
+    }
+
+    public Integer getQuantityBy(Long productId) {
+        for (OrderItem item : items) {
+            if (item.getProductId().equals(productId)) return item.getQuantity();
+        }
+        return 0;
     }
 }

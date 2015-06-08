@@ -1,6 +1,7 @@
 package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.Result;
+import com.xiaobudian.yamikitchen.domain.account.AccountSummary;
 import com.xiaobudian.yamikitchen.domain.account.AlipayHistory;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.order.Order;
@@ -45,7 +46,9 @@ public class AccountController {
     @RequestMapping(value = "/account/summary", method = RequestMethod.GET)
     @ResponseBody
     public Result getAccountSummary(@AuthenticationPrincipal User user) {
-        return Result.successResult(accountService.getAccountSummary(user.getId()));
+        AccountSummary summary = accountService.getAccountSummary(user.getId());
+        if (summary == null) throw new RuntimeException("account.summary.view.noMerchant");
+        return Result.successResult(summary);
     }
 
     @RequestMapping(value = "/platform/transactionFlows", method = RequestMethod.GET)

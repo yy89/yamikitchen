@@ -27,10 +27,12 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -86,15 +88,13 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     private QueueScheduler queueScheduler;
 
     public void writePaymentHistory(AlipayHistory history) {
-        queueScheduler.put(Keys.deliveringQueue(19l), 19l, 1l);
         if (redisRepository.isMember(Keys.payingQueue(), history.getOut_trade_no())) return;
         redisRepository.addForSet(Keys.payingQueue(), history.getOut_trade_no());
         Order order = orderRepository.findByOrderNo(history.getOut_trade_no());
         if (order.isHasPaid()) return;
         alipayHistoryRepository.save(history);
-        transactionProcessor.process(payOrder(order), 1001);
         Merchant merchant = merchantRepository.findOne(order.getMerchantId());
-        merchant.updateTurnOver(order);
+        transactionProcessor.process(payOrder(order, merchant), 1001);
         updateCouponStatus(order);
         applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, order)));
         redisRepository.removeFromSet(Keys.payingQueue(), history.getOut_trade_no());
@@ -108,16 +108,16 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
         couponRepository.save(coupon);
     }
 
-    private Order payOrder(Order order) {
+    private Order payOrder(Order order, Merchant merchant) {
         order.pay();
         order.setFirstDeal(orderRepository.countByUidAndHasPaidTrue(order.getUid()) < 1);
-        orderPostHandler.handle(new OrderDetail(order, orderItemRepository.findByOrderNo(order.getOrderNo())), null);
+        orderPostHandler.handle(new OrderDetail(order, orderItemRepository.findByOrderNo(order.getOrderNo())), null, merchant);
         return orderRepository.save(order);
     }
 
     @Override
     public void refundOrder(Order order) {
-        order.setPrice(0 - order.getPrice());
+        order.setPrice(order.getPrice());
         transactionProcessor.process(order, 2004);
     }
 
@@ -146,6 +146,7 @@ public class AccountServiceImpl implements AccountService, ApplicationEventPubli
     @Override
     public AccountSummary getAccountSummary(Long uid) {
         List<Account> accounts = getAccounts(uid);
+        if (CollectionUtils.isEmpty(accounts)) return null;
         Merchant merchant = merchantRepository.findByCreator(uid);
         return new AccountSummary(accounts.get(0).getBalance(),
                 accounts.get(1).getBalance(), accounts.get(2).getBalance(),

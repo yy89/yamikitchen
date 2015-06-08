@@ -20,6 +20,12 @@ public class CartValidator {
     @Inject
     private LocalizedMessageSource localizedMessageSource;
 
+    private boolean isSoldOut(Product product, OrderItem item, boolean isToday) {
+        return product.isSoldOut(isToday) ||
+                (isToday && product.getRestCount() < item.getQuantity()) ||
+                (!isToday && product.getTwRestCount() < item.getQuantity());
+    }
+
     public List<String> validate(Cart cart) {
         List<String> errors = new ArrayList<>();
         if (cart == null) {
@@ -28,7 +34,8 @@ public class CartValidator {
         }
         for (OrderItem item : cart.getItems()) {
             Product p = productRepository.findOne(item.getProductId());
-            if (p.isSoldOut(cart.isToday())) errors.add(localizedMessageSource.getMessage("order.product.sold.out"));
+            if (isSoldOut(p, item, cart.isToday()))
+                errors.add(localizedMessageSource.getMessage("order.product.sold.out"));
         }
         return errors;
     }

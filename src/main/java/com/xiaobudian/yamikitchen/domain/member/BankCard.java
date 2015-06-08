@@ -25,7 +25,7 @@ public class BankCard implements Serializable {
     private String cardNo;
     private String branch;
     private String name;
-    private Integer idType = 0;//���֤����
+    private Integer idType = 0;
     private String idNo;
     private String region;
 
@@ -62,8 +62,8 @@ public class BankCard implements Serializable {
     }
 
     public String getCardNo() {
-        String searchString = cardNo.substring(cardNo.length() - 3, cardNo.length());
-        return StringUtils.replace(cardNo, searchString, FOUR_START);
+        return StringUtils.rightPad(StringUtils.substring(cardNo, 0, cardNo.length() - 4), cardNo.length(), FOUR_START);
+
     }
 
     public void setCardNo(String cardNo) {
@@ -95,20 +95,11 @@ public class BankCard implements Serializable {
     }
 
     public String getIdNo() {
-        String searchString = idNo.substring(idNo.length() - 3, idNo.length());
-        return StringUtils.replace(idNo, searchString, FOUR_START);
+        return StringUtils.rightPad(StringUtils.substring(idNo, 0, idNo.length() - 4), idNo.length(), FOUR_START);
     }
 
     public void setIdNo(String idNo) {
         this.idNo = idNo;
-    }
-
-    public boolean isValidIdNo() {
-        return idNo != null && ValidateUtil.checkIdCard(idNo);
-    }
-
-    public boolean isValidCardNo() {
-        return cardNo != null && ValidateUtil.checkBankCard(cardNo);
     }
 
     public String getRegion() {
@@ -118,4 +109,14 @@ public class BankCard implements Serializable {
     public void setRegion(String region) {
         this.region = region;
     }
+
+    public boolean isValidIdNo() {
+        return idNo != null && ValidateUtil.checkIdCard(idNo);
+    }
+
+    public boolean isValidCardNo() {
+        return cardNo != null && ValidateUtil.checkBankCard(cardNo);
+    }
 }
+
+

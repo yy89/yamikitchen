@@ -8,7 +8,7 @@ import com.xiaobudian.yamikitchen.domain.member.BankCard;
 public class AccountSummary {
     private Double waitConfirmAmount;
     private Double withdrawAmount;
-    private Double balanceAmount;
+    private Double cashAmount;
     private Double turnover;
     private BankCard bankCard;
 
@@ -19,7 +19,7 @@ public class AccountSummary {
         this();
         this.waitConfirmAmount = waitConfirmAmount;
         this.withdrawAmount = withdrawAmount;
-        this.balanceAmount = balanceAmount;
+        this.cashAmount = balanceAmount;
         this.turnover = turnover;
         this.bankCard = bankCard;
     }
@@ -40,12 +40,12 @@ public class AccountSummary {
         this.withdrawAmount = withdrawAmount;
     }
 
-    public Double getBalanceAmount() {
-        return balanceAmount;
+    public Double getCashAmount() {
+        return cashAmount;
     }
 
-    public void setBalanceAmount(Double balanceAmount) {
-        this.balanceAmount = balanceAmount;
+    public void setCashAmount(Double cashAmount) {
+        this.cashAmount = cashAmount;
     }
 
     public Double getTurnover() {

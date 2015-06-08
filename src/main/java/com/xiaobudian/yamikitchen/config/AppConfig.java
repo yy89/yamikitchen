@@ -19,6 +19,9 @@ import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -26,9 +29,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Johnson on 2014/10/16.
@@ -62,7 +69,7 @@ public class AppConfig {
         factoryBean.setDataSource(jpaDataSource());
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setShowSql(true);
-        vendorAdapter.setGenerateDdl(true);
+        vendorAdapter.setGenerateDdl(false);
         vendorAdapter.setDatabasePlatform(dialect);
         factoryBean.setJpaVendorAdapter(vendorAdapter);
         return factoryBean;
@@ -152,5 +159,13 @@ public class AppConfig {
         return new MessageListenerAdapter(scheduledOrderListener());
     }
 
-
+    @Bean
+    public RestTemplate restTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        List<HttpMessageConverter<?>> converters = new ArrayList<>();
+        converters.add(new MappingJackson2HttpMessageConverter());
+        converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
+        restTemplate.setMessageConverters(converters);
+        return restTemplate;
+    }
 }
