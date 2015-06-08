@@ -21,12 +21,12 @@ import java.util.List;
  * Created by Johnson on 2015/5/10.
  */
 public enum OrderStatus {
-    WAIT_PAYMENT(1), WAIT_CONFIRMATION(2), WAIT_DELIVER(3), WAIT_SELF_TAKE(4), DELIVERING(5), COMPLETED(6), CANCELLED(7);
+    WAIT_PAYMENT(1), WAIT_CONFIRMATION(2), WAIT_DELIVER(3), DELIVERING(4), COMPLETED(5), WAIT_SELF_TAKE(6), CANCELLED(7);
 
-    public static final Collection<Integer> IN_PROGRESS = Arrays.asList(WAIT_PAYMENT.getIndex(), WAIT_CONFIRMATION.getIndex(), WAIT_DELIVER.getIndex(), DELIVERING.getIndex());
+    public static final Collection<Integer> IN_PROGRESS = Arrays.asList(WAIT_PAYMENT.getIndex(), WAIT_CONFIRMATION.getIndex(), WAIT_DELIVER.getIndex(), DELIVERING.getIndex(), WAIT_SELF_TAKE.getIndex());
     public static final Collection<Integer> SOLVED = Arrays.asList(DELIVERING.getIndex(), COMPLETED.getIndex());
     public static final Collection<Integer> PROCESSING = Arrays.asList(WAIT_CONFIRMATION.getIndex(), WAIT_DELIVER.getIndex());
-    public static final Collection<Integer> PENDING = Arrays.asList(WAIT_CONFIRMATION.getIndex(), WAIT_DELIVER.getIndex(), WAIT_SELF_TAKE.getIndex(), COMPLETED.getIndex());
+    public static final Collection<Integer> PENDING = Arrays.asList(WAIT_CONFIRMATION.getIndex(), WAIT_DELIVER.getIndex(), DELIVERING.getIndex(), WAIT_SELF_TAKE.getIndex());
 
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
