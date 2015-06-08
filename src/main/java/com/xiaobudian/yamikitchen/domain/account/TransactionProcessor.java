@@ -48,11 +48,11 @@ public class TransactionProcessor {
     }
 
     private boolean isDebit(int transactionCode) {
-        return transactionCode > 2000;
+        return transactionCode < 2000;
     }
 
     public void process(Order order, int transactionCode) {
-        process(order, order.priceAsDouble(), transactionCode);
+        process(order, order.getPrice(), transactionCode);
     }
 
     public void process(Order order, Double amount, int transactionCode) {
@@ -61,7 +61,7 @@ public class TransactionProcessor {
         account.setAvailableBalance(account.getAvailableBalance() + amt);
         account.setBalance(account.getBalance() + amt);
         accountRepository.save(account);
-        transactionFlowRepository.save(new TransactionFlow(account, order, amount, TRANS_CODE_TYPE_MAP.get(transactionCode)));
+        transactionFlowRepository.save(new TransactionFlow(account, order, amt, TRANS_CODE_TYPE_MAP.get(transactionCode)));
     }
 
     public void process(Account account, Double amount, int transactionCode) {

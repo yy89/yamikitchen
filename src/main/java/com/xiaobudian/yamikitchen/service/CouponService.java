@@ -1,7 +1,6 @@
 package com.xiaobudian.yamikitchen.service;
 
-import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
-import com.xiaobudian.yamikitchen.domain.coupon.CouponSummary;
+import com.xiaobudian.yamikitchen.domain.coupon.*;
 
 import java.util.List;
 
@@ -22,5 +21,11 @@ public interface CouponService {
     public Coupon getCoupon(Long couponId);
 
     public Coupon addCoupon(String mobile, Long type);
+
+    public List<OrderCoupon> getOrderCoupons(String orderNo);
+
+    public CouponAccount createCouponAccount(String mobile);
+
+    public OrderCouponDetail dispatchCoupon(String mobile, String orderNo);
 
 }

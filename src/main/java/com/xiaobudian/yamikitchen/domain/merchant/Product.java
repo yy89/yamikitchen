@@ -1,14 +1,13 @@
 package com.xiaobudian.yamikitchen.domain.merchant;
 
-import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
-import org.apache.commons.lang3.ArrayUtils;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Johnson on 2015/4/22.

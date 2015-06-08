@@ -10,6 +10,7 @@ public class OrderDetail {
     private Order order;
     private List<OrderItem> items = new ArrayList<>();
     private String shareUrl;
+    private Integer couponCount;
 
     public OrderDetail() {
     }
@@ -17,6 +18,12 @@ public class OrderDetail {
     public OrderDetail(Order order, List<OrderItem> items) {
         this.order = order;
         this.items = items;
+    }
+
+    public OrderDetail(Order order, List<OrderItem> items, String shareUrl, Integer couponCount) {
+        this(order, items);
+        this.shareUrl = shareUrl;
+        this.couponCount = couponCount;
     }
 
     public Order getOrder() {
@@ -41,5 +48,13 @@ public class OrderDetail {
 
     public void setShareUrl(String shareUrl) {
         this.shareUrl = shareUrl;
+    }
+
+    public Integer getCouponCount() {
+        return couponCount;
+    }
+
+    public void setCouponCount(Integer couponCount) {
+        this.couponCount = couponCount;
     }
 }

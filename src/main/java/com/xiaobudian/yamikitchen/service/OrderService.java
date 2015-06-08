@@ -32,6 +32,8 @@ public interface OrderService {
 
     public List<OrderDetail> getOrders(Long merchantId, Integer status, Date paymentDate);
 
+    public List<OrderDetail> getOrders(Long merchantId, Integer status, Integer page, Integer size);
+
     public Order confirmOrder(Order order);
 
     public void settlement(Order order);

@@ -44,6 +44,11 @@ public class Coupon implements Serializable {
         this(account.getUid(), couponType.getName(), couponType.getAmount(), couponType.getUsageCondition(), couponType.actualExpireDate(), account.getMobile());
     }
 
+    public Coupon(CouponType couponType, CouponAccount account, String orderNo) {
+        this(account.getUid(), couponType.getName(), couponType.getAmount(), couponType.getUsageCondition(), couponType.actualExpireDate(), account.getMobile());
+        this.orderNo = orderNo;
+    }
+
     public Long getId() {
         return id;
     }

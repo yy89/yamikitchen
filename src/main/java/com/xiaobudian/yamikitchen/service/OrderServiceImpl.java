@@ -1,25 +1,5 @@
 package com.xiaobudian.yamikitchen.service;
 
-import static com.xiaobudian.yamikitchen.domain.order.QueueScheduler.DELIVER_QUEUE_ESCAPE_TIME;
-import static com.xiaobudian.yamikitchen.domain.order.QueueScheduler.UNPAID_QUEUE_ESCAPE_TIME;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
 import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.common.Keys;
 import com.xiaobudian.yamikitchen.domain.account.AlipayHistory;
@@ -28,16 +8,10 @@ import com.xiaobudian.yamikitchen.domain.account.SettlementCenter;
 import com.xiaobudian.yamikitchen.domain.cart.Cart;
 import com.xiaobudian.yamikitchen.domain.cart.Settlement;
 import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
+import com.xiaobudian.yamikitchen.domain.coupon.WeChatCouponSharing;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.message.NoticeEvent;
-import com.xiaobudian.yamikitchen.domain.order.Order;
-import com.xiaobudian.yamikitchen.domain.order.OrderBuilder;
-import com.xiaobudian.yamikitchen.domain.order.OrderDetail;
-import com.xiaobudian.yamikitchen.domain.order.OrderItem;
-import com.xiaobudian.yamikitchen.domain.order.OrderNoGenerator;
-import com.xiaobudian.yamikitchen.domain.order.OrderPostHandler;
-import com.xiaobudian.yamikitchen.domain.order.OrderStatus;
-import com.xiaobudian.yamikitchen.domain.order.QueueScheduler;
+import com.xiaobudian.yamikitchen.domain.order.*;
 import com.xiaobudian.yamikitchen.repository.RedisRepository;
 import com.xiaobudian.yamikitchen.repository.account.AlipayHistoryRepository;
 import com.xiaobudian.yamikitchen.repository.account.RefundForAlipayRepository;
@@ -49,6 +23,19 @@ import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.*;
+
+import static com.xiaobudian.yamikitchen.domain.order.QueueScheduler.DELIVER_QUEUE_ESCAPE_TIME;
 
 /**
  * Created by johnson1 on 4/28/15.
@@ -93,6 +80,8 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     private AlipayHistoryRepository alipayHistoryRepository;
     @Inject
     private RefundForAlipayRepository refundForAlipayRepository;
+    @Inject
+    private WeChatCouponSharing weChatCouponSharing;
 
     @Override
     public Cart addProductInCart(Long uid, Long rid, Long productId, boolean isToday) {
@@ -148,13 +137,8 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
                 .orderNo(oderNoGenerator.getOrderNo(order.getMerchantNo())).build();
         newOrder = orderRepository.save(newOrder);
         List<OrderItem> items = saveOrderItems(cart, newOrder.getOrderNo());
-        if (newOrder.getPaymentMethod() == 1) {
-            orderPostHandler.handle(new OrderDetail(newOrder, items), coupon);
-            newOrder.setPaymentDate(DateTime.now().toDate());
-        }
+        orderPostHandler.handle(new OrderDetail(newOrder, items), coupon, merchant);
         removeCart(newOrder.getUid());
-        applicationEventPublisher.publishEvent(new NoticeEvent(this, OrderStatus.from(order.getStatus()).getNotices(merchant, newOrder)));
-        queueScheduler.put(Keys.unPaidQueue(order.getId()), order.getId(), UNPAID_QUEUE_ESCAPE_TIME);
         return newOrder;
     }
 
@@ -195,6 +179,10 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
         return getOrderDetails(orderRepository.findOrders(merchantId, statuses));
     }
 
+    public List<OrderDetail> getOrders(Long merchantId, Integer status, Integer page, Integer size) {
+        return getOrderDetails(orderRepository.findByStatus(merchantId, status, new PageRequest(page, size)));
+    }
+
     private List<OrderDetail> getOrderDetails(List<Order> orders) {
         List<OrderDetail> result = new ArrayList<>();
         for (Order order : orders) {
@@ -221,7 +209,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     public OrderDetail getOrderBy(String orderNo) {
         Order order = orderRepository.findByOrderNo(orderNo);
         List<OrderItem> items = orderItemRepository.findByOrderNo(orderNo);
-        return new OrderDetail(order, items);
+        return new OrderDetail(order, items, weChatCouponSharing.getShareUrl(orderNo), 10);
     }
 
     @Override
@@ -266,7 +254,6 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
     public Order chooseDeliverGroup(Order order, Integer deliverGroup) {
         order.setDeliverGroup(deliverGroup);
         if (order.deliverByDaDa()) dadaService.addOrderToDada(order);
-        order.setStatus(3);
         return orderRepository.save(order);
     }
 
@@ -294,28 +281,19 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
 
     @Override
     public Order cancelOrder(Order order, Long uid) {
-        order.cancel();
-        if (order.isRefundable() && !order.isPayOnDeliver()) {
-        	accountService.refundOrder(order);
-        	saveRefundApplication(order);
+        if (order.isRefundable() && order.isPayOnline()) {
+            accountService.refundOrder(order);
+            createRefundApplication(order);
         }
         if (order.payIncludeCoupon()) recoveryCoupon(order.getCouponId());
+        order.cancel();
         return orderRepository.save(order);
     }
-    
-    private void saveRefundApplication(Order order) {
-        RefundForAlipay refundForAlipay = new RefundForAlipay();
-        refundForAlipay.setOrderNo(order.getOrderNo());
-        refundForAlipay.setUid(order.getUid());
+
+    private void createRefundApplication(Order order) {
         List<AlipayHistory> alipayHistoryList = alipayHistoryRepository.findByOrderNo(order.getOrderNo());
-        if (CollectionUtils.isEmpty(alipayHistoryList)) {
-            return;
-        }
-        AlipayHistory alipayHistory = alipayHistoryList.get(0);
-        refundForAlipay.setPrice(Double.parseDouble(alipayHistory.getPrice()));
-        refundForAlipay.setTradeNo(alipayHistory.getTrade_no());
-        refundForAlipay.setHasRefund(false);
-        refundForAlipayRepository.save(refundForAlipay);
+        if (CollectionUtils.isEmpty(alipayHistoryList)) return;
+        refundForAlipayRepository.save(new RefundForAlipay(order, alipayHistoryList.get(0)));
     }
 
     public void recoveryCoupon(Long couponId) {

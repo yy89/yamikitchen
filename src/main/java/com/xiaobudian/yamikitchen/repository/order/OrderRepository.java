@@ -19,8 +19,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("from Order o where o.merchantId = ?1 and o.status in (?2) order by o.paymentDate DESC")
     public List<Order> findOrders(Long merchantId, Collection<Integer> statuses);
 
-    @Query("from Order o where o.merchantId = ?1 and o.status in (?2) and o.paymentDate >?3 order by o.paymentDate DESC")
+    @Query("from Order o where o.merchantId = ?1 and o.status in (?2) and o.paymentDate >=?3 order by o.paymentDate DESC")
     public List<Order> findByPaymentDate(Long merchantId, Collection<Integer> statuses, Date p1);
+
+    @Query("from Order o where o.merchantId = ?1 and o.status =?2 order by o.paymentDate DESC")
+    public List<Order> findByStatus(Long merchantId, Integer status, Pageable pageable);
 
     @Query("select o from Order o where o.uid=?1 order by o.createDate desc")
     public List<Order> findByUid(Long uid);

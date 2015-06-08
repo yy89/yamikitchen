@@ -25,7 +25,7 @@ public class SettlementCenter {
 
     private double getShareScale(Long merchantId) {
         Merchant merchant = merchantRepository.findOne(merchantId);
-        return merchant.getSharing() + serviceCharge;
+        return (1 - merchant.getSharing()) + serviceCharge;
     }
 
     public void settle(Order order) {
@@ -42,13 +42,12 @@ public class SettlementCenter {
     }
 
     private void settleDeliverPrice(Order order) {
-        double deliverPrice = order.deliverPriceAsDouble();
         if (order.deliverByDaDa()) {
-            transactionProcessor.processByPlatform(order, deliverPrice, 1008);
-            transactionProcessor.process(order, deliverPrice, 2008);
+            transactionProcessor.processByPlatform(order, order.getDeliverPrice(), 1008);
+            transactionProcessor.process(order, order.getDeliverPrice(), 2008);
         } else {
-            transactionProcessor.process(order, deliverPrice, 1009);
-            transactionProcessor.process(order, deliverPrice, 2009);
+            transactionProcessor.process(order, order.getDeliverPrice(), 1009);
+            transactionProcessor.process(order, order.getDeliverPrice(), 2009);
         }
     }
 }

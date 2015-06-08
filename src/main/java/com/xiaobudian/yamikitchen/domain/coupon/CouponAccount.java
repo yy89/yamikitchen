@@ -31,6 +31,10 @@ public class CouponAccount implements Serializable {
         this.mobile = mobile;
     }
 
+    public CouponAccount(String mobile) {
+        this(null, mobile);
+    }
+
     public Long getId() {
         return id;
     }

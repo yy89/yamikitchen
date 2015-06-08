@@ -1,5 +1,7 @@
 package com.xiaobudian.yamikitchen.domain.coupon;
 
+import com.xiaobudian.yamikitchen.domain.member.WeChatUser;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,13 +20,34 @@ public class OrderCoupon implements Serializable {
     private Long id;
     private String orderNo;
     private String mobile;
-    private Integer amount;
+    private Double amount;
     private Date receivedDate = new Date();
     private String weChatId;
     private String weChatNickName;
     private String weChatHeadPic;
     private Long uid;
     private Long couponId;
+
+    public OrderCoupon() {
+    }
+
+    public OrderCoupon(String orderNo, String mobile, Double amount, Date receivedDate, String weChatId, String weChatNickName, String weChatHeadPic, Long uid, Long couponId) {
+        this();
+        this.orderNo = orderNo;
+        this.mobile = mobile;
+        this.amount = amount;
+        this.receivedDate = receivedDate;
+        this.weChatId = weChatId;
+        this.weChatNickName = weChatNickName;
+        this.weChatHeadPic = weChatHeadPic;
+        this.uid = uid;
+        this.couponId = couponId;
+    }
+
+    public OrderCoupon(String orderNo, WeChatUser weChatUser, Coupon coupon) {
+        this(orderNo, weChatUser.getMobile(), coupon.getAmount(), new Date(), weChatUser.getOpenId(),
+                weChatUser.getNickName(), weChatUser.getHeadImgUrl(), coupon.getUid(), coupon.getId());
+    }
 
     public Long getId() {
         return id;
@@ -50,11 +73,11 @@ public class OrderCoupon implements Serializable {
         this.mobile = mobile;
     }
 
-    public Integer getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

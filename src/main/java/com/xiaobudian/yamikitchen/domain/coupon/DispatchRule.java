@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by Johnson on 2015/5/23.
@@ -22,6 +23,8 @@ public class DispatchRule implements Serializable {
     private Integer count;
     private boolean forShare = false;
     private boolean available = true;
+    private Date createDate = new Date();
+    private Date updateDate;
 
     public DispatchRule() {
     }
@@ -88,5 +91,21 @@ public class DispatchRule implements Serializable {
 
     public void setAvailable(boolean available) {
         this.available = available;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }

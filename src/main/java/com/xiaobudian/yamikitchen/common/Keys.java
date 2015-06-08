@@ -58,4 +58,13 @@ public final class Keys {
     public static String unPaidQueue(Long orderId) {
         return String.format("unPaid:order:%d", orderId);
     }
+
+    public static String weChatAccessToken() {
+        return "wechat.accessToken";
+    }
+
+    public static String weChatJsApiTicket() {
+        return "wechat.jsApiTicket";
+    }
+
 }

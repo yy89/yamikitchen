@@ -52,5 +52,4 @@ public class ThirdPartyCallBackController {
         dadaService.dadaCallBack(dadaDto);
         return Result.successResult("ok");
     }
-
 }

@@ -38,7 +38,7 @@ public class ExternalIntegrationController {
 
     @RequestMapping(value = "/qiniu/token/{bucketName}", method = RequestMethod.GET)
     @ResponseBody
-    public Result getPostToken(@PathVariable String bucketName) throws AuthException, JSONException {
+    public Result getToken(@PathVariable String bucketName) throws AuthException, JSONException {
         Mac mac = new Mac(accessKey, secretKey);
         PutPolicy putPolicy = new PutPolicy(bucketName);
         return Result.successResult(putPolicy.token(mac));

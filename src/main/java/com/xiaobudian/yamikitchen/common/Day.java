@@ -31,4 +31,11 @@ public final class Day {
     public Date getDate() {
         return date.toDate();
     }
+
+    public boolean isSameDay(Date d) {
+        DateTime t1 = new DateTime(d);
+        return t1.getYear() == date.getYear() &&
+                t1.getMonthOfYear() == date.getMonthOfYear() &&
+                t1.getDayOfMonth() == date.getDayOfMonth();
+    }
 }

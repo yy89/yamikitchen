@@ -1,14 +1,9 @@
 package com.xiaobudian.yamikitchen.service;
 
 import com.xiaobudian.yamikitchen.common.Day;
-import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
-import com.xiaobudian.yamikitchen.domain.coupon.CouponAccount;
-import com.xiaobudian.yamikitchen.domain.coupon.CouponSummary;
-import com.xiaobudian.yamikitchen.domain.coupon.CouponType;
-import com.xiaobudian.yamikitchen.repository.coupon.CouponAccountRepository;
-import com.xiaobudian.yamikitchen.repository.coupon.CouponHistoryRepository;
-import com.xiaobudian.yamikitchen.repository.coupon.CouponRepository;
-import com.xiaobudian.yamikitchen.repository.coupon.CouponTypeRepository;
+import com.xiaobudian.yamikitchen.domain.coupon.*;
+import com.xiaobudian.yamikitchen.repository.coupon.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -32,6 +27,11 @@ public class CouponServiceImpl implements CouponService {
     private CouponTypeRepository couponTypeRepository;
     @Inject
     private CouponAccountRepository couponAccountRepository;
+    @Inject
+    private OrderCouponRepository orderCouponRepository;
+    @Inject
+    private Dispatcher dispatcher;
+
 
     @Override
     public List<Coupon> getCoupons(Long uid) {
@@ -70,5 +70,27 @@ public class CouponServiceImpl implements CouponService {
         CouponType couponType = couponTypeRepository.findOne(type);
         CouponAccount couponAccount = couponAccountRepository.findByMobile(mobile);
         return couponRepository.save(new Coupon(couponType, couponAccount));
+    }
+
+    @Override
+    public List<OrderCoupon> getOrderCoupons(String orderNo) {
+        return orderCouponRepository.findByOrderNo(orderNo);
+    }
+
+    @Override
+    public CouponAccount createCouponAccount(String mobile) {
+        CouponAccount account = couponAccountRepository.findByMobile(mobile);
+        return account == null ? couponAccountRepository.save(new CouponAccount(mobile)) : account;
+    }
+
+    @Override
+    public OrderCouponDetail dispatchCoupon(String mobile, String orderNo) {
+        List<OrderCoupon> coupons = orderCouponRepository.findByOrderNo(orderNo);
+        if (StringUtils.isEmpty(mobile)) return new OrderCouponDetail(coupons);
+        CouponAccount account = couponAccountRepository.findByMobile(mobile);
+        OrderCoupon receivedCoupon = dispatcher.dispatch(orderNo, account, coupons);
+        if (receivedCoupon == null) return new OrderCouponDetail(coupons);
+        coupons.add(receivedCoupon);
+        return new OrderCouponDetail(receivedCoupon.getAmount(), true, coupons);
     }
 }
