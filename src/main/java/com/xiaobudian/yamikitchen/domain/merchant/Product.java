@@ -1,8 +1,14 @@
 package com.xiaobudian.yamikitchen.domain.merchant;
 
+import com.xiaobudian.yamikitchen.common.Util;
+import com.xiaobudian.yamikitchen.domain.cart.Cart;
+import org.apache.commons.lang3.ArrayUtils;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Johnson on 2015/4/22.
@@ -19,24 +25,22 @@ public class Product implements Serializable {
     private String summary;
     private String pictures;
     private String availableTime;
-    @Column(insertable = false, columnDefinition = "int default 0")
-    private Long restCount = 0l;
-    @Column(insertable = false, columnDefinition = "int default 0")
-    private Long twRestCount = 0l;
+    private Long restCount;
+    private Long twRestCount;
     private String tags;
-    @Column(insertable = false, columnDefinition = "int default 0")
-    private Long soldCount = 0l;
+    private Long soldCount;
     private Long supplyPerDay;
-    @Column(insertable = false, columnDefinition = "int default 0")
-    private Long commentCount = 0l;
-    @Column(insertable = false, columnDefinition = "int default 0")
-    private Long favoriteCount = 0l;
-    private Boolean available = true;
-    private Boolean removed = false;
-    private Boolean main = false;
-    private boolean soldOut = false;
-    private Date createDate ;
+    private Long commentCount;
+    private Long favoriteCount;
+    private Boolean available;
+    private Boolean removed;
+    private Boolean main;
+    private boolean soldOut;
+    private Date createDate = new Date();
     private Date lastModifiedDate = new Date();
+
+    public Product() {
+    }
 
     public Long getId() {
         return id;
@@ -178,6 +182,11 @@ public class Product implements Serializable {
         return isToday ? restCount < 1 : twRestCount < 1;
     }
 
+    public boolean isSoldOut(boolean isToday, Cart cart) {
+        if (cart == null) return isSoldOut(isToday);
+        return isSoldOut(isToday) || (isToday ? cart.getQuantityBy(id) > restCount - 1 : cart.getQuantityBy(id) > twRestCount - 1);
+    }
+
     public boolean isSoldOut() {
         return soldOut;
     }
@@ -200,5 +209,16 @@ public class Product implements Serializable {
 
     public void setLastModifiedDate(Date lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public void init() {
+        available = true;
+        favoriteCount = 0l;
+        commentCount = 0l;
+        soldCount = 0l;
+        removed = false;
+        main = false;
+        restCount = supplyPerDay;
+        twRestCount = supplyPerDay;
     }
 }
