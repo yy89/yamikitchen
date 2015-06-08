@@ -2,6 +2,7 @@ package com.xiaobudian.yamikitchen.domain.merchant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.account.Account;
 import com.xiaobudian.yamikitchen.domain.account.AccountType;
 import com.xiaobudian.yamikitchen.domain.order.Order;
@@ -23,8 +24,7 @@ public class Merchant implements Serializable {
     @JsonProperty(value = "rid")
     private Long id;
     private String name;
-    @Column(insertable = false, columnDefinition = "int default 0")
-    private Integer type = 0;
+    private Integer type;
     private String merchantNo;
     private String voiceIntroduction;
     private Double longitude;
@@ -33,30 +33,23 @@ public class Merchant implements Serializable {
     private String headPic;
     private String phone;
     private String pictures;
-    private Boolean messHall = false;
-    private Integer countOfMessHall = 0;
+    private Boolean messHall;
+    private Integer countOfMessHall;
     private Boolean selfPickup;
     private Boolean supportDelivery;
-    @Column(insertable = false, columnDefinition = "bit default 0")
-    private Boolean isRest = false;
+    private Boolean isRest;
     private String restMark;
-    @Column(insertable = false, columnDefinition = "int default 1")
-    private Integer mLevel = 1;
-    @Column(insertable = false, columnDefinition = "bit default 0")
-    private Boolean hasOrder = false;
-    @Column(insertable = false, columnDefinition = "int default 0")
-    private Integer soldCount = 0;
-    @Column(insertable = false, columnDefinition = "int default 0")
-    private Integer monthlySoldCount = 0;
+    private Integer mLevel;
+    private Boolean hasOrder;
+    private Integer soldCount;
+    private Integer monthlySoldCount;
     private String comment;
     private String description;
     private String tags;
-    @Column(insertable = false, columnDefinition = "bigint default 0")
-    private Long favoriteCount = 0l;
-    @Column(insertable = false, columnDefinition = "bigint default 0")
-    private Long commentCount = 0l;
+    private Long favoriteCount;
+    private Long commentCount;
     @Transient
-    private String distance;
+    private Double distance;
     @Column(unique = true, nullable = false)
     private Long creator;
     private String businessHours;
@@ -64,18 +57,15 @@ public class Merchant implements Serializable {
     private String businessDayPerWeek;
     private Long deliverFee;
     private String deliverComment;
-    @Column(insertable = false, columnDefinition = "bit default 0")
-    private Boolean removed = false;
-    @Column(insertable = false, columnDefinition = "int default 0")
-    private Integer verifyStatus = 0;
-    private double turnover = 0.00d;
+    private Boolean removed;
+    private Integer verifyStatus;
+    private double turnover;
     @JsonIgnore
     private double sharing;
-    @Column(insertable = false, columnDefinition = "bit default 0")
     private Boolean isAutoOpen;
-    private Date createDate;
+    private Date createDate = new Date();
     private Date lastModifiedDate = new Date();
-    private double star = 0.00d;
+    private double star;
 
     public Long getId() {
         return id;
@@ -222,7 +212,7 @@ public class Merchant implements Serializable {
     }
 
     public Integer getSoldCount() {
-        return soldCount;
+        return soldCount == null ? 0 : soldCount;
     }
 
     public void setSoldCount(Integer soldCount) {
@@ -230,7 +220,7 @@ public class Merchant implements Serializable {
     }
 
     public Integer getMonthlySoldCount() {
-        return monthlySoldCount;
+        return monthlySoldCount == null ? 0 : monthlySoldCount;
     }
 
     public void setMonthlySoldCount(Integer monthlySoldCount) {
@@ -277,11 +267,11 @@ public class Merchant implements Serializable {
         this.commentCount = commentCount;
     }
 
-    public String getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
-    public void setDistance(String distance) {
+    public void setDistance(Double distance) {
         this.distance = distance;
     }
 
@@ -365,6 +355,7 @@ public class Merchant implements Serializable {
     public List<Account> createAccounts() {
         List<Account> result = new ArrayList<>();
         for (AccountType accountType : AccountType.values()) {
+            if (accountType.equals(AccountType.PLATFORM)) continue;
             final String accountNo = String.format(Account.ACCOUNT_NO_PATTERN, creator, id, accountType.ordinal());
             result.add(new Account(id, getCreator(), accountNo, accountType));
         }
@@ -425,5 +416,30 @@ public class Merchant implements Serializable {
 
     public void setStar(double star) {
         this.star = star;
+    }
+
+    public boolean noLocation() {
+        return latitude == null || longitude == null;
+    }
+
+    @Transient
+    public Double getDistanceFrom(Double longitude, Double latitude) {
+        if (noLocation() || longitude == null || latitude == null) return null;
+        return Util.distanceBetween(this.getLongitude(), longitude, this.getLatitude(), latitude);
+    }
+
+    public void init() {
+        star = 0;
+        verifyStatus = 0;
+        removed = false;
+        favoriteCount = 0l;
+        commentCount = 0l;
+        turnover = 0;
+        sharing = 0;
+        soldCount = 0;
+        monthlySoldCount = 0;
+        hasOrder = false;
+        isRest = false;
+        isAutoOpen = false;
     }
 }

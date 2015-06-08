@@ -15,6 +15,7 @@ import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
 import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -49,13 +50,14 @@ public class MerchantServiceImpl implements MerchantService, ApplicationEventPub
 
     @Override
     public List<Merchant> getMerchants(int page, int pageSize, Double longitude, Double latitude) {
-        return merchantRepository.findByLongitudeAndLatitude(longitude, latitude, new PageRequest(page, pageSize));
+        return merchantRepository.findByLongitudeAndLatitude(longitude, latitude, DateTime.now().dayOfWeek().get(), new PageRequest(page, pageSize));
     }
 
     @Override
     public Merchant saveMerchant(Merchant merchant) {
         Long merchantNo = redisRepository.nextLong(Keys.nextMerchantNoKey());
         if (StringUtils.isEmpty(merchant.getMerchantNo())) merchant.setMerchantNo(String.valueOf(merchantNo));
+        merchant.init();
         Merchant result = merchantRepository.save(merchant);
         accountRepository.save(result.createAccounts());
         return result;
@@ -76,6 +78,7 @@ public class MerchantServiceImpl implements MerchantService, ApplicationEventPub
 
     @Override
     public Product saveProduct(Product product) {
+        product.init();
         return productRepository.save(product);
     }
 

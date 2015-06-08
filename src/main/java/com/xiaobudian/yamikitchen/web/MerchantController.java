@@ -2,7 +2,6 @@ package com.xiaobudian.yamikitchen.web;
 
 import com.xiaobudian.yamikitchen.common.LocalizedMessageSource;
 import com.xiaobudian.yamikitchen.common.Result;
-import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Comment;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,13 +37,13 @@ public class MerchantController {
     @ResponseBody
     public Result getMerchants(@RequestParam("page") Integer page,
                                @RequestParam("size") Integer size,
-                               @RequestParam("lat") Double longitude,
-                               @RequestParam("lng") Double latitude,
+                               @RequestParam(value = "lat", required = false) Double latitude,
+                               @RequestParam(value = "lng", required = false) Double longitude,
                                @AuthenticationPrincipal User user) {
         List<Merchant> merchants = merchantService.getMerchants(page, size, longitude, latitude);
         List<MerchantResponse> responses = new ArrayList<>();
         for (Merchant merchant : merchants) {
-            merchant.setDistance(Util.calculateDistanceAsString(merchant.getLongitude(), longitude, merchant.getLatitude(), latitude));
+            merchant.setDistance(merchant.getDistanceFrom(longitude, latitude));
             responses.add(new MerchantResponse.Builder()
                     .merchant(merchant)
                     .hasFavorite(user != null && merchantService.hasFavorite(merchant.getId(), user.getId()))
@@ -72,8 +70,13 @@ public class MerchantController {
     @RequestMapping(value = "/merchants/{rid}/products", method = RequestMethod.GET)
     @ResponseBody
     public Result getProductsOfMerchant(@PathVariable Long rid, @RequestParam("page") Integer page,
-                                        @RequestParam("size") Integer size, @AuthenticationPrincipal User user) {
+                                        @RequestParam("size") Integer size,
+                                        @RequestParam(value = "lat", required = false) Double latitude,
+                                        @RequestParam(value = "lng", required = false) Double longitude,
+                                        @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantBy(rid);
+        if (merchant == null) throw new RuntimeException("user.merchant.not.create");
+        merchant.setDistance(merchant.getDistanceFrom(longitude, latitude));
         MerchantResponse response = new MerchantResponse.Builder()
                 .merchant(merchant)
                 .hasFavorite(user != null && merchantService.hasFavorite(merchant.getId(), user.getId()))
@@ -135,7 +138,6 @@ public class MerchantController {
         if (merchantService.getMerchantByCreator(user.getId()) != null)
             throw new RuntimeException("user.merchant.exists");
         merchant.setCreator(user.getId());
-        merchant.setCreateDate(new Date());
         return Result.successResult(merchantService.saveMerchant(merchant));
     }
 
@@ -146,9 +148,6 @@ public class MerchantController {
         if (m == null) throw new RuntimeException("merchant.does.not.exist");
         if (!m.isCreateBy(user.getId())) throw new RuntimeException("user.merchant.unauthorized");
         merchant.setId(m.getId());
-        merchant.setVerifyStatus(null);
-        merchant.setIsAutoOpen(null);
-        merchant.setIsRest(null);
         return Result.successResult(merchantService.updateMerchant(merchant));
     }
 
@@ -185,9 +184,6 @@ public class MerchantController {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!merchant.isCreateBy(user.getId())) throw new RuntimeException("user.merchant.product.unauthorized");
         product.setMerchantId(merchant.getId());
-        product.setCreateDate(new Date());
-        product.setTwRestCount(product.getSupplyPerDay());
-        product.setRestCount(product.getSupplyPerDay());
         return Result.successResult(merchantService.saveProduct(product));
     }
 
@@ -196,9 +192,6 @@ public class MerchantController {
     public Result editProduct(@RequestBody Product product, @AuthenticationPrincipal User user) {
         Merchant merchant = merchantService.getMerchantByCreator(user.getId());
         if (!merchant.isCreateBy(user.getId())) throw new RuntimeException("user.merchant.product.unauthorized");
-        if (product.getSupplyPerDay() != null) product.setRestCount(product.getSupplyPerDay());
-        product.setTwRestCount(product.getSupplyPerDay());
-        product.setRestCount(product.getSupplyPerDay());
         return Result.successResult(merchantService.updateProduct(product));
     }
 

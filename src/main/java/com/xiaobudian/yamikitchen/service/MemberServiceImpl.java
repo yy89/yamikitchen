@@ -5,10 +5,12 @@ import com.xiaobudian.yamikitchen.common.Util;
 import com.xiaobudian.yamikitchen.domain.member.BankCard;
 import com.xiaobudian.yamikitchen.domain.member.RegistrationPostHandler;
 import com.xiaobudian.yamikitchen.domain.member.User;
+import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
 import com.xiaobudian.yamikitchen.repository.member.BankCardRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserAddressRepository;
 import com.xiaobudian.yamikitchen.repository.member.UserRepository;
+import com.xiaobudian.yamikitchen.repository.merchant.MerchantRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +38,8 @@ public class MemberServiceImpl implements MemberService {
     private RegistrationPostHandler registrationPostHandler;
     @Inject
     private BankCardRepository bankCardRepository;
+    @Inject
+    private MerchantRepository merchantRepository;
 
     @Override
     public User register(User user) {
@@ -43,8 +47,8 @@ public class MemberServiceImpl implements MemberService {
             String nickNamePrefix = localizedMessageSource.getMessage("user.name.default");
             user.setNickName(nickNamePrefix + StringUtils.substring(user.getUsername(), user.getUsername().length() - 4));
         }
+        user.init();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setBindingPhone(user.getUsername());
         User newUser = userRepository.save(user);
         registrationPostHandler.handle(newUser);
         return newUser;
@@ -92,6 +96,12 @@ public class MemberServiceImpl implements MemberService {
     public User updateUser(User user) {
         User u = userRepository.findOne(user.getId());
         BeanUtils.copyProperties(user, u, Util.getNullPropertyNames(user));
+        if (StringUtils.isNotEmpty(user.getHeadPic())) {
+            Merchant merchant = merchantRepository.findByCreator(user.getId());
+            if (merchant == null) return userRepository.save(u);
+            merchant.setHeadPic(user.getHeadPic());
+            merchantRepository.save(merchant);
+        }
         return userRepository.save(u);
     }
 

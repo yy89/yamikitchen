@@ -95,7 +95,7 @@ public class MemberController {
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public Result updateUserIntroduction(@RequestBody User user, @AuthenticationPrincipal User authenticationUser) {
+    public Result editUser(@RequestBody User user, @AuthenticationPrincipal User authenticationUser) {
         user.setId(authenticationUser.getId());
         return Result.successResult(memberService.updateUser(user));
     }
