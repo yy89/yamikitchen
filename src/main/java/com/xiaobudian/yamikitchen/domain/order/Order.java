@@ -1,9 +1,9 @@
 package com.xiaobudian.yamikitchen.domain.order;
 
+import com.xiaobudian.yamikitchen.common.Day;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -55,8 +55,8 @@ public class Order implements Serializable {
     private boolean hasPaid = false;
     private boolean complainable = false;
     private boolean commentable = false;
-    private boolean refundable;
-    private String distance;
+    private boolean refundable = true;
+    private Double distance;
     private String checkFlag = "I";
     private Long couponId;
     private Double couponAmount = 0.00d;
@@ -67,7 +67,6 @@ public class Order implements Serializable {
     private boolean directCancelable = true;
     private Double paymentAmount = 0.00d;
     private Date paymentDate;
-    // 达达：1待接单 2待取货 3执行中 4已完成 5已取消
     private Integer deliverGroupOrderStatus;
     private Integer deliveryManId;
     private String deliveryManName;
@@ -330,11 +329,11 @@ public class Order implements Serializable {
         this.refundable = refundable;
     }
 
-    public String getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
-    public void setDistance(String distance) {
+    public void setDistance(Double distance) {
         this.distance = distance;
     }
 
@@ -485,16 +484,16 @@ public class Order implements Serializable {
 
     @Transient
     public boolean isToday() {
-        return expectDate != null && Days.daysBetween(DateTime.now(), new DateTime(expectDate)).getDays() == 0;
+        return expectDate != null && Day.TODAY.isSameDay(expectDate);
     }
 
     @Transient
     public boolean isTomorrow() {
-        return expectDate != null && Days.daysBetween(DateTime.now(), new DateTime(expectDate)).getDays() == 1;
+        return expectDate != null && Day.TOMORROW.isSameDay(expectDate);
     }
 
     private double netPrice() {
-        return (getPrice() - getDeliverPrice());
+        return getPrice() - getDeliverPrice();
     }
 
     public double shareOfMerchant(double sharingScale) {
@@ -505,20 +504,12 @@ public class Order implements Serializable {
         return netPrice() * sharingScale;
     }
 
-    public double priceAsDouble() {
-        return price;
-    }
-
-    public double deliverPriceAsDouble() {
-        return deliverPrice;
-    }
-
     public boolean deliverByDaDa() {
         return deliverGroup != null && deliverGroup == 2;
     }
 
     public Double getPaymentAmount() {
-        return getPrice() - getCouponAmount();
+        return (getPrice() == null ? 0 : getPrice()) - (getCouponAmount() == null ? 0 : getCouponAmount());
     }
 
     public void setPaymentAmount(Double paymentAmount) {
@@ -544,8 +535,9 @@ public class Order implements Serializable {
     }
 
     @Transient
-    public boolean isAuthorizedBy(User user, Merchant merchant) {
-        if (user.isMerchant()) return isOwnedBy(merchant);
+    public boolean isAuthorizedBy(User user, Merchant merchant, boolean isMerchant) {
+        if (merchant == null) return isCreateBy(user.getId());
+        if (isMerchant) return isOwnedBy(merchant);
         return isCreateBy(user.getId());
     }
 
@@ -571,8 +563,14 @@ public class Order implements Serializable {
         return paymentMethod != null && paymentMethod == 0 && couponId != null && couponId > 0;
     }
 
+    @Transient
     public boolean isPayOnDeliver() {
         return paymentMethod != null && paymentMethod == 1;
+    }
+
+    @Transient
+    public boolean isPayOnline() {
+        return paymentMethod != null && paymentMethod == 0;
     }
 
 }

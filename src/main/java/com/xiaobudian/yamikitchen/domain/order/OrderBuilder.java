@@ -6,6 +6,7 @@ import com.xiaobudian.yamikitchen.domain.coupon.Coupon;
 import com.xiaobudian.yamikitchen.domain.member.User;
 import com.xiaobudian.yamikitchen.domain.merchant.Merchant;
 import com.xiaobudian.yamikitchen.domain.merchant.UserAddress;
+import org.joda.time.DateTime;
 
 /**
  * Created by Johnson on 2015/5/12.
@@ -25,7 +26,7 @@ public class OrderBuilder {
         this.order.setMerchantNo(merchant.getMerchantNo());
         this.order.setMerchantHeadPic(merchant.getHeadPic());
         this.order.setMerchantPhone(merchant.getPhone());
-        this.order.setAddress(merchant.getAddress());
+        this.order.setMerchantAddress(merchant.getAddress());
         return this;
     }
 
@@ -33,6 +34,8 @@ public class OrderBuilder {
         this.order.setPrice(cart.getTotalAmount());
         this.order.setDeliverPrice(cart.deliverPrice());
         this.order.setTotalQuantity(cart.getTotalQuantity());
+        if (cart.getPaymentMethod() != null && cart.getPaymentMethod() == 1)
+            this.order.setPaymentDate(DateTime.now().toDate());
         return this;
     }
 
@@ -55,7 +58,7 @@ public class OrderBuilder {
     public OrderBuilder distance(Merchant merchant) {
         if (merchant.getLatitude() == null || merchant.getLongitude() == null
                 || order.getLatitude() == null || order.getLongitude() == null) return this;
-        this.order.setDistance(Util.calculateDistanceAsString(merchant.getLongitude(), order.getLongitude(), merchant.getLatitude(), order.getLatitude()));
+        this.order.setDistance(Util.distanceBetween(merchant.getLongitude(), order.getLongitude(), merchant.getLatitude(), order.getLatitude()));
         return this;
     }
 
