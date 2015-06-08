@@ -1,30 +1,37 @@
 package com.xiaobudian.yamikitchen.common;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import java.beans.PropertyDescriptor;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Created by Johnson on 2015/5/12.
  */
 public final class Util {
-    private static final String DISTANCE_PATTERN = "%.2f km";
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final double PI = Math.PI / 180.0;
+    private static final double EARTH_RADIUS = 6378.137;
 
-    public static double calculateDistance(double r1, double r2, double t1, double t2) {
-        return Math.pow(Math.abs(r1 - r2) % 360, 2) + Math.pow(Math.abs(t1 - t2) % 360, 2);
-    }
-
-    public static String calculateDistanceAsString(double r1, double r2, double t1, double t2) {
-        return String.format(DISTANCE_PATTERN, calculateDistance(r1, r2, t1, t2));
+    public static double distanceBetween(double r1, double r2, double t1, double t2) {
+        double a = (t1 - t2) * PI;
+        double b = (r1 - r2) * PI;
+        double s = 2 * EARTH_RADIUS * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+                Math.cos(t1 * PI) * Math.cos(t2 * PI) * Math.pow(Math.sin(b / 2), 2)));
+        return Math.round(s * 1000);
     }
 
     public static String[] getNullPropertyNames(Object source) {
@@ -46,6 +53,23 @@ public final class Util {
             String sign = Base64.encodeBase64String(signature.sign());
             return URLEncoder.encode(sign, "UTF-8");
         } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String encodeUrl(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
+    }
+
+    public static Map<String, Object> json2Map(String json) {
+        try {
+            return MAPPER.readValue(json, new TypeReference<Map<String, Object>>() {
+            });
+        } catch (IOException e) {
             return null;
         }
     }

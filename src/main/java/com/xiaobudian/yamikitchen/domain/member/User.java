@@ -218,6 +218,12 @@ public class User implements Serializable, UserDetails {
         return type != null && type == 1;
     }
 
+    public void init() {
+        status = 0;
+        firstPay = false;
+        bindingPhone = username;
+    }
+
     //    public boolean pushNotificationIfNeeded(MessageType type) {
 //        try {
 //            if (settings == null) return false;
