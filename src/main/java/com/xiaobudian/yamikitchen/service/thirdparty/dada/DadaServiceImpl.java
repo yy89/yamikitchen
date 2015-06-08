@@ -205,26 +205,4 @@ public class DadaServiceImpl implements DadaService {
         }
         return null;
     }
-    
-    public static void main(String[] args) {
-        DadaServiceImpl impl = new DadaServiceImpl();
-        String token = "596b97c713ed41d7596b97c713ed41d7";
-        Date currentDate = new Date();
-        Long timestamp = currentDate.getTime();
-        String signature = impl.getSignature(currentDate, token);
-        String orderId = "100028-20150605-66";
-        String acceptOrder = "/v1_0/acceptOrder/";
-        String fetchOrder = "/v1_0/fetchOrder/";
-        String url1 = "http://public.ga.dev.imdada.cn"+acceptOrder+"?token="
-                + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
-        String url2 = "http://public.ga.dev.imdada.cn"+fetchOrder+"?token="
-        		+ token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
-        System.out.println("接单：" + url1);
-        System.out.println("取件：" + url2);
-        
-        String getOrderUrl = "/v1_0/getOrderInfo/";
-        String url3 = "http://public.ga.dev.imdada.cn"+getOrderUrl+"?token="
-                + token + "&timestamp=" + timestamp + "&order_id=" + orderId + "&signature=" + signature;
-        System.out.println("查询订单状态：" + url3);
-    }
 }
