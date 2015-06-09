@@ -1,8 +1,14 @@
 package com.xiaobudian.yamikitchen.web;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.xiaobudian.yamikitchen.common.Result;
 import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
 import com.xiaobudian.yamikitchen.web.dto.thirdparty.DadaDto;
+
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,5 +57,35 @@ public class ThirdPartyCallBackController {
         dadaDto.setUpdate_time(Integer.parseInt(update_time));
         dadaService.dadaCallBack(dadaDto);
         return Result.successResult("ok");
+    }
+    
+    @RequestMapping(value = "/thirdParty/dadaCallBackTest/{orderNo}", method = RequestMethod.GET)
+    public Result dadaCallBackTest(@PathVariable String orderNo) {
+    	String token = dadaService.getAccessToken();
+        Date currentDate = new Date();
+        Long timestamp = currentDate.getTime();
+        String signature = dadaService.getSignature(currentDate, token);
+        String acceptOrder = "/v1_0/acceptOrder/";
+        String url1 = "http://public.ga.dev.imdada.cn" + acceptOrder + "?token="
+                + token + "&timestamp=" + timestamp + "&order_id=" + orderNo + "&signature=" + signature;
+       
+        String fetchOrder = "/v1_0/fetchOrder/";
+        String url2 = "http://public.ga.dev.imdada.cn" + fetchOrder + "?token="
+                + token + "&timestamp=" + timestamp + "&order_id=" + orderNo + "&signature=" + signature;
+
+        String getOrderUrl = "/v1_0/getOrderInfo/";
+        String url3 = "http://public.ga.dev.imdada.cn" + getOrderUrl + "?token="
+                + token + "&timestamp=" + timestamp + "&order_id=" + orderNo + "&signature=" + signature;
+        
+        String finishOrder = "/v1_0/finishOrder/";
+        String url4 = "http://public.ga.dev.imdada.cn" + finishOrder + "?token="
+                + token + "&timestamp=" + timestamp + "&order_id=" + orderNo + "&signature=" + signature;
+        
+        Map<String, String> returnMap = new HashMap<String, String>();
+        returnMap.put("acceptOrder", url1);
+        returnMap.put("fetchOrder", url2);
+        returnMap.put("getOrderInfo", url3);
+        returnMap.put("finishOrder", url4);
+        return Result.successResult(returnMap);
     }
 }

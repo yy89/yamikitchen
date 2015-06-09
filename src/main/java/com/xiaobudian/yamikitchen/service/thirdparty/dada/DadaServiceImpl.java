@@ -108,6 +108,19 @@ public class DadaServiceImpl implements DadaService {
         }
         return orderRepository.save(order);
     }
+    
+    @Override
+    public String getSignature(Date currentDate, String token) {
+        String timestamp = String.valueOf(new Date().getTime());
+        List<String> list = new ArrayList<String>();
+        list.add(token);
+        list.add(timestamp);
+        list.add(DadaConstans.DADA);
+        Collections.sort(list);
+        String signString = list.toString();
+        signString = signString.replace(" ", "").replace(",", "").replace("[", "").replace("]", "");
+        return MD5Util.md5(signString);
+    }
 
     private void saveThirdGroup(ThirdParty thirdGroup) {
         DadaDto dadaDto = createAccessToken();
@@ -123,18 +136,6 @@ public class DadaServiceImpl implements DadaService {
         Long timestamp = createData.getTime() + (expiresIn * 1000);
         Date date = new Date(timestamp);
         return date.after(new Date());
-    }
-
-    private String getSignature(Date currentDate, String token) {
-        String timestamp = String.valueOf(new Date().getTime());
-        List<String> list = new ArrayList<String>();
-        list.add(token);
-        list.add(timestamp);
-        list.add(DadaConstans.DADA);
-        Collections.sort(list);
-        String signString = list.toString();
-        signString = signString.replace(" ", "").replace(",", "").replace("[", "").replace("]", "");
-        return MD5Util.md5(signString);
     }
 
     private DadaDto cancelOrder(Order order, String token) {
