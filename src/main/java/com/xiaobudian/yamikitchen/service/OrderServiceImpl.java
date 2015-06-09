@@ -285,6 +285,7 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
             accountService.refundOrder(order);
             createRefundApplication(order);
         }
+        if (order.getDeliverGroupOrderStatus() == 1 && order.deliverByDaDa()) dadaService.cancelOrder(order);
         if (order.payIncludeCoupon()) recoveryCoupon(order.getCouponId());
         order.cancel();
         return orderRepository.save(order);
