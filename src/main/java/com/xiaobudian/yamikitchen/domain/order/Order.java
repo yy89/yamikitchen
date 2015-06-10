@@ -72,6 +72,7 @@ public class Order implements Serializable {
     private String deliveryManName;
     private String deliveryManMobile;
     private Date updateTime;
+    private boolean hasRefund;
 
     public Long getId() {
         return id;
@@ -459,6 +460,7 @@ public class Order implements Serializable {
         setDirectCancelable(false);
         setCancelable(false);
         setRefundable(false);
+        setHasRefund(false);
     }
 
     public void pay() {
@@ -572,5 +574,13 @@ public class Order implements Serializable {
     public boolean isPayOnline() {
         return paymentMethod != null && paymentMethod == 0;
     }
+
+	public boolean isHasRefund() {
+		return hasRefund;
+	}
+
+	public void setHasRefund(boolean hasRefund) {
+		this.hasRefund = hasRefund;
+	}
 
 }
