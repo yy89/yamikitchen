@@ -23,6 +23,7 @@ import com.xiaobudian.yamikitchen.repository.merchant.ProductRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderItemRepository;
 import com.xiaobudian.yamikitchen.repository.order.OrderRepository;
 import com.xiaobudian.yamikitchen.service.thirdparty.dada.DadaService;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -33,6 +34,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
 import java.util.*;
 
 import static com.xiaobudian.yamikitchen.domain.order.QueueScheduler.DELIVER_QUEUE_ESCAPE_TIME;
@@ -252,6 +254,10 @@ public class OrderServiceImpl implements OrderService, ApplicationEventPublisher
 
     @Override
     public Order chooseDeliverGroup(Order order, Integer deliverGroup) {
+    	if (order.deliverByDaDa() && 1 == deliverGroup) {
+    		if (order.isUnacceptByDADA()) dadaService.cancelOrder(order);
+    		else throw new RuntimeException("order.change.deliver.group.self.error");
+    	}
         order.setDeliverGroup(deliverGroup);
         if (order.deliverByDaDa()) dadaService.addOrderToDada(order);
         return orderRepository.save(order);

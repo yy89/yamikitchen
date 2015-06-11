@@ -582,5 +582,9 @@ public class Order implements Serializable {
 	public void setHasRefund(boolean hasRefund) {
 		this.hasRefund = hasRefund;
 	}
+	
+	public boolean isUnacceptByDADA() {
+		return deliverGroupOrderStatus == null || deliverGroupOrderStatus == 1;
+	}
 
 }
