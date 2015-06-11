@@ -460,7 +460,7 @@ public class Order implements Serializable {
         setDirectCancelable(false);
         setCancelable(false);
         setRefundable(false);
-        setHasRefund(false);
+        setHasRefund(true);
     }
 
     public void pay() {
