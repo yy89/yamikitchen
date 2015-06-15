@@ -1,161 +1,151 @@
-﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width"/>
-    <title>填写手机号</title>
-    <link href="/yamikitchen/resources/css/common.css" rel="stylesheet"/>
-    <link href="/yamikitchen/resources/css/product_login.css" type="text/css" rel="stylesheet"/>
-    <style type="text/css">
-        .hidden {
-            visibility: hidden
-        }
-
-        .mapa {
-            margin-top: 15px;
-            padding-top: 15px;
-        }
-
-        #mobile {
-            height: 45px;
-            vertical-align: middle;
-            line-height: 45px;
-            text-align: center;
-        }
-
-        .gray {
-            color: gray;
-        }
-    </style>
-    <script type="text/javascript">
-        function mobilefocus() {
-            var mobile = document.getElementById("mobile");
-            if (mobile.value == "请输入手机号码") {
-                mobile.value = "";
-                mobile.setAttribute('class', '');
-            }
-        }
-        function mobileblur() {
-            var mobile = document.getElementById("mobile");
-            if (mobile.value == "") {
-                mobile.value = "请输入手机号码";
-                mobile.setAttribute('class', 'gray');
-            }
-        }
-    </script>
-</head>
-<body>
-<div class="hongbao">
-    <div class="banner">
-        <div class="logo"></div>
-        <div class="info">
-            <div style="width:260px;height:230px;margin-left:auto; margin-right:auto; background:#C5291D; border-radius:18px; text-align:center; filter:Alpha(opacity=80); opacity:0.8;">
-                <div class="hidden" id='message'
-                     style="width:100%; margin-top:5px; padding-top:5px;font-size:14px;color:white;">
-                    手机号格式不正确
-                </div>
-                <div id="phoneTel" style="width:100%;" class="mapa">
-                    <input type="text" id="mobile" onfocus="mobilefocus()" onblur="mobileblur()" value="请输入手机号码"
-                           maxLength="11" class="gray" style="width:200px;border-radius:10px;font-size:20px;"/>
-                    <input type="hidden" id="orderId"/>
-                    <input type="hidden" id="openId"/>
-                </div>
-                <div>
-                    <a class="btn btn-download" onclick="saveMobile()"
-                       style="background:#FF981F; color:#FFFFFF; margin-top:10px;margin-bottom:20px;">马上领取</a>
-                </div>
-                <a class="btn btn-download" href="/yamikitchen/download.html">下载丫米客户端</a>
-
-                <h3>登陆丫米客户端即可使用</h3>
-            </div>
-        </div>
-
-    </div>
-    <div class="list-con">
-        <div class="intro">
-            <div class="intro-title">
-                红包使用规则
-            </div>
-            <div class="intro-content">
-                <p>1.使用红包时的下单手机号需为抢红包时使用的手机号，红包发放后7日内有效。</p>
-
-                <p>2.发放至手机号的红包需在App用手机号注册，或将手机号绑定至饿了么账户后才可使用。</p>
-
-                <p>3.发放至丫米账户的红包登录后即可使用。</p>
-
-                <p>4.红包仅限在线支付时使用，每张订单仅限使用一张红包，红包不找零。</p>
-
-                <p>5.丫米保留法律范围内允许的对活动的解释权。</p>
-            </div>
-        </div>
-    </div>
-</div>
-<script type="text/javascript">
-    function getParameter(param) {
-        var query = window.location.search;//获取URL地址中？后的所有字符
-        var iLen = param.length;//获取你的参数名称长度
-        var iStart = query.indexOf(param);//获取你该参数名称的其实索引
-        if (iStart == -1)//-1为没有该参数
-            return "";
-        iStart += iLen + 1;
-        var iEnd = query.indexOf("&", iStart);//获取第二个参数的其实索引
-        if (iEnd == -1)//只有一个参数
-            return query.substring(iStart);//获取单个参数的参数值
-        return query.substring(iStart, iEnd);//获取第二个参数的值
-    }
-    document.getElementById("orderId").value = getParameter("orderNo");
-    document.getElementById("openId").value = getParameter("openid");
-
-    function saveMobile() {
-        var mobile = document.getElementById("mobile").value;
-        document.getElementById("message").setAttribute('class', 'hidden');
-        document.getElementById("phoneTel").setAttribute('class', 'mapa');
-        if (!(/^1[3|4|5|8][0-9]\d{8}$/.test(mobile))) {
-            document.getElementById("message").setAttribute('class', '');
-            document.getElementById("phoneTel").setAttribute('class', '');
-            document.getElementById("mobile").focus();
-            return false;
-        }
-        var openId = document.getElementById("openId").value;
-        var orderId = document.getElementById("orderId").value;
-        sendAjaxRequest('/yamikitchen/api/coupon/openId/' + openId + '/mobile/' + mobile + '/orderNo/' + orderId);
-    }
-
-
-    var XMLHttpReq;
-    function createXMLHttpRequest() {
-        try {
-            XMLHttpReq = new ActiveXObject("Msxml2.XMLHTTP");//IE高版本创建XMLHTTP
-        }
-        catch (E) {
-            try {
-                XMLHttpReq = new ActiveXObject("Microsoft.XMLHTTP");//IE低版本创建XMLHTTP
-            }
-            catch (E) {
-                XMLHttpReq = new XMLHttpRequest();//兼容非IE浏览器，直接创建XMLHTTP对象
-            }
-        }
-    }
-    function sendAjaxRequest(url) {
-        createXMLHttpRequest();                                //创建XMLHttpRequest对象
-        XMLHttpReq.open("post", url, true);
-        XMLHttpReq.onreadystatechange = processResponse; //指定响应函数
-        XMLHttpReq.send(null);
-    }
-    //回调函数
-    function processResponse() {
-        if (XMLHttpReq.readyState == 4) {
-            if (XMLHttpReq.status == 200) {
-                var text = XMLHttpReq.responseText;
-                var obj = JSON.parse(text);
-                if (obj.msg == 'ok') {
-                    var openId = document.getElementById("openId").value;
-                    var orderId = document.getElementById("orderId").value;
-                    window.location = '/yamikitchen/hongbao.html?openid=' + openId + '&orderNo=' + orderId;
-                }
-            }
-        }
-    }
-</script>
-</body>
-</html>
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width" />
+    <title>填写手机号</title>
+    <link href="resources/css/common.css" rel="stylesheet" />
+	<link href="resources/css/product_login.css" type="text/css"  rel="stylesheet" />
+	 <style type="text/css">
+	    .hidden {
+			visibility:hidden
+		}
+		.mapa{
+			margin-top:15px;
+			padding-top:15px;
+		}
+		#mobile {
+	        height:45px;
+	        vertical-align:middle;
+	        line-height:45px;  
+	        text-align:center;
+	    }
+	    .gray {
+	        color:gray;
+	    }
+	</style>
+	<script type="text/javascript">
+			function mobilefocus(){
+		    	var mobile=document.getElementById("mobile");
+				if(mobile.value=="请输入手机号码"){
+					mobile.value="";
+					mobile.setAttribute('class','');
+				}
+		    }
+			function mobileblur(){
+				var mobile=document.getElementById("mobile");
+		    	if(mobile.value==""){
+		    		mobile.value="请输入手机号码";
+		    		mobile.setAttribute('class','gray');
+		    	}
+		    }
+	</script>
+</head>
+<body>
+    <div class="hongbao">
+        <div class="banner">
+            <div class="logo"></div>
+<div class="info">
+<div style="width:260px;height:230px;margin-left:auto; margin-right:auto; background:#C5291D; border-radius:18px; text-align:center; filter:Alpha(opacity=80); opacity:0.8;">
+				<div  class="hidden" id='message' style="width:100%; margin-top:5px; padding-top:5px;font-size:14px;color:white;">
+					手机号格式不正确
+				</div>
+				<div id="phoneTel" style="width:100%;" class="mapa">
+					<input type="text" id="mobile" onfocus="mobilefocus()"  onblur="mobileblur()"  value="请输入手机号码" maxLength="11" class="gray" style="width:200px;border-radius:10px;font-size:20px;"/>
+					<input type="hidden" id="orderId" />	
+					<input type="hidden" id="openId" />	
+				</div>
+                <div>
+					<a class="btn btn-download" onclick="saveMobile()" style="background:#FF981F; color:#FFFFFF; margin-top:10px;margin-bottom:20px;">马上领取</a>
+				</div>
+				<a class="btn btn-download" href="http://www.yamichu.com/down" >下载丫米客户端</a>
+                <h3>登陆丫米客户端即可使用</h3> 
+				</div>
+            </div>
+            
+        </div>
+        <div class="list-con">             
+            <div class="intro">
+                <div class="intro-title">
+                    红包使用规则
+                </div>
+                <div class="intro-content">
+                    <p>1.使用红包时的下单手机号需为抢红包时使用的手机号，红包发放后7日内有效。</p>
+                    <p>2.发放至手机号的红包需在App用手机号注册，或将手机号绑定至饿了么账户后才可使用。</p>
+                    <p>3.发放至丫米账户的红包登录后即可使用。</p>
+                    <p>4.红包仅限在线支付时使用，每张订单仅限使用一张红包，红包不找零。</p>
+                    <p>5.丫米保留法律范围内允许的对活动的解释权。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript"> 
+	    function getParameter(param)  
+	    {  
+	        var query = window.location.search;//获取URL地址中？后的所有字符  
+	        var iLen = param.length;//获取你的参数名称长度  
+	        var iStart = query.indexOf(param);//获取你该参数名称的其实索引  
+	        if (iStart == -1)//-1为没有该参数  
+	            return "";  
+	        iStart += iLen + 1;  
+	        var iEnd = query.indexOf("&", iStart);//获取第二个参数的其实索引  
+	        if (iEnd == -1)//只有一个参数  
+	            return query.substring(iStart);//获取单个参数的参数值  
+	        return query.substring(iStart, iEnd);//获取第二个参数的值  
+	    }  
+	    document.getElementById("orderId").value = getParameter("orderNo"); 
+	    document.getElementById("openId").value = getParameter("openid"); 
+	    
+	    function saveMobile(){
+	    	var mobile=document.getElementById("mobile").value;
+	    	document.getElementById("message").setAttribute('class', 'hidden'); 
+	    	document.getElementById("phoneTel").setAttribute('class', 'mapa');
+	    	if(!(/^1[3|4|5|8][0-9]\d{8}$/.test(mobile))){ 
+	    		document.getElementById("message").setAttribute('class', '');
+		    	document.getElementById("phoneTel").setAttribute('class', '');
+	            document.getElementById("mobile").focus(); 
+	            return false; 
+	        }
+	    	var openId=document.getElementById("openId").value;
+	    	var orderId=document.getElementById("orderId").value;
+	    	sendAjaxRequest('/yamikitchen/api/coupon/openId/'+openId+'/mobile/'+mobile+'/orderNo/'+orderId);
+	    }
+	    
+	    
+	    var XMLHttpReq;  
+	    function createXMLHttpRequest() {  
+	        try {  
+	            XMLHttpReq = new ActiveXObject("Msxml2.XMLHTTP");//IE高版本创建XMLHTTP  
+	        }  
+	        catch(E) {  
+	            try {  
+	                XMLHttpReq = new ActiveXObject("Microsoft.XMLHTTP");//IE低版本创建XMLHTTP  
+	            }  
+	            catch(E) {  
+	                XMLHttpReq = new XMLHttpRequest();//兼容非IE浏览器，直接创建XMLHTTP对象  
+	            }  
+	        }  
+	    }  
+	    function sendAjaxRequest(url) {  
+	        createXMLHttpRequest();                                //创建XMLHttpRequest对象  
+	        XMLHttpReq.open("post", url, true);  
+	        XMLHttpReq.onreadystatechange = processResponse; //指定响应函数  
+	        XMLHttpReq.send(null);  
+	    }  
+	    //回调函数  
+	    function processResponse() {  
+	        if (XMLHttpReq.readyState == 4) {  
+	            if (XMLHttpReq.status == 200) {  
+	                var text = XMLHttpReq.responseText;  
+					var obj = JSON.parse(text);
+					if(obj.msg=='ok'){
+						var openId=document.getElementById("openId").value;
+				    	var orderId=document.getElementById("orderId").value;
+						window.location='/yamikitchen/hongbao.html?openid='+openId+'&orderNo='+orderId;
+					}
+	            }  
+	        }  
+	    }  
+	</script>
+</body>
+</html>
